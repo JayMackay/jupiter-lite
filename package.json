@@ -20,8 +20,9 @@
     "test": "npm run desktop:test",
     "test:preview": "node scripts/check-preview-ui.mjs",
     "test:gpu": "node scripts/check-gpu-ui.mjs",
-    "test:template": "node scripts/check-template.mjs && node scripts/sync-skills.mjs --check && npm run test:assets",
+    "test:template": "node scripts/check-template.mjs && node scripts/sync-skills.mjs --check && npm run test:assets && npm run test:skills",
     "test:assets": "node --test scripts/asset-delivery/test/*.test.mjs",
+    "test:skills": "node --test .agents/skills/game-wiki/scripts/test/*.test.mjs",
     "skills:sync": "node scripts/sync-skills.mjs",
     "skills:pack": "node scripts/run-python.mjs scripts/package_skills.py"
   },

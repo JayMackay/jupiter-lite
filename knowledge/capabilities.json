@@ -870,8 +870,8 @@
       "url": "https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.0/manual/unity-mcp-overview.html",
       "status": "have",
       "stars": 15621,
-      "why": "Already set up for Beneath the Pale.",
-      "what": "Unity editor control. Already configured for Beneath the Pale. The official server ships in Unity's AI Assistant package; CoplayDev is the open-source alternative.",
+      "why": "Lets agents work directly in your Unity project.",
+      "what": "Unity editor control. The official server ships in Unity's AI Assistant package; CoplayDev is the open-source alternative.",
       "tags": [
         "MCP"
       ],
@@ -888,7 +888,7 @@
         ]
       },
       "title": "Unity",
-      "desc": "Lets agents control the Unity editor while you work on Beneath the Pale.",
+      "desc": "Lets agents control the Unity editor while you work on your game.",
       "site": true,
       "href": "https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.0/manual/unity-mcp-overview.html",
       "labels": {
@@ -904,7 +904,7 @@
         "claude",
         "codex"
       ],
-      "agentNote": "Claude Code: the Beneath the Pale project. Codex: everywhere (unityMCP)."
+      "agentNote": "Claude Code: per project. Codex: everywhere (unityMCP)."
     },
     {
       "id": "blender-lab",
@@ -913,8 +913,8 @@
       "url": "https://projects.blender.org/lab/blender_mcp",
       "status": "have",
       "stars": null,
-      "why": "Already set up for the Beneath the Pale Blender folder.",
-      "what": "Blender control through Blender's own add-on. Already configured for the Beneath the Pale Blender folder.",
+      "why": "Lets agents build and edit models in Blender.",
+      "what": "Blender control through Blender's own add-on.",
       "tags": [
         "MCP"
       ],
@@ -942,7 +942,7 @@
         "claude",
         "codex"
       ],
-      "agentNote": "Claude Code: the BeneathThePale/Blender project. Codex: the Beneath the Pale project."
+      "agentNote": "Claude Code: per project. Codex: per project."
     },
     {
       "id": "higgsfield",

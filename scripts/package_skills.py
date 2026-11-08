@@ -14,7 +14,7 @@ SKILLS = (
     '3d-production-routing', 'blender-game-animation', 'character-sheet-pipeline',
     'fal-ai-generation', 'feature-handoff', 'game-animation-integration',
     'game-audio-workflow', 'game-level-design', 'game-ui-workflow',
-    'game-vfx-workflow', 'gameplay-visual-review', 'higgsfield-workflow',
+    'game-vfx-workflow', 'game-wiki', 'gameplay-visual-review', 'higgsfield-workflow',
     'image-reference-workflow', 'img2threejs', 'materials-to-game',
     'motion-reference-workflow', 'plan', 'video-watch', 'voice-dictation-setup',
     'workspace-authoring',

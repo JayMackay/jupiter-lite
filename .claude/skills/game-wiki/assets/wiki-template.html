@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en" data-jupiter-report="document" class="js-loading">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="{{GAME_TITLE}} game wiki: world, design, development and source notes.">
+<title>{{GAME_TITLE}} · Game Wiki</title>
+<link rel="stylesheet" href="../_shared/report.css">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+html[data-jupiter-report=document] body{padding:0;margin:0;line-height:1.65;font-size:14px}
+button,input,select{font:inherit}
+button,a,input,select{touch-action:manipulation}
+button{cursor:pointer}
+a{text-decoration:none}
+p{margin:0 0 16px}
+.wiki-layout{min-height:100vh;display:grid;grid-template-columns:224px minmax(0,1fr)}
+.sidebar{border-right:1px solid var(--jupiter-border);position:sticky;top:0;height:100dvh;overflow-y:auto;padding:30px 14px 20px;background:var(--jupiter-bg);z-index:30}
+.brand{padding:4px 14px 26px;display:block;text-align:center;border-bottom:1px solid var(--jupiter-border);margin-bottom:22px}
+.brand .sigil{display:block;font-size:30px;line-height:1;color:var(--jupiter-accent);margin-bottom:15px}
+.brand strong{font-family:Georgia,serif;font-weight:500;letter-spacing:.1em;font-size:20px;line-height:1.3;display:block}
+.brand small{display:block;font-size:9px;letter-spacing:.28em;color:var(--jupiter-muted);margin-top:10px}
+.nav-group{margin:0 0 22px}
+.nav-group h2{font:500 10px/1.4 var(--jupiter-font)!important;letter-spacing:.15em;color:var(--jupiter-muted)!important;margin:0 12px 9px!important;padding:0!important}
+.nav-link{display:flex;align-items:center;gap:10px;min-height:35px;padding:7px 11px;color:var(--jupiter-muted)!important;border:1px solid transparent;border-radius:5px;line-height:1.3;margin:2px 0;font-size:12px}
+.nav-link .nav-mark{width:14px;text-align:center;opacity:.7;font-size:12px}
+.nav-link:hover{background:color-mix(in srgb,var(--jupiter-accent) 5%,transparent);color:var(--jupiter-text)!important}
+.nav-link[aria-current=page]{color:var(--jupiter-text)!important;background:color-mix(in srgb,var(--jupiter-accent) 11%,transparent);border-color:color-mix(in srgb,var(--jupiter-accent) 28%,transparent)}
+.sidebar-foot{border-top:1px solid var(--jupiter-border);padding:16px 12px;color:var(--jupiter-muted);font-size:10px;line-height:1.8}
+.content-shell{min-width:0}
+.topbar{min-height:68px;display:flex;align-items:center;gap:18px;padding:12px 28px;border-bottom:1px solid var(--jupiter-border);position:sticky;top:0;background:var(--jupiter-bg);z-index:20}
+.breadcrumbs{font-size:11px;color:var(--jupiter-muted);flex:1;min-width:0;overflow-wrap:anywhere}
+.breadcrumbs span{padding:0 7px;opacity:.5}
+.search-box{position:relative;width:min(320px,40vw)}
+.search-box input{width:100%;min-height:36px;background:var(--jupiter-surface);border:1px solid var(--jupiter-border);border-radius:6px;padding:8px 12px;color:var(--jupiter-text);font-size:12px}
+.search-results{position:absolute;top:calc(100% + 6px);right:0;width:min(520px,85vw);max-height:65vh;overflow:auto;padding:7px;background:var(--jupiter-surface);border:1px solid var(--jupiter-border);border-radius:8px;box-shadow:0 12px 40px #0006}
+.search-result{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--jupiter-text);border-radius:4px;padding:10px 12px}
+.search-result:hover,.search-result:focus{background:color-mix(in srgb,var(--jupiter-accent) 10%,transparent)}
+.search-result small{display:block;color:var(--jupiter-muted);font-size:10px;margin-top:3px}
+.search-status{font-size:11px;color:var(--jupiter-muted);padding:5px 12px}
+.reading-layout{display:grid;grid-template-columns:minmax(0,1fr) 210px;max-width:1536px;margin:0 auto}
+.reading-main{min-width:0;padding:36px clamp(22px,3.5vw,58px) 60px}
+.page-header{padding:0 0 26px;border-bottom:1px solid var(--jupiter-border);margin-bottom:28px}
+.page-header .eyebrow{color:var(--jupiter-muted);font-size:10px;text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px}
+.page-header h1{margin-bottom:12px!important;font-size:clamp(25px,3.1vw,40px)!important;max-width:none!important}
+.page-intro{color:var(--jupiter-muted);font-size:14px;max-width:72ch;margin:0}
+.page-header .badge{margin-top:16px}
+.badge{display:inline-flex;border:1px solid var(--jupiter-border);border-radius:20px;padding:4px 9px;font-size:10px;font-weight:500;color:var(--jupiter-muted);letter-spacing:.025em}
+.content-block{margin:28px 0;scroll-margin-top:90px}
+.content-block>h2{margin:0 0 16px!important;padding:0!important;font-size:20px!important;border:0!important}
+.content-block>h3{font-size:15px}
+.content-block p,.content-block li{max-width:90ch}
+.content-block ul,.content-block ol{padding-left:21px}
+.content-block li{margin-bottom:7px}
+.lead{font-size:19px;line-height:1.65!important}
+.hero-copy{max-width:78ch}
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:24px 0}
+.stat-grid>div{padding:17px 12px;border:1px solid var(--jupiter-border);border-radius:7px;background:var(--jupiter-surface)}
+.stat-grid strong{display:block;font-size:21px;font-weight:500;line-height:1.3}
+.stat-grid span{display:block;color:var(--jupiter-muted);font-size:10px;line-height:1.5;margin-top:7px}
+.art-figure{padding:0;margin:24px 0;border:1px solid var(--jupiter-border);border-radius:8px;overflow:hidden;background:var(--jupiter-surface)}
+.art-link{display:block}
+.art-figure img{display:block;width:100%;height:auto;max-height:520px;object-fit:contain;background:#0e1115}
+.art-figure figcaption{padding:12px 16px;font-size:11px;line-height:1.7;color:var(--jupiter-muted)}
+.callout{border:1px solid color-mix(in srgb,var(--jupiter-accent) 25%,transparent);border-left:3px solid var(--jupiter-accent);border-radius:5px;padding:16px 18px;margin:20px 0;background:color-mix(in srgb,var(--jupiter-accent) 4%,var(--jupiter-bg));font-size:12px}
+.callout p{margin:6px 0 0}
+.link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.link-grid a{display:block;padding:18px;border:1px solid var(--jupiter-border);background:var(--jupiter-surface);border-radius:7px;color:var(--jupiter-text)}
+.link-grid a:hover{border-color:var(--jupiter-accent)}
+.link-grid strong,.link-grid span{display:block}
+.link-grid span{font-size:12px;color:var(--jupiter-muted);margin-top:6px}
+.table-wrap{max-width:100%;overflow:auto;margin:17px 0}
+.table-wrap table{display:table!important;margin:0;min-width:480px}
+.table-wrap :is(th,td){text-align:left;border-bottom:1px solid var(--jupiter-border);padding:11px 13px!important;vertical-align:top;font-size:12px}
+.table-wrap th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--jupiter-muted)}
+.table-wrap tr:last-child td{border-bottom:0}
+.table-wrap td:first-child{font-weight:500}
+.table-wrap td code{font-size:10px;overflow-wrap:anywhere}
+.source-line{border-top:1px solid var(--jupiter-border);padding-top:16px;margin-top:30px;color:var(--jupiter-muted);font-size:10px;line-height:2!important}
+.source-line a{text-decoration:underline}
+.flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 12px;margin:20px 0;border:1px solid var(--jupiter-border);border-radius:8px;background:var(--jupiter-surface);font-size:12px}
+.flow span{text-align:center}
+.flow b{color:var(--jupiter-muted)}
+.concept-rail{border-left:1px solid var(--jupiter-border);padding:30px 16px;align-self:start;position:sticky;top:68px;max-height:calc(100dvh - 68px);overflow:auto}
+.concept-rail h2{font-size:10px!important;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px!important;padding:0!important;color:var(--jupiter-muted)!important}
+.concept-rail .rail-intro{font-size:10px;color:var(--jupiter-muted);line-height:1.7}
+.concept-link{display:block;padding:12px 10px;margin:0 0 7px;border:1px solid var(--jupiter-border);border-radius:5px;background:var(--jupiter-surface);color:var(--jupiter-text)!important;font-size:11px;line-height:1.5}
+.concept-link:hover{border-color:var(--jupiter-accent)}
+.concept-link small{display:block;color:var(--jupiter-muted);font-size:9px;margin-top:5px}
+.rail-toc{margin-top:28px;padding-top:18px;border-top:1px solid var(--jupiter-border)}
+.rail-toc a{display:block;font-size:10px;color:var(--jupiter-muted)!important;padding:5px 0;line-height:1.6}
+.rail-toc a:hover{color:var(--jupiter-accent)!important}
+.rail-bottom{font-size:10px;margin-top:24px}
+.source-document{margin:9px 0;border:1px solid var(--jupiter-border);border-radius:6px;scroll-margin-top:88px;overflow:hidden}
+.source-document summary{padding:13px 15px;cursor:pointer;font-size:12px;background:var(--jupiter-surface)}
+.source-document summary small{display:block;padding-left:15px;color:var(--jupiter-muted);font-size:10px;line-height:1.6;margin-top:4px}
+.source-meta{display:flex;gap:8px;flex-wrap:wrap;padding:12px 15px;border-top:1px solid var(--jupiter-border);font-size:10px;color:var(--jupiter-muted)}
+.source-meta code{display:block;width:100%;overflow-wrap:anywhere}
+.source-meta button{margin-left:auto}
+.source-text{white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.8 ui-monospace,Consolas,monospace;padding:18px;margin:0;border-top:1px solid var(--jupiter-border);max-height:640px;overflow:auto;background:var(--jupiter-bg)!important}
+.source-meta button,.toolbar-button{background:var(--jupiter-surface);color:var(--jupiter-text);border:1px solid var(--jupiter-border);border-radius:5px;padding:7px 10px;font-size:11px}
+.region{border:1px solid var(--jupiter-border);border-radius:6px;margin:8px 0;padding:0 16px;background:var(--jupiter-surface)}
+.region summary{cursor:pointer;padding:13px 0;list-style:none;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:500}
+.region summary::after{content:'+';margin-left:auto;color:var(--jupiter-muted)}
+.region[open] summary::after{content:'−'}
+.region p,.region li{font-size:12px}
+.region-number{font:10px ui-monospace,monospace;color:var(--jupiter-muted)}
+.wiki-diagram{width:100%;height:auto;color:var(--jupiter-accent);background:var(--jupiter-surface);border:1px solid var(--jupiter-border);border-radius:8px;margin:6px 0 20px}
+.asset-controls{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin:24px 0 12px}
+.asset-controls label{display:grid;gap:6px;font-size:10px;color:var(--jupiter-muted)}
+.asset-controls label:first-child{flex:1;min-width:150px}
+.asset-controls :is(input,select){background:var(--jupiter-surface);color:var(--jupiter-text);border:1px solid var(--jupiter-border);border-radius:5px;padding:9px 11px;font-size:12px;min-height:38px;max-width:100%}
+.page-footer{display:flex;justify-content:space-between;gap:15px;border-top:1px solid var(--jupiter-border);padding-top:22px;margin-top:40px;font-size:11px}
+.page-footer a{max-width:48%}
+.page-footer small{display:block;font-size:9px;color:var(--jupiter-muted);margin-bottom:4px}
+.muted{color:var(--jupiter-muted);font-size:11px}
+.skip-link{position:fixed;top:-80px;left:12px;background:var(--jupiter-bg);padding:10px;z-index:100}
+.skip-link:focus{top:8px}
+#menu-toggle{display:none}
+#nav-backdrop{display:none}
+.print-button{white-space:nowrap}
+.noscript{padding:18px}
+.js-loading .wiki-page:not([data-page=overview]){display:none}
+.wiki-page:focus{outline:0}
+@media(max-width:1160px){.wiki-layout{grid-template-columns:198px minmax(0,1fr)}.reading-layout{grid-template-columns:minmax(0,1fr) 180px}.concept-rail{padding:25px 12px}.reading-main{padding:30px 24px 50px}.topbar{padding:12px 22px}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:960px){.reading-layout{display:block}.concept-rail{position:static;border-left:0;border-top:1px solid var(--jupiter-border);max-height:none;padding:24px}.concept-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.concept-link{margin:0}.rail-toc{display:none}.rail-bottom{margin-top:14px}.search-box{width:250px}.print-button{display:none}}
+@media(max-width:700px){.wiki-layout{display:block}.sidebar{display:none;position:fixed;left:0;top:0;width:250px;max-width:85vw;height:100dvh;box-shadow:15px 0 40px #0008}.nav-open .sidebar{display:block}.nav-open #nav-backdrop{display:block;position:fixed;inset:0;z-index:25;background:#0008;border:0}.topbar{padding:12px 16px;gap:10px;flex-wrap:wrap;min-height:65px}#menu-toggle{display:block}.breadcrumbs{font-size:10px}.search-box{width:100%;order:3}.search-results{width:100%;max-height:55vh}.reading-main{padding:26px 18px 42px}.page-header{margin-bottom:22px}.lead{font-size:17px}.link-grid{grid-template-columns:1fr}.concept-rail{padding:24px 18px}.content-block>h2{font-size:19px!important}.flow{gap:8px;font-size:11px}.table-wrap :is(td,th){padding:9px!important}.stat-grid strong{font-size:20px}.source-text{font-size:10px}.concept-links{grid-template-columns:1fr}}
+@media print{.sidebar,.topbar,.concept-rail,.page-footer,.source-line,.asset-controls{display:none!important}.wiki-layout,.reading-layout{display:block}.reading-main{padding:0}.wiki-page[hidden]{display:none!important}.wiki-page{break-inside:auto}.art-figure{break-inside:avoid}.source-text{max-height:none}}
+.nav-link.nav-sub{margin-left:16px;font-size:10px;min-height:30px;padding-left:8px}
+.nav-sub .nav-mark{font:9px ui-monospace,monospace;opacity:.6}
+.layer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.layer-card{border:1px solid var(--jupiter-border);border-radius:8px;overflow:hidden;background:var(--jupiter-surface)}
+.layer-card .art-figure{border:0;border-radius:0;margin:0}
+.layer-card .art-figure img{aspect-ratio:16/10;object-fit:cover;max-height:280px}
+.layer-card .art-figure figcaption{font-size:9px;padding:9px 12px}
+.layer-card-body{padding:18px}
+.layer-card-body .eyebrow{font-size:10px;letter-spacing:.12em;color:var(--jupiter-muted)}
+.layer-card-body h3{margin:9px 0 12px!important;font-size:18px!important}
+.layer-card-body h3 a{color:var(--jupiter-text)}
+.layer-card-body p{font-size:12px;line-height:1.8}
+.layer-open{font-size:11px}
+.region .art-figure{margin:5px 0 18px}
+.region .art-figure img{max-height:450px}
+.layer-back{font-size:11px}
+@media(max-width:1160px){.layer-grid{grid-template-columns:1fr}}
+@media print{.nav-sub{display:none}}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#overview">Skip to content</a>
+<button id="nav-backdrop" type="button" aria-label="Close contents"></button>
+<div class="wiki-layout">
+<aside class="sidebar" id="wiki-navigation">
+  <a class="brand" href="#overview"><span class="sigil" aria-hidden="true">◈</span><strong>{{GAME_TITLE}}</strong><small>THE GAME WIKI</small></a>
+  <nav aria-label="Wiki sections">
+    <section class="nav-group"><h2>DISCOVER</h2>
+      <a class="nav-link" data-page="overview" href="#overview"><span class="nav-mark" aria-hidden="true">◈</span>Overview</a>
+      <a class="nav-link" data-page="vision" href="#vision"><span class="nav-mark" aria-hidden="true">◇</span>Vision and scope</a>
+    </section>
+    <section class="nav-group"><h2>THE WORLD</h2>
+      <a class="nav-link" data-page="characters" href="#characters"><span class="nav-mark" aria-hidden="true">♙</span>Characters</a>
+      <a class="nav-link" data-page="locations" href="#locations"><span class="nav-mark" aria-hidden="true">⌖</span>Locations</a>
+      <a class="nav-link" data-page="factions" href="#factions"><span class="nav-mark" aria-hidden="true">⚑</span>Factions and cultures</a>
+      <a class="nav-link" data-page="lore" href="#lore"><span class="nav-mark" aria-hidden="true">▧</span>Lore and story</a>
+    </section>
+    <section class="nav-group"><h2>GAME DESIGN</h2>
+      <a class="nav-link" data-page="mechanics" href="#mechanics"><span class="nav-mark" aria-hidden="true">⚙</span>Mechanics</a>
+      <a class="nav-link" data-page="progression" href="#progression"><span class="nav-mark" aria-hidden="true">↗</span>Progression</a>
+      <a class="nav-link" data-page="interface" href="#interface"><span class="nav-mark" aria-hidden="true">▣</span>Interface (UI)</a>
+      <a class="nav-link" data-page="art" href="#art"><span class="nav-mark" aria-hidden="true">◌</span>Art direction</a>
+      <a class="nav-link" data-page="audio" href="#audio"><span class="nav-mark" aria-hidden="true">♪</span>Audio</a>
+    </section>
+    <section class="nav-group"><h2>DEVELOPMENT</h2>
+      <a class="nav-link" data-page="roadmap" href="#roadmap"><span class="nav-mark" aria-hidden="true">≡</span>Roadmap</a>
+      <a class="nav-link" data-page="assets" href="#assets"><span class="nav-mark" aria-hidden="true">▦</span>Asset catalogue</a>
+      <a class="nav-link" data-page="ideas" href="#ideas"><span class="nav-mark" aria-hidden="true">☷</span>Ideas</a>
+      <a class="nav-link" data-page="decisions" href="#decisions"><span class="nav-mark" aria-hidden="true">◎</span>Decisions and risks</a>
+      <a class="nav-link" data-page="sources" href="#sources"><span class="nav-mark" aria-hidden="true">▤</span>Notes and sources</a>
+    </section>
+  </nav>
+  <div class="sidebar-foot">PROJECT KNOWLEDGE<br>Updated {{DATE_LONG}}<br><a href="#sources">Sources and authority ↗</a></div>
+</aside>
+<div class="content-shell">
+<div class="topbar">
+  <button class="toolbar-button" id="menu-toggle" type="button" aria-expanded="false" aria-controls="wiki-navigation">☰ Contents</button>
+  <div class="breadcrumbs">Game wiki<span>/</span><b id="breadcrumb-group">DISCOVER</b><span>/</span><b id="breadcrumb-page">Overview</b></div>
+  <div class="search-box" role="search"><label class="sr-only" for="wiki-search">Search the wiki</label><input id="wiki-search" type="search" placeholder="Search the wiki… /" autocomplete="off" aria-controls="search-results"><div id="search-results" class="search-results" hidden></div></div>
+</div>
+<div class="reading-layout"><main id="main-content" class="reading-main">
+
+<!--
+  Component snippets (copy as needed; keep class names unchanged):
+
+  Image (copy the file into this card's media/ folder first):
+  <figure class="art-figure"><img src="media/example.png" alt="What the image shows" loading="lazy"><figcaption>Caption and status, e.g. "Concept study, not final art."</figcaption></figure>
+
+  Callout:            <aside class="callout"><strong>Heading</strong><p>Text.</p></aside>
+  Facts:              <div class="stat-grid"><div><strong>Value</strong><span>Label</span></div> ... four items ... </div>
+  Flow:               <div class="flow"><span>Step</span><b>→</b><span>Step</span></div>
+  Expandable entry:   <details class="region" id="loc-name"><summary><span class="region-number">01</span>Name</summary><p>Text.</p></details>
+  Table:              <div class="table-wrap"><table><thead><tr><th scope="col">A</th><th scope="col">B</th></tr></thead><tbody><tr><td>…</td><td>…</td></tr></tbody></table></div>
+  Source reference:   <p class="source-line">Sources: <a href="#sources/source-id">Source title</a></p>
+  Link to a section:  <a href="#page-id/section-id">Text</a>
+-->
+
+<article class="wiki-page" data-page="overview" data-title="{{GAME_TITLE}}" data-group="DISCOVER" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / DISCOVER</div><h1>{{GAME_TITLE}}</h1><p class="page-intro">{{TAGLINE}}</p><span class="badge">Project hub</span></header>
+  <div class="hero-copy">
+    <p class="lead" data-placeholder>One or two sentences: the genre, the player fantasy and what makes this game different.</p>
+    <p data-placeholder>A short paragraph on the look, feel and the first thing a player does.</p>
+  </div>
+  <div class="stat-grid">
+    <div><strong data-placeholder>Genre</strong><span>Genre</span></div>
+    <div><strong data-placeholder>View</strong><span>Camera and perspective</span></div>
+    <div><strong data-placeholder>Players</strong><span>Single or multiplayer</span></div>
+    <div><strong data-placeholder>Engine</strong><span>Engine or tools</span></div>
+  </div>
+  <section class="content-block"><h2>Explore the wiki</h2>
+    <div class="link-grid">
+      <a href="#locations"><strong>The world</strong><span>Characters, places, factions and lore</span></a>
+      <a href="#mechanics"><strong>Game design</strong><span>Mechanics, progression, interface, art and audio</span></a>
+      <a href="#ideas"><strong>Ideas</strong><span>Proposals from brainstorming that still need a decision</span></a>
+      <a href="#roadmap"><strong>Development</strong><span>Milestones, assets, decisions and risks</span></a>
+    </div>
+  </section>
+  <section class="content-block"><h2>What is current</h2>
+    <aside class="callout"><strong>Decided versus proposed</strong><p data-placeholder>State which source is authoritative and which content is still an idea.</p></aside>
+  </section>
+  <p class="source-line" data-placeholder>Sources: link each source with <a href="#sources">Notes and sources</a>.</p>
+  <footer class="page-footer"><span></span><a href="#vision"><small>NEXT</small>Vision and scope →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="vision" data-title="Vision and scope" data-group="DISCOVER" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / DISCOVER</div><h1>Vision and scope</h1><p class="page-intro" data-placeholder>One line on what the game must feel like.</p><span class="badge">Design reference</span></header>
+  <section class="content-block"><h2>The pitch</h2><p data-placeholder>The elevator pitch in three or four sentences.</p></section>
+  <section class="content-block"><h2>Design pillars</h2><ul data-placeholder><li><strong>Pillar:</strong> what it means for decisions.</li></ul></section>
+  <section class="content-block"><h2>Scope</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">In the first version</th><th scope="col">Deliberately later or out</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <section class="content-block"><h2>Who it is for</h2><p data-placeholder>The intended player and comparable games.</p></section>
+  <footer class="page-footer"><a href="#overview"><small>PREVIOUS</small>← Overview</a><a href="#characters"><small>NEXT</small>Characters →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="characters" data-title="Characters" data-group="THE WORLD" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / THE WORLD</div><h1>Characters</h1><p class="page-intro" data-placeholder>Who the player is and who they meet.</p><span class="badge">Design reference</span></header>
+  <section class="content-block" id="player"><h2>The player character</h2>
+    <p data-placeholder>Background, motivation and what the player can do from the start.</p>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Trait</th><th scope="col">Detail</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <section class="content-block" id="cast"><h2>Companions and key characters</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Notes</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>…</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <section class="content-block" id="creatures"><h2>Creatures and enemies</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Creature</th><th scope="col">Where</th><th scope="col">Behaviour</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>…</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <footer class="page-footer"><a href="#vision"><small>PREVIOUS</small>← Vision and scope</a><a href="#locations"><small>NEXT</small>Locations →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="locations" data-title="Locations" data-group="THE WORLD" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / THE WORLD</div><h1>Locations</h1><p class="page-intro" data-placeholder>One line on the world and why it is worth exploring.</p><span class="badge">Design reference</span></header>
+  <section class="content-block"><h2>The world at a glance</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Area</th><th scope="col">Character</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <section class="content-block" id="regions"><h2>Regions</h2>
+    <div class="layer-grid">
+      <div class="layer-card"><div class="layer-card-body"><div class="eyebrow">REGION I</div><h3 data-placeholder>Starting area</h3><p data-placeholder>Mood, resources, threats and what the player learns here.</p></div></div>
+      <div class="layer-card"><div class="layer-card-body"><div class="eyebrow">REGION II</div><h3 data-placeholder>Next area</h3><p data-placeholder>How it raises the challenge.</p></div></div>
+    </div>
+  </section>
+  <section class="content-block" id="places"><h2>Notable places</h2>
+    <details class="region" id="loc-first"><summary><span class="region-number">01</span><span data-placeholder>Place name</span></summary>
+      <p data-placeholder>Description.</p>
+      <ul data-placeholder><li><strong>Resources:</strong> …</li><li><strong>Threats:</strong> …</li><li><strong>Story:</strong> …</li></ul>
+    </details>
+  </section>
+  <footer class="page-footer"><a href="#characters"><small>PREVIOUS</small>← Characters</a><a href="#factions"><small>NEXT</small>Factions and cultures →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="factions" data-title="Factions and cultures" data-group="THE WORLD" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / THE WORLD</div><h1>Factions and cultures</h1><p class="page-intro" data-placeholder>The groups that shape the world.</p><span class="badge">Design reference</span></header>
+  <section class="content-block"><h2>Factions</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Faction</th><th scope="col">Wants</th><th scope="col">Attitude to the player</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>…</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <footer class="page-footer"><a href="#locations"><small>PREVIOUS</small>← Locations</a><a href="#lore"><small>NEXT</small>Lore and story →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="lore" data-title="Lore and story" data-group="THE WORLD" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / THE WORLD</div><h1>Lore and story</h1><p class="page-intro" data-placeholder>The history behind the world and the story the player uncovers.</p><span class="badge">Design reference</span></header>
+  <section class="content-block"><h2>History</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Era</th><th scope="col">What happened</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <section class="content-block"><h2>Story outline</h2><div class="flow" data-placeholder><span>Opening</span><b>→</b><span>Turning point</span><b>→</b><span>Ending</span></div><p data-placeholder>How the story is told: quests, dialogue, environment.</p></section>
+  <footer class="page-footer"><a href="#factions"><small>PREVIOUS</small>← Factions and cultures</a><a href="#mechanics"><small>NEXT</small>Mechanics →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="mechanics" data-title="Mechanics" data-group="GAME DESIGN" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / GAME DESIGN</div><h1>Mechanics</h1><p class="page-intro" data-placeholder>What the player does, minute to minute.</p><span class="badge">Design reference</span></header>
+  <section class="content-block"><h2>Core loop</h2><div class="flow" data-placeholder><span>Explore</span><b>→</b><span>Gather</span><b>→</b><span>Craft</span><b>→</b><span>Fight</span></div></section>
+  <section class="content-block"><h2>Systems</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">System</th><th scope="col">How it works</th><th scope="col">Status</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>…</td><td>Idea</td></tr></tbody></table></div>
+  </section>
+  <section class="content-block"><h2>Controls</h2><p data-placeholder>Keyboard, mouse and controller mapping, or "not decided".</p></section>
+  <footer class="page-footer"><a href="#lore"><small>PREVIOUS</small>← Lore and story</a><a href="#progression"><small>NEXT</small>Progression →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="progression" data-title="Progression" data-group="GAME DESIGN" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / GAME DESIGN</div><h1>Progression</h1><p class="page-intro" data-placeholder>How the player grows over a session and over the whole game.</p><span class="badge">Design reference</span></header>
+  <section class="content-block"><h2>Growth</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Stage</th><th scope="col">Unlocks</th><th scope="col">Goal</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>…</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <section class="content-block"><h2>Economy and rewards</h2><p data-placeholder>Currencies, loot and rewards, or "not decided".</p></section>
+  <footer class="page-footer"><a href="#mechanics"><small>PREVIOUS</small>← Mechanics</a><a href="#interface"><small>NEXT</small>Interface (UI) →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="interface" data-title="Interface (UI)" data-group="GAME DESIGN" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / GAME DESIGN</div><h1>Interface (UI)</h1><p class="page-intro" data-placeholder>What the player sees on screen and how menus work.</p><span class="badge">Design reference</span></header>
+  <section class="content-block"><h2>Screens</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Screen</th><th scope="col">Purpose</th></tr></thead><tbody><tr data-placeholder><td>HUD</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <footer class="page-footer"><a href="#progression"><small>PREVIOUS</small>← Progression</a><a href="#art"><small>NEXT</small>Art direction →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="art" data-title="Art direction" data-group="GAME DESIGN" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / GAME DESIGN</div><h1>Art direction</h1><p class="page-intro" data-placeholder>The visual style in one line.</p><span class="badge">Design reference</span></header>
+  <section class="content-block"><h2>Style rules</h2><ul data-placeholder><li>Resolution, palette, camera angle and readability rules.</li></ul></section>
+  <section class="content-block"><h2>References</h2><p data-placeholder>Reference games or images. Add figures with the image snippet.</p></section>
+  <footer class="page-footer"><a href="#interface"><small>PREVIOUS</small>← Interface (UI)</a><a href="#audio"><small>NEXT</small>Audio →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="audio" data-title="Audio" data-group="GAME DESIGN" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / GAME DESIGN</div><h1>Audio</h1><p class="page-intro" data-placeholder>How the game should sound.</p><span class="badge">Design reference</span></header>
+  <section class="content-block"><h2>Music and sound</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Area</th><th scope="col">Direction</th></tr></thead><tbody><tr data-placeholder><td>Music</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <footer class="page-footer"><a href="#art"><small>PREVIOUS</small>← Art direction</a><a href="#roadmap"><small>NEXT</small>Roadmap →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="roadmap" data-title="Roadmap" data-group="DEVELOPMENT" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / DEVELOPMENT</div><h1>Roadmap</h1><p class="page-intro">Small playable steps, each with a clear finish line.</p><span class="badge">Plan</span></header>
+  <section class="content-block"><h2>Milestones</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">ID</th><th scope="col">Milestone</th><th scope="col">Status</th><th scope="col">Done when</th></tr></thead><tbody><tr data-placeholder><td>1</td><td>First playable</td><td>Planned</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <footer class="page-footer"><a href="#audio"><small>PREVIOUS</small>← Audio</a><a href="#assets"><small>NEXT</small>Asset catalogue →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="assets" data-title="Asset catalogue" data-group="DEVELOPMENT" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / DEVELOPMENT</div><h1>Asset catalogue</h1><p class="page-intro">Every planned or existing asset in one searchable list.</p><span class="badge">Inventory</span></header>
+  <div class="asset-controls">
+    <label>Find an asset<input id="asset-search" type="search" placeholder="Name or note…"></label>
+    <label>Category<select id="asset-category"><option value="">All categories</option><option>Characters</option><option>Environment</option><option>Props</option><option>Interface</option><option>Audio</option></select></label>
+  </div>
+  <p id="asset-count" class="muted" aria-live="polite"></p>
+  <div class="table-wrap"><table id="asset-table"><thead><tr><th>Name</th><th>Category</th><th>Status</th><th>Notes</th></tr></thead><tbody>
+    <tr data-category="Characters" data-placeholder><td><code>player</code></td><td>Characters</td><td>Planned</td><td>…</td></tr>
+  </tbody></table></div>
+  <p id="asset-empty" class="muted" hidden>No assets match.</p>
+  <footer class="page-footer"><a href="#roadmap"><small>PREVIOUS</small>← Roadmap</a><a href="#ideas"><small>NEXT</small>Ideas →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="ideas" data-title="Ideas" data-group="DEVELOPMENT" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / DEVELOPMENT</div><h1>Ideas</h1><p class="page-intro">Brainstormed proposals, kept until they are accepted or parked.</p><span class="badge">Notebook</span></header>
+  <section class="content-block"><h2>Idea list</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Idea</th><th scope="col">Status</th><th scope="col">Where it came from</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>Proposal</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <footer class="page-footer"><a href="#assets"><small>PREVIOUS</small>← Asset catalogue</a><a href="#decisions"><small>NEXT</small>Decisions and risks →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="decisions" data-title="Decisions and risks" data-group="DEVELOPMENT" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / DEVELOPMENT</div><h1>Decisions and risks</h1><p class="page-intro">Record the choice, its reason and what still needs proof.</p><span class="badge">Log</span></header>
+  <section class="content-block"><h2>Decisions</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Topic</th><th scope="col">Decision</th><th scope="col">Why</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>…</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <section class="content-block"><h2>Open questions</h2><ul data-placeholder><li>…</li></ul></section>
+  <section class="content-block"><h2>Risks</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Risk</th><th scope="col">How to prove or reduce it</th></tr></thead><tbody><tr data-placeholder><td>…</td><td>…</td></tr></tbody></table></div>
+  </section>
+  <footer class="page-footer"><a href="#ideas"><small>PREVIOUS</small>← Ideas</a><a href="#sources"><small>NEXT</small>Notes and sources →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="sources" data-title="Notes and sources" data-group="DEVELOPMENT" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">FIELD GUIDE / DEVELOPMENT</div><h1>Notes and sources</h1><p class="page-intro">Where the content in this wiki came from.</p><span class="badge">Source archive</span></header>
+  <section class="content-block"><h2>Authority</h2><ol data-placeholder><li>The newest explicit decision from the owner wins.</li><li>Then the named brainstorm boards and notes below.</li></ol></section>
+  <section class="content-block"><h2>Source library</h2><p class="muted">Snapshots of the notes this wiki was built from, so it can be read on its own.</p><div id="source-library"></div></section>
+  <footer class="page-footer"><a href="#decisions"><small>PREVIOUS</small>← Decisions and risks</a><span></span></footer>
+</article>
+
+</main>
+<aside class="concept-rail" aria-label="Page concepts"><h2>Concepts</h2><p class="rail-intro">Ideas and references linked to this page.</p><div class="concept-links" id="concept-links"></div><div class="rail-toc"><h2>On this page</h2><nav id="page-toc" aria-label="On this page"></nav></div><div class="rail-bottom"><a href="#ideas">Open the ideas notebook ↗</a></div></aside>
+</div></div></div>
+<noscript><p class="noscript">Enable JavaScript for navigation, search and source documents. All page content remains in this file.</p></noscript>
+<!--
+  wiki-data: "concepts" maps a page id to [title, status, route] links for the right-hand rail,
+  e.g. "mechanics": [["Crafting idea", "Proposal", "ideas"]].
+  "sources" holds snapshots: {"id", "title", "kind", "path", "date", "text"}. Write "<\/" instead of "</" inside strings.
+-->
+<script type="application/json" id="wiki-data">
+{"title": {{GAME_TITLE_JSON}}, "concepts": {}, "sources": []}
+</script>
+<script>
+(() => {
+  'use strict';
+  const data = JSON.parse(document.getElementById('wiki-data').textContent);
+  const pages = [...document.querySelectorAll('.wiki-page')];
+  const home = pages[0].dataset.page;
+  const search = document.getElementById('wiki-search');
+  const resultBox = document.getElementById('search-results');
+  const rail = document.getElementById('concept-links');
+  const toc = document.getElementById('page-toc');
+  const menu = document.getElementById('menu-toggle');
+  const sources = Array.isArray(data.sources) ? data.sources : [];
+  const library = document.getElementById('source-library');
+  if (library) {
+    for (const source of sources) {
+      const details = document.createElement('details'); details.className = 'source-document'; details.id = 'doc-' + source.id;
+      const summary = document.createElement('summary'); const name = document.createElement('span'); name.textContent = source.title;
+      const kind = document.createElement('small'); kind.textContent = source.kind || ''; summary.append(name, kind);
+      const meta = document.createElement('div'); meta.className = 'source-meta';
+      if (source.path) { const where = document.createElement('code'); where.textContent = source.path; meta.append(where); }
+      const when = document.createElement('span'); when.textContent = source.date ? 'Snapshot ' + source.date : 'Snapshot'; meta.append(when);
+      const button = document.createElement('button'); button.type = 'button'; button.textContent = 'Download source'; button.dataset.downloadSource = source.id; meta.append(button);
+      const text = document.createElement('pre'); text.className = 'source-text'; text.textContent = source.text || '';
+      details.append(summary, meta, text); library.append(details);
+    }
+    if (!sources.length) { const empty = document.createElement('p'); empty.className = 'muted'; empty.textContent = 'No source snapshots yet.'; library.append(empty); }
+  }
+  const normalize = text => text.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const searchIndex = pages.filter(p => p.dataset.page !== 'sources').map(p => ({ id: p.dataset.page, title: p.dataset.title, group: p.dataset.group, text: normalize(p.textContent), excerpt: p.querySelector('.page-intro')?.textContent || '' }));
+  for (const s of sources) searchIndex.push({ id: 'sources/' + s.id, title: s.title, group: 'SOURCE', text: normalize(s.title + ' ' + (s.text || '')), excerpt: s.kind || '' });
+  let results = [];
+  function closeMenu() { document.body.classList.remove('nav-open'); menu.setAttribute('aria-expanded', 'false'); }
+  function showRoute() {
+    let [id, anchor] = decodeURIComponent(location.hash.slice(1)).split('/');
+    if (!pages.some(p => p.dataset.page === id)) id = home;
+    const current = pages.find(p => p.dataset.page === id);
+    for (const p of pages) p.hidden = p !== current;
+    for (const link of document.querySelectorAll('.nav-link')) {
+      if (link.dataset.page === id) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
+    }
+    document.getElementById('breadcrumb-group').textContent = current.dataset.group;
+    document.getElementById('breadcrumb-page').textContent = current.dataset.title;
+    document.title = current.dataset.title === data.title ? data.title + ' · Game Wiki' : current.dataset.title + ' · ' + data.title;
+    rail.replaceChildren();
+    for (const [title, status, route] of (data.concepts || {})[id] || []) {
+      const link = document.createElement('a'); link.className = 'concept-link'; link.href = '#' + route;
+      const heading = document.createElement('span'); heading.textContent = title;
+      const sub = document.createElement('small'); sub.textContent = status;
+      link.append(heading, sub); rail.append(link);
+    }
+    toc.replaceChildren();
+    for (const [i, section] of [...current.querySelectorAll('.content-block')].entries()) {
+      const heading = section.querySelector('h2'); if (!heading) continue;
+      if (!section.id) section.id = id + '-section-' + i;
+      const link = document.createElement('a'); link.href = '#' + id + '/' + section.id; link.textContent = heading.textContent; toc.append(link);
+    }
+    closeMenu(); resultBox.hidden = true;
+    const target = anchor ? document.getElementById(id === 'sources' ? 'doc-' + anchor : anchor) || document.getElementById(anchor) : null;
+    if (target && current.contains(target)) {
+      if (target.tagName === 'DETAILS') target.open = true;
+      requestAnimationFrame(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }));
+    } else window.scrollTo({ top: 0, behavior: 'instant' });
+    current.focus({ preventScroll: true });
+  }
+  function searchPages() {
+    const query = normalize(search.value.trim());
+    resultBox.replaceChildren();
+    if (!query) { resultBox.hidden = true; results = []; return; }
+    const terms = query.split(/\s+/);
+    results = searchIndex.filter(p => terms.every(t => p.text.includes(t))).sort((a, b) => Number(b.title.toLowerCase().includes(query)) - Number(a.title.toLowerCase().includes(query))).slice(0, 12);
+    const status = document.createElement('div'); status.className = 'search-status'; status.setAttribute('role', 'status');
+    status.textContent = results.length ? results.length + ' matching pages and sources' : 'No matches. Try a character, place or mechanic.'; resultBox.append(status);
+    for (const result of results) {
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'search-result';
+      const title = document.createElement('span'); title.textContent = result.title;
+      const subtitle = document.createElement('small'); subtitle.textContent = result.group + ' · ' + result.excerpt;
+      button.append(title, subtitle); button.addEventListener('click', () => { search.value = ''; navigate(result.id); }); resultBox.append(button);
+    }
+    resultBox.hidden = false;
+  }
+  function navigate(route) { if (location.hash === '#' + route) showRoute(); else location.hash = route; }
+  search.addEventListener('input', searchPages);
+  search.addEventListener('focus', () => { if (search.value) searchPages(); });
+  search.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { resultBox.hidden = true; search.blur(); }
+    if (event.key === 'ArrowDown' && results.length) { event.preventDefault(); resultBox.querySelector('button').focus(); }
+    if (event.key === 'Enter' && results.length) { event.preventDefault(); const route = results[0].id; search.value = ''; navigate(route); }
+  });
+  resultBox.addEventListener('keydown', event => {
+    const buttons = [...resultBox.querySelectorAll('button')]; const i = buttons.indexOf(document.activeElement);
+    if (event.key === 'Escape') { resultBox.hidden = true; search.focus(); }
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); buttons[(i + (event.key === 'ArrowDown' ? 1 : -1) + buttons.length) % buttons.length]?.focus(); }
+  });
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href^="#"]');
+    if (link && link.hash.length > 1) { event.preventDefault(); navigate(decodeURIComponent(link.hash.slice(1))); }
+    if (!event.target.closest('.search-box')) resultBox.hidden = true;
+  });
+  menu.addEventListener('click', () => { const open = document.body.classList.toggle('nav-open'); menu.setAttribute('aria-expanded', String(open)); if (open) document.querySelector('.nav-link[aria-current=page]')?.focus(); });
+  document.getElementById('nav-backdrop').addEventListener('click', closeMenu);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); if (event.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) { event.preventDefault(); search.focus(); } });
+  const assetSearch = document.getElementById('asset-search'), assetCategory = document.getElementById('asset-category');
+  function filterAssets() {
+    if (!assetSearch || !assetCategory) return;
+    const query = normalize(assetSearch.value); const category = assetCategory.value; let visible = 0;
+    const rows = [...document.querySelectorAll('#asset-table tbody tr')];
+    for (const row of rows) { row.hidden = !(normalize(row.textContent).includes(query) && (!category || row.dataset.category === category)); if (!row.hidden) visible++; }
+    document.getElementById('asset-count').textContent = visible + ' of ' + rows.length + ' assets';
+    document.getElementById('asset-empty').hidden = visible !== 0;
+  }
+  assetSearch?.addEventListener('input', filterAssets);
+  assetCategory?.addEventListener('change', filterAssets);
+  document.addEventListener('click', event => {
+    const button = event.target.closest('[data-download-source]'); if (!button) return;
+    const source = sources.find(s => s.id === button.dataset.downloadSource); if (!source) return;
+    const url = URL.createObjectURL(new Blob([source.text || ''], { type: 'text/plain;charset=utf-8' }));
+    const a = document.createElement('a'); a.href = url; a.download = (source.path || source.id + '.md').split(/[/\\]/).pop(); a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+  window.addEventListener('hashchange', showRoute);
+  document.documentElement.classList.remove('js-loading');
+  filterAssets(); showRoute();
+})();
+</script>
+<script src="../_shared/report.js"></script>
+</body>
+</html>

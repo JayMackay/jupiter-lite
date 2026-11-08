@@ -993,16 +993,6 @@
    "made": "2026-11-02T22:58:52.638Z",
    "uses": 1
   },
-  "a8984a2d78f0da63": {
-   "file": "sent_the_mapping_request_to_beneaththepale_proje_a8984a.mp3",
-   "text": "Sent the mapping request to “BeneathThePale Project Map.” It will produce PROJECTMAP.md; no results yet.",
-   "phrase": null,
-   "voice": "pFZP5JQG7iQjIQuC4Bku",
-   "model": "eleven_flash_v2_5",
-   "characters": 104,
-   "made": "2026-11-02T23:00:25.948Z",
-   "uses": 1
-  },
   "85828b2fc403b305": {
    "file": "glad_you_like_it_jay_85828b.mp3",
    "text": "Glad you like it, Jay.",
@@ -1533,16 +1523,6 @@
    "model": "eleven_flash_v2_5",
    "characters": 110,
    "made": "2026-11-03T20:56:14.966Z",
-   "uses": 1
-  },
-  "f22dfacc8e3e26e6": {
-   "file": "i_couldn_t_find_a_chord_chat_did_you_mean_the_ex_f22dfa.mp3",
-   "text": "I couldn’t find a “chord” chat. Did you mean the existing BeneathThePale Claude chat, or a new Claude chat to create “my chessboards”?",
-   "phrase": null,
-   "voice": "pFZP5JQG7iQjIQuC4Bku",
-   "model": "eleven_flash_v2_5",
-   "characters": 134,
-   "made": "2026-11-03T20:56:40.132Z",
    "uses": 1
   },
   "b0c4ea8d7eeb4f68": {
