@@ -1,0 +1,61 @@
+{
+  "entities": [
+    {
+      "id": "creative-mcp",
+      "title": "Creative MCP Connections",
+      "description": "A source-linked starter list for Blender, game engines, generation and project skills.",
+      "type": "group",
+      "category": "dev",
+      "created": "2026-09-15",
+      "updated": "2026-11-02",
+      "folder": "2026-09-15_creative-mcp",
+      "steps": [
+        {
+          "name": "Tool shortlist",
+          "path": "report.html"
+        },
+        {
+          "name": "Connect a tool",
+          "path": "connect.md"
+        },
+        {
+          "name": "Editable research",
+          "path": "notes.card.json",
+          "viewer": "card"
+        }
+      ],
+      "status": "active",
+      "pinned": false,
+      "sample": true,
+      "defaultStep": 0
+    },
+    {
+      "id": "make-workspace-yours",
+      "title": "Make Workspace Yours",
+      "description": "Install the app, understand the daily workflow and choose what to customize.",
+      "type": "group",
+      "category": "dev",
+      "created": "2026-09-15",
+      "updated": "2026-10-28",
+      "folder": "2026-09-15_make-workspace-yours",
+      "steps": [
+        {
+          "name": "Get started",
+          "path": "get-started.md"
+        },
+        {
+          "name": "Everyday use",
+          "path": "everyday-use.md"
+        },
+        {
+          "name": "Customize",
+          "path": "customize.md"
+        }
+      ],
+      "status": "active",
+      "pinned": false,
+      "sample": true,
+      "defaultStep": 0
+    }
+  ]
+}

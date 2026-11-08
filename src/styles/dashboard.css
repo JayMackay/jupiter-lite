@@ -1,0 +1,291 @@
+/* Jupiter home: liquid-glass panels over the live neural core.
+   An intentionally dark design, independent of the Workspace light/dark theme. */
+.jupiter-home {
+  --jh-ice: #7fe3ff; --jh-ice-2: #c9f4ff; --jh-text: #eaf6ff; --jh-muted: rgba(214, 236, 255, .66); --jh-faint: rgba(214, 236, 255, .42);
+  --jh-amber: #ffbf5e; --jh-green: #6ff0b0; --jh-red: #ff8a8a; --jh-edge: rgba(255, 255, 255, .16);
+  --jh-glass: linear-gradient(140deg, rgba(255, 255, 255, .13), rgba(255, 255, 255, .04) 45%, rgba(120, 210, 255, .05));
+  --jh-ui: 'Segoe UI Variable', 'Segoe UI', Inter, system-ui, sans-serif; --jh-mono: 'Cascadia Mono', Consolas, ui-monospace, monospace;
+  --px: 0; --py: 0;
+  position: relative; height: 100%; overflow-x: hidden; overflow-y: auto; display: grid; grid-template: 'stack' auto / minmax(0, 1fr);
+  color: var(--jh-text); container-type: inline-size; container-name: jupiter-home; font: 14px/1.5 var(--jh-ui); color-scheme: dark;
+  background: radial-gradient(ellipse at 50% 38%, #06203a 0%, #02060d 62%);
+}
+/* The orb sits inside the same scroller as the glass, so backdrop blur can see it. */
+.jupiter-home .jh-core-wrap { grid-area: stack; position: sticky; top: 0; align-self: start; height: calc(100vh - var(--topbar-h, 56px)); z-index: 0; pointer-events: none; }
+.jupiter-home .jh-core { position: absolute; inset: 0; width: 100%; height: 100%; }
+.jupiter-home .jh-vignette { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse 85% 70% at 50% 40%, transparent 40%, rgba(1, 4, 10, .72) 100%), linear-gradient(to bottom, transparent 55%, rgba(1, 4, 10, .55)); }
+.jupiter-home .jh-inner { grid-area: stack; position: relative; z-index: 2; min-height: calc(100vh - var(--topbar-h, 56px)); display: flex; flex-direction: column; padding: 20px clamp(16px, 2.6vw, 34px) 26px; }
+.jupiter-home button:focus-visible, .jupiter-home .jh-panel:focus-visible { outline: 2px solid var(--jh-ice); outline-offset: 3px; }
+/* The pill glows instead (focus-within); the global input outline would draw a box inside it. */
+.jupiter-home .jh-ask input:focus-visible, .jupiter-home .jh-add input:focus-visible { outline: none !important; }
+.jupiter-home .jh-ask:focus-within, .jupiter-home .jh-add input:focus { border-color: rgba(127, 227, 255, .6); box-shadow: 0 0 0 3px rgba(127, 227, 255, .18), 0 24px 60px rgba(0, 0, 0, .45); }
+
+/* liquid glass */
+.jupiter-home .jh-glass { position: relative; background: var(--jh-glass), rgba(4, 12, 24, .42); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid var(--jh-edge); border-radius: 24px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), inset 0 -1px 0 rgba(255, 255, 255, .04), 0 24px 60px rgba(0, 0, 0, .45); overflow: hidden; }
+.jupiter-home .jh-glass::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(340px circle at var(--mx, 30%) var(--my, 0%), rgba(255, 255, 255, .13), transparent 60%); }
+.jupiter-home .jh-glass::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(180deg, rgba(255, 255, 255, .08), transparent 22%); }
+
+/* top line */
+.jupiter-home .jh-topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.jupiter-home .jh-brand { font-weight: 600; letter-spacing: .3em; font-size: 12px; color: var(--jh-ice-2); }
+.jupiter-home .jh-brand small { display: block; letter-spacing: .12em; font-weight: 400; color: var(--jh-faint); font-size: 10px; margin-top: 3px; }
+.jupiter-home .jh-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.jupiter-home .jh-chip { display: flex; align-items: center; gap: 8px; padding: 7px 14px 7px 10px; border-radius: 999px; font: 12px/1.2 var(--jh-ui); color: var(--jh-text); text-align: left; cursor: default; }
+.jupiter-home button.jh-chip { cursor: pointer; }
+.jupiter-home .jh-chip small { display: block; color: var(--jh-faint); font-size: 10px; }
+.jupiter-home .jh-chip i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.jupiter-home .jh-icon-chip { padding: 9px 11px; color: var(--jh-muted); }
+.jupiter-home .jh-chip.jh-on { border-color: rgba(127, 227, 255, .6); box-shadow: 0 0 0 1px rgba(127, 227, 255, .3), 0 0 24px rgba(127, 227, 255, .25); }
+.jupiter-home svg { stroke: currentColor; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+/* hero */
+.jupiter-home .jh-hero { flex: 1 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: safe center; text-align: center; padding: 18px 0 24px; min-height: 280px; }
+.jupiter-home .jh-hero > * { flex-shrink: 0; }
+.jupiter-home .jh-hello { color: var(--jh-muted); font-size: 15px; text-shadow: 0 1px 14px rgba(0, 0, 0, .9); }
+/* The greeting is the hero: the old small ice blue label, made large. Mono capitals, wide spacing; the
+   trailing padding cancels the spacing after the last letter so it sits truly centred. Not editable. */
+.jupiter-home .jh-greeting { margin: 0 0 16px; padding: 0 0 0 .1em; max-width: min(1100px, 100%); font: 600 clamp(15px, 2.35vw, 32px)/1.2 var(--jh-mono); letter-spacing: .1em; word-spacing: -.3em; text-transform: uppercase; color: var(--jh-ice);
+  text-wrap: balance; overflow-wrap: anywhere; text-shadow: 0 0 32px rgba(127, 227, 255, .3), 0 2px 26px rgba(0, 0, 0, .7); cursor: default; user-select: none; -webkit-user-select: none; }
+@media (prefers-reduced-motion: no-preference) { .jupiter-home .jh-greeting { animation: jh-greet .8s cubic-bezier(.2, .8, .2, 1) both; } }
+@keyframes jh-greet { from { opacity: 0; transform: translateY(10px); } }
+.jupiter-home .jh-ask { display: flex; align-items: center; gap: 8px; width: min(640px, 100%); padding: 8px 8px 8px 18px; border-radius: 999px; }
+.jupiter-home .jh-ask input, .jupiter-home .jh-ask input:focus { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; box-shadow: none; border-radius: 0; color: var(--jh-text); font: 16px var(--jh-ui); padding: 8px 0; }
+.jupiter-home .jh-ask input::placeholder { color: var(--jh-faint); }
+.jupiter-home .jh-round { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--jh-edge); display: grid; place-items: center; background: rgba(255, 255, 255, .06); color: var(--jh-text); cursor: pointer; flex: none; }
+.jupiter-home .jh-primary { background: var(--jh-ice); color: #02121e; border: 0; }
+.jupiter-home .jh-suggest { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.jupiter-home .jh-suggest button { border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(4, 14, 26, .5); backdrop-filter: blur(10px); color: var(--jh-muted); font: 12px var(--jh-ui); padding: 6px 12px; cursor: pointer; }
+.jupiter-home .jh-suggest button:hover { color: var(--jh-text); border-color: rgba(127, 227, 255, .4); }
+
+/* panels */
+.jupiter-home .jh-panels { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; transition: opacity .35s, transform .45s cubic-bezier(.2, .8, .2, 1); }
+.jupiter-home .jh-panel { padding: 16px 16px 14px; cursor: pointer; min-height: 220px; display: flex; flex-direction: column; transition: border-color .3s, opacity .4s, filter .4s; }
+.jupiter-home .jh-panel:hover { border-color: rgba(127, 227, 255, .38); }
+.jupiter-home.jh-focus-mode .jh-quiet { opacity: .28; filter: saturate(.3); }
+.jupiter-home .jh-ph { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.jupiter-home .jh-ph h2 { font: 600 15px var(--jh-ui); margin: 0; color: var(--jh-text); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jupiter-home .jh-ph small { color: var(--jh-faint); font-size: 11px; white-space: nowrap; }
+.jupiter-home .jh-ic { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: rgba(127, 227, 255, .13); color: var(--jh-ice); flex: none; }
+.jupiter-home .jh-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px solid rgba(255, 255, 255, .06); font-size: 13px; min-width: 0; }
+.jupiter-home .jh-row:first-of-type { border-top: 0; }
+.jupiter-home .jh-link { cursor: pointer; border-radius: 8px; }
+.jupiter-home .jh-link:hover .jh-t { color: var(--jh-ice-2); }
+.jupiter-home .jh-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.jupiter-home .jh-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.jupiter-home .jh-t small { display: block; color: var(--jh-faint); font-size: 11px; }
+.jupiter-home .jh-meta { margin-left: auto; color: var(--jh-faint); font-size: 11px; white-space: nowrap; }
+.jupiter-home .jh-check { width: 16px; height: 16px; border-radius: 5px; border: 1.5px solid rgba(255, 255, 255, .35); flex: none; display: grid; place-items: center; }
+.jupiter-home .jh-done .jh-check { background: var(--jh-ice); border-color: var(--jh-ice); }
+.jupiter-home .jh-done .jh-check::after { content: ''; width: 7px; height: 4px; border: 2px solid #02121e; border-top: 0; border-right: 0; transform: rotate(-45deg) translateY(-1px); }
+.jupiter-home .jh-done .jh-t { text-decoration: line-through; color: var(--jh-faint); }
+.jupiter-home .jh-empty { color: var(--jh-faint); font-size: 13px; margin: 6px 0; }
+.jupiter-home .jh-foot { margin-top: auto; padding-top: 10px; color: var(--jh-faint); font-size: 11px; display: flex; justify-content: space-between; }
+.jupiter-home .jh-stickies { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.jupiter-home .jh-sticky { position: relative; padding: 10px; border-radius: 14px; background: rgba(127, 227, 255, .1); border: 1px solid rgba(127, 227, 255, .18); font-size: 12px; min-height: 56px; color: var(--jh-text); overflow-wrap: anywhere; }
+.jupiter-home .jh-sticky:nth-child(3n+2) { background: rgba(127, 255, 230, .08); }
+.jupiter-home .jh-sticky:nth-child(3n) { background: rgba(255, 191, 94, .08); border-color: rgba(255, 191, 94, .2); }
+
+/* expanded panel */
+.jupiter-home.jh-focusing .jh-panels { opacity: 0; transform: translateY(40px) scale(.97); pointer-events: none; }
+.jupiter-home.jh-focusing :is(.jh-hello, .jh-greeting, .jh-suggest) { display: none; }
+.jupiter-home.jh-focusing .jh-hero { flex: none; min-height: 0; padding: 12px 0 8px; }
+.jupiter-home .jh-focus { position: absolute; z-index: 5; left: 50%; top: calc(50vh + 16px); transform: translate(-50%, -50%); width: min(1040px, calc(100% - 48px)); height: min(64%, 640px);
+  display: flex; flex-direction: column; padding: 22px 24px; animation: jh-rise .4s cubic-bezier(.2, .8, .2, 1); }
+@keyframes jh-rise { from { opacity: 0; transform: translate(-50%, -46%) scale(.96); } }
+.jupiter-home .jh-focus.is-exiting { pointer-events: none; animation: jh-leave .18s ease-out both; }
+@keyframes jh-leave { to { opacity: 0; transform: translate(-50%, -48%) scale(.985); } }
+.jupiter-home .jh-focus .jh-ph { padding-right: 56px; } .jupiter-home .jh-focus .jh-ph h2 { font-size: 20px; }
+.jupiter-home .jh-close { position: absolute; top: 16px; right: 16px; z-index: 2; }
+.jupiter-home .jh-focus-body { flex: 1; min-height: 0; overflow: auto; position: relative; }
+.jupiter-home .jh-big { padding: 11px 0; }
+.jupiter-home .jh-check-btn, .jupiter-home .jh-x { border: 0; background: transparent; color: var(--jh-muted); cursor: pointer; padding: 2px; }
+.jupiter-home .jh-x { font-size: 18px; line-height: 1; padding: 0 6px; }
+.jupiter-home .jh-sticky .jh-x { position: absolute; top: 4px; right: 4px; opacity: 0; }
+.jupiter-home .jh-sticky:hover .jh-x, .jupiter-home .jh-sticky .jh-x:focus-visible { opacity: 1; }
+.jupiter-home .jh-board { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.jupiter-home .jh-sticky-big { min-height: 90px; font-size: 14px; padding: 14px 26px 14px 14px; }
+.jupiter-home .jh-add { display: flex; gap: 8px; margin-top: 14px; position: sticky; bottom: 0; }
+.jupiter-home .jh-add input { flex: 1; min-width: 0; background: rgba(4, 12, 22, .7); border: 1px solid var(--jh-edge); border-radius: 999px; color: var(--jh-text); font: 14px var(--jh-ui); padding: 10px 16px; outline: 0; }
+.jupiter-home .jh-mini { border-radius: 999px; padding: 6px 12px; font: 12px var(--jh-ui); cursor: pointer; border: 1px solid var(--jh-edge); background: rgba(255, 255, 255, .06); color: var(--jh-text); white-space: nowrap; }
+.jupiter-home .jh-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.jupiter-home .jh-tile { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 16px; border-radius: 18px; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .1); color: var(--jh-text); font: inherit; text-align: left; cursor: pointer; }
+.jupiter-home .jh-tile:hover { border-color: rgba(127, 227, 255, .4); background: rgba(127, 227, 255, .07); }
+.jupiter-home .jh-tile small { color: var(--jh-muted); font-size: 12px; }
+.jupiter-home .jh-note { grid-column: 1 / -1; color: var(--jh-faint); font-size: 12px; margin: 4px 0 0; }
+/* The classic card grid keeps its own styles inside the expanded Projects view. */
+.jupiter-home .jh-cards .home { height: auto; overflow: visible; padding: 0 4px 12px; }
+.jupiter-home .jh-cards .home-hero { display: none; }
+
+@container jupiter-home (max-width: 1100px) { .jupiter-home .jh-panels { grid-template-columns: repeat(2, minmax(0, 1fr)); } .jupiter-home .jh-panel { min-height: 190px; } }
+@container jupiter-home (max-width: 640px) {
+  .jupiter-home .jh-panels { grid-template-columns: 1fr; }
+  .jupiter-home .jh-topline { flex-direction: column; align-items: flex-start; }
+  .jupiter-home .jh-chips { justify-content: flex-start; }
+  .jupiter-home .jh-focus { width: calc(100% - 16px); height: calc(100% - 140px); top: auto; bottom: 8px; transform: translateX(-50%); animation: none; }
+}
+@media (prefers-reduced-motion: reduce) { .jupiter-home .jh-panels, .jupiter-home .jh-focus { transition: none; animation: none; transform: none; } .jupiter-home .jh-focus { transform: translate(-50%, -50%); } }
+@media (prefers-reduced-motion: reduce) { .jupiter-home .jh-focus.is-exiting { animation: none; opacity: 0; } }
+
+/* Connections dashboard */
+.jupiter-home .jh-conn { display: flex; flex-direction: column; gap: 12px; }
+.jupiter-home .jh-conn-sum { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.jupiter-home .jh-conn-tile { padding: 12px 14px; border-radius: 16px; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .1); border-top: 2px solid var(--jh-tile, var(--jh-edge)); }
+.jupiter-home .jh-conn-tile strong { display: block; font: 300 28px/1.1 var(--jh-ui); }
+.jupiter-home .jh-conn-tile span { display: block; font-size: 12px; color: var(--jh-text); }
+.jupiter-home .jh-conn-tile small { display: block; font-size: 11px; color: var(--jh-faint); }
+.jupiter-home .jh-st-online { --jh-tile: var(--jh-green); } .jupiter-home .jh-st-ready { --jh-tile: var(--jh-ice); }
+.jupiter-home .jh-st-setup, .jupiter-home .jh-st-problem { --jh-tile: var(--jh-amber); } .jupiter-home .jh-st-off { --jh-tile: var(--jh-faint); } .jupiter-home .jh-st-managed { --jh-tile: #b9a3ff; }
+.jupiter-home .jh-conn-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.jupiter-home .jh-conn-bar input { flex: 1; min-width: 140px; background: rgba(4, 12, 22, .7); border: 1px solid var(--jh-edge); border-radius: 999px; color: var(--jh-text); font: 13px var(--jh-ui); padding: 7px 14px; outline: 0; }
+.jupiter-home .jh-conn-bar input:focus { border-color: rgba(127, 227, 255, .6); }
+.jupiter-home .jh-seg { display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .1); }
+.jupiter-home .jh-seg button { white-space: nowrap; border: 0; border-radius: 999px; background: transparent; color: var(--jh-muted); font: 12px var(--jh-ui); padding: 5px 12px; cursor: pointer; }
+.jupiter-home .jh-seg button[aria-pressed=true] { background: var(--jh-ice); color: #02121e; font-weight: 600; }
+.jupiter-home .jh-conn-group { border-radius: 16px; background: rgba(255, 255, 255, .035); border: 1px solid rgba(255, 255, 255, .08); padding: 10px 14px 4px; }
+.jupiter-home .jh-conn-group h3 { margin: 0 0 4px; font: 600 14px var(--jh-ui); color: var(--jh-text); }
+.jupiter-home .jh-conn-group h3 small { display: block; font: 400 11px var(--jh-mono); color: var(--jh-faint); overflow-wrap: anywhere; }
+.jupiter-home .jh-conn-row { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 9px 0; border-top: 1px solid rgba(255, 255, 255, .06); font-size: 13px; }
+.jupiter-home .jh-conn-row .jh-t { white-space: normal; }
+.jupiter-home .jh-conn-row .jh-t small { overflow-wrap: anywhere; }
+.jupiter-home .jh-conn-hint { color: var(--jh-amber) !important; }
+.jupiter-home .jh-conn-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--jh-tile); box-shadow: 0 0 10px var(--jh-tile); }
+.jupiter-home .jh-conn-dot.jh-st-off { box-shadow: none; }
+.jupiter-home .jh-conn-status { text-align: right; font-size: 12px; color: var(--jh-muted); white-space: nowrap; }
+.jupiter-home .jh-conn-status small { display: block; color: var(--jh-faint); font-size: 11px; }
+.jupiter-home .jh-conn-spacer { width: 58px; }
+.jupiter-home .jh-conn-error { color: var(--jh-amber); font-size: 12px; margin: 0; }
+.jupiter-home .jh-conn-error small { display: block; color: var(--jh-faint); font-family: var(--jh-mono); }
+.jupiter-home .jh-note a { color: var(--jh-ice); }
+@container jupiter-home (max-width: 640px) {
+  .jupiter-home .jh-conn-sum { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .jupiter-home .jh-conn-tile { padding: 8px 10px; }
+  .jupiter-home .jh-conn-tile strong { font-size: 20px; }
+  .jupiter-home .jh-conn-tile span { font-size: 11px; }
+  .jupiter-home .jh-conn-tile small { display: none; }
+  .jupiter-home .jh-conn-row { grid-template-columns: 12px minmax(0, 1fr) auto; }
+  .jupiter-home .jh-conn-row .jh-conn-status { grid-column: 2; text-align: left; }
+}
+
+/* capabilities: the Plugins and MCP pages */
+.jupiter-home .jh-linkish { border: 0; background: none; padding: 0; color: var(--jh-ice); font: inherit; cursor: pointer; }
+.jupiter-home .jh-cap { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.jupiter-home .jh-cap-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.jupiter-home .jh-cap .jh-seg { flex-wrap: wrap; border-radius: 22px; }
+.jupiter-home .jh-cap .jh-seg button { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; }
+.jupiter-home .jh-cap-n { font: 11px var(--jh-mono); opacity: .7; }
+.jupiter-home .jh-cap-search { margin-left: auto; display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px; border-radius: 999px; width: min(320px, 100%); background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .12); }
+.jupiter-home .jh-cap-search svg { width: 15px; height: 15px; stroke: var(--jh-faint); fill: none; stroke-width: 2; flex-shrink: 0; }
+.jupiter-home .jh-cap-search input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--jh-text); font: 13px var(--jh-ui); outline: none !important; }
+.jupiter-home .jh-cap-search:focus-within { border-color: rgba(127, 227, 255, .55); }
+.jupiter-home .jh-cap-intro { display: flex; align-items: center; justify-content: space-between; gap: 14px 24px; flex-wrap: wrap; padding: 18px 20px; border-radius: 18px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .1); }
+.jupiter-home .jh-cap-intro > div:first-child { flex: 1 1 380px; min-width: 0; }
+.jupiter-home .jh-cap-intro h3 { margin: 0 0 4px; font: 600 20px/1.25 var(--jh-ui); color: var(--jh-text); }
+.jupiter-home .jh-cap-intro p { margin: 0; color: var(--jh-muted); font-size: 13px; max-width: 78ch; }
+.jupiter-home .jh-cap-check { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.jupiter-home .jh-cap-check small { color: var(--jh-faint); font-size: 11.5px; text-align: right; }
+.jupiter-home .jh-cap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; align-items: stretch; }
+.jupiter-home .jh-cap-card { display: flex; flex-direction: column; gap: 10px; padding: 16px; min-width: 0; border-radius: 18px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .1); }
+.jupiter-home .jh-cap-card > header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.jupiter-home .jh-cap-card h3 { margin: 0; font: 600 15px/1.3 var(--jh-ui); color: var(--jh-text); overflow-wrap: anywhere; }
+.jupiter-home .jh-cap-desc { margin: 0; font-size: 13px; color: var(--jh-text); padding: 10px 12px; border-radius: 12px; background: rgba(127, 227, 255, .07); border-left: 2px solid var(--jh-ice); }
+.jupiter-home .jh-cap-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.jupiter-home .jh-cap-chips span { font-size: 11px; padding: 1px 9px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .16); color: var(--jh-muted); white-space: nowrap; }
+.jupiter-home .jh-cap-chips span.ice { color: var(--jh-ice); border-color: rgba(127, 227, 255, .45); }
+.jupiter-home .jh-cap-card > footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: auto; }
+.jupiter-home .jh-cap-card > footer a { text-decoration: none; }
+.jupiter-home .jh-cap-ver { margin-left: auto; font: 11px var(--jh-mono); color: var(--jh-faint); white-space: nowrap; }
+.jupiter-home .jh-pill { display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0; font: 12px var(--jh-ui); padding: 3px 11px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); color: var(--jh-muted); background: none; white-space: nowrap; }
+.jupiter-home .jh-pill i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, .3); }
+.jupiter-home .jh-pill.ok { color: var(--jh-green); border-color: rgba(111, 240, 176, .4); }
+.jupiter-home .jh-pill.ok i { background: var(--jh-green); box-shadow: 0 0 8px var(--jh-green); }
+.jupiter-home .jh-pill.up { color: var(--jh-amber); border-color: rgba(255, 191, 94, .55); }
+.jupiter-home .jh-pill.up i { background: var(--jh-amber); box-shadow: 0 0 8px var(--jh-amber); }
+.jupiter-home button.jh-pill.up { cursor: pointer; }
+.jupiter-home button.jh-pill.up:hover { background: rgba(255, 191, 94, .1); }
+.jupiter-home .jh-pill.bad { color: var(--jh-red); border-color: rgba(255, 138, 138, .45); }
+.jupiter-home .jh-pill.bad i { background: var(--jh-red); box-shadow: 0 0 8px var(--jh-red); }
+.jupiter-home .jh-spin { width: 10px; height: 10px; border-radius: 50%; border: 2px solid rgba(127, 227, 255, .3); border-top-color: var(--jh-ice); animation: jh-spin .8s linear infinite; }
+@keyframes jh-spin { to { transform: rotate(360deg); } }
+.jupiter-home .jh-cap-confirm { font-size: 12.5px; color: var(--jh-amber); padding: 10px 12px; border-radius: 12px; background: rgba(255, 191, 94, .06); border: 1px solid rgba(255, 191, 94, .25); }
+.jupiter-home .jh-cap-confirm p { margin: 0; }
+.jupiter-home .jh-cap-confirm ul { margin: 6px 0 8px; padding-left: 16px; color: var(--jh-muted); overflow-wrap: anywhere; }
+.jupiter-home .jh-cap-confirm code { font: 11px var(--jh-mono); color: var(--jh-ice-2); }
+.jupiter-home .jh-cap-confirm div { display: flex; gap: 8px; }
+.jupiter-home .jh-mini:disabled { opacity: .55; cursor: default; }
+.jupiter-home .jh-mini.jh-primary { background: var(--jh-ice); color: #02121e; border-color: transparent; font-weight: 600; }
+.jupiter-home .jh-cap-rows { border-radius: 18px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .1); padding: 4px 18px; }
+.jupiter-home .jh-cap-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 16px; padding: 12px 0; border-top: 1px solid rgba(255, 255, 255, .07); }
+.jupiter-home .jh-cap-row:first-child { border-top: 0; }
+.jupiter-home .jh-cap-row p { margin: 2px 0 6px; font-size: 12.5px; color: var(--jh-muted); }
+@container jupiter-home (max-width: 640px) {
+  .jupiter-home .jh-cap-search { margin-left: 0; width: 100%; }
+  .jupiter-home .jh-cap-check { align-items: flex-start; }
+  .jupiter-home .jh-cap-check small { text-align: left; }
+  .jupiter-home .jh-cap-row { grid-template-columns: 1fr; }
+}
+
+/* Immersive: no visible scrollbars anywhere on the dashboard; scrolling still works. */
+.jupiter-home, .jupiter-home * { scrollbar-width: none; }
+.jupiter-home::-webkit-scrollbar, .jupiter-home *::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+/* Expanded windows: larger, and a clearer glass so the core shows through. Only the window
+   background gets lighter; cards and controls inside keep a solid surface. */
+.jupiter-home .jh-focus { width: min(1500px, calc(100% - 40px)); height: calc(100% - 118px); top: calc(50% + 40px); padding: 24px 28px;
+  background: linear-gradient(140deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .015) 45%, rgba(120, 210, 255, .03)), rgba(4, 12, 24, .14);
+  -webkit-backdrop-filter: blur(9px) saturate(150%); backdrop-filter: blur(9px) saturate(150%); }
+.jupiter-home .jh-focus .jupiter-card, .jupiter-home .jh-focus .jh-cap-card, .jupiter-home .jh-focus .jh-cap-intro, .jupiter-home .jh-focus .jh-cap-rows,
+.jupiter-home .jh-focus .jh-row.jh-big, .jupiter-home .jh-focus .jh-tile, .jupiter-home .jh-focus .jh-add input, .jupiter-home .jh-focus .jh-cap-search { background-color: rgba(9, 18, 31, .94); }
+.jupiter-home .jh-focus .jh-row.jh-big { border-radius: 12px; padding: 11px 14px; margin-bottom: 6px; border: 1px solid rgba(255, 255, 255, .07); }
+.jupiter-home .jh-focus .jupiter-card { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.jupiter-home .jh-focus-tools { position: absolute; top: 16px; right: 16px; z-index: 3; display: flex; gap: 10px; align-items: center; }
+.jupiter-home .jh-focus-tools .jh-close { position: static; }
+
+/* Red trash can next to close: drag a card or note in to throw it away. */
+.jupiter-home .jh-trash { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #ff6b6b; border: 1px solid rgba(255, 107, 107, .45); background: rgba(60, 10, 14, .55); transition: transform .2s, background .2s, box-shadow .2s; }
+.jupiter-home .jh-trash svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+.jupiter-home .jh-trash .lid { transform-origin: 4px 6px; transition: transform .25s cubic-bezier(.2, .8, .2, 1.4); }
+.jupiter-home .jh-trash.is-armed { box-shadow: 0 0 0 3px rgba(255, 107, 107, .12); }
+.jupiter-home .jh-trash.is-open { transform: scale(1.16); background: rgba(110, 14, 22, .8); box-shadow: 0 0 26px rgba(255, 90, 90, .55); }
+.jupiter-home .jh-trash.is-open .lid { transform: translateY(-2px) rotate(-32deg); }
+.jupiter-home .jh-trash.is-gulp { animation: jh-gulp .45s ease; }
+@keyframes jh-gulp { 40% { transform: scale(1.28) rotate(-6deg); } 70% { transform: scale(.92) rotate(3deg); } }
+
+/* Archive window */
+.jupiter-home .jh-archive-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 16px; align-items: center; padding: 12px 16px; border-radius: 14px; margin-bottom: 8px; background: rgba(9, 18, 31, .94); border: 1px solid rgba(255, 255, 255, .08); }
+.jupiter-home .jh-archive-row b { display: block; font-weight: 600; }
+.jupiter-home .jh-archive-row small { color: var(--jh-faint); font-size: 12px; }
+
+/* Ask bar: pasted screenshots */
+.jupiter-home .jh-ask-images { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.jupiter-home .jh-ask-image { position: relative; width: 64px; height: 48px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(127, 227, 255, .45); background: #07101d; }
+.jupiter-home .jh-ask-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.jupiter-home .jh-ask-image button { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 50%; border: 0; background: rgba(0, 0, 0, .7); color: #fff; font-size: 12px; line-height: 18px; padding: 0; cursor: pointer; }
+.jupiter-home .jh-ask-image.is-saving { opacity: .55; }
+
+/* Expanded windows: nearly the whole dashboard, clearer still, and nothing peeking above. */
+.jupiter-home.jh-focusing .jh-hero { visibility: hidden; height: 0; min-height: 0; padding: 0; overflow: hidden; }
+.jupiter-home .jh-focus { width: calc(100% - 28px); height: calc(100% - 92px); top: calc(50% + 34px); padding: 22px 26px;
+  background: linear-gradient(140deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .01) 45%, rgba(120, 210, 255, .02)), rgba(4, 12, 24, .08);
+  -webkit-backdrop-filter: blur(6px) saturate(140%); backdrop-filter: blur(6px) saturate(140%); }
+
+/* While Jupiter talks or listens with a window open, the window's title icon becomes a small star
+   that pulses with her voice (orange) or gently while she listens (light blue). */
+.jupiter-home .jh-ic-star { position: relative; background: radial-gradient(circle, rgba(255, 170, 70, .28), rgba(255, 120, 30, .06) 70%); overflow: visible; }
+.jupiter-home .jh-ic-star i { width: 10px; height: 10px; border-radius: 50%; background: #fff7e8; box-shadow: 0 0 10px 3px rgba(255, 160, 60, .9), 0 0 22px 8px rgba(255, 110, 30, .45);
+  transform: scale(calc(1 + var(--voice, 0) * 1.1)); transition: transform 60ms linear; }
+.jupiter-home .jh-ic-star i::before, .jupiter-home .jh-ic-star i::after { content: ''; position: absolute; left: 50%; top: 50%; width: 26px; height: 2px; margin: -1px 0 0 -13px; border-radius: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 230, 190, .9), transparent); transform: rotate(45deg) scaleX(calc(.7 + var(--voice, 0) * .8)); }
+.jupiter-home .jh-ic-star i::after { transform: rotate(-45deg) scaleX(calc(.7 + var(--voice, 0) * .8)); }
+.jupiter-home .jh-ic-star.is-listening { background: radial-gradient(circle, rgba(140, 215, 255, .3), rgba(70, 160, 255, .06) 70%); }
+.jupiter-home .jh-ic-star.is-listening i { background: #eef9ff; box-shadow: 0 0 10px 3px rgba(140, 215, 255, .9), 0 0 22px 8px rgba(70, 160, 255, .4); animation: jh-star-listen 1.2s ease-in-out infinite; }
+.jupiter-home .jh-ic-star.is-listening i::before, .jupiter-home .jh-ic-star.is-listening i::after { background: linear-gradient(90deg, transparent, rgba(220, 245, 255, .9), transparent); }
+@keyframes jh-star-listen { 50% { transform: scale(1.35); } }
+/* The orb behind an open window brightens a little while she talks, so the glow shows through the glass. */
+.jupiter-home .jh-core { transition: filter .3s ease; }
+.jupiter-home.jh-focusing.jh-orb-speaking .jh-core { filter: brightness(1.45) saturate(1.2); }
+@media (prefers-reduced-motion: reduce) { .jupiter-home .jh-ic-star i { transition: none; animation: none; } }
+
+/* The greeting, one thing and Ask box sit below the sun at the brain's centre, not over it. */
+.jupiter-home:not(.jh-focusing) .jh-hero { justify-content: flex-end; padding-top: calc(36vh + 40px); padding-bottom: calc(3vh + 14px); }
+@media (max-height: 820px) { .jupiter-home:not(.jh-focusing) .jh-hero { padding-top: calc(36vh + 40px); } }

@@ -1,0 +1,32 @@
+/* Token usage: the home panel and its expanded window. */
+.jupiter-home .jh-tk-summary { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 0; }
+.jupiter-home .jh-tk-big { display: flex; align-items: baseline; gap: 8px; }
+.jupiter-home .jh-tk-big b { font: 300 30px/1 var(--jh-ui); color: var(--jh-text); }
+.jupiter-home .jh-tk-big span, .jupiter-home .jh-tk-today { color: var(--jh-faint); font-size: 12px; }
+.jupiter-home .jh-tk-split { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11.5px; color: var(--jh-muted); }
+.jupiter-home .jh-tk-split i, .jupiter-home .jh-tk-card h3 small i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 0; }
+.jupiter-home i.claude { background: #ffb48a; }
+.jupiter-home i.codex { background: #7ef0c8; }
+.jupiter-home .jh-tk-bars { display: flex; align-items: flex-end; gap: 5px; height: 54px; flex: 1; min-height: 40px; }
+.jupiter-home .jh-tk-bars span { flex: 1; height: 100%; display: flex; flex-direction: column-reverse; gap: 1px; border-radius: 4px; overflow: hidden; background: rgba(255, 255, 255, .04); position: relative; }
+.jupiter-home .jh-tk-bars i { display: block; width: 100%; min-height: 0; border-radius: 0; }
+.jupiter-home .jh-tk-bars.is-tall { height: 180px; gap: 8px; padding-bottom: 18px; }
+.jupiter-home .jh-tk-bars.is-tall span { overflow: visible; }
+.jupiter-home .jh-tk-bars small { position: absolute; bottom: -18px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--jh-faint); }
+.jupiter-home .jh-tk { display: flex; flex-direction: column; gap: 14px; }
+.jupiter-home .jh-tk-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.jupiter-home .jh-tk-tile, .jupiter-home .jh-tk-card { border-radius: 18px; background: rgba(9, 18, 31, .94); border: 1px solid rgba(255, 255, 255, .08); padding: 16px 18px; }
+.jupiter-home .jh-tk-tile b { display: block; font: 300 32px/1.1 var(--jh-ui); color: var(--jh-text); }
+.jupiter-home .jh-tk-tile span { color: var(--jh-muted); font-size: 13px; }
+.jupiter-home .jh-tk-tile small { display: block; color: var(--jh-faint); font-size: 11.5px; margin-top: 4px; }
+.jupiter-home .jh-tk-card h3 { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 0 0 12px; font: 600 14px var(--jh-ui); color: var(--jh-text); }
+.jupiter-home .jh-tk-card h3 small { color: var(--jh-faint); font: 11.5px var(--jh-ui); display: flex; gap: 10px; align-items: center; }
+.jupiter-home .jh-tk-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.jupiter-home .jh-tk-row { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(60px, 1fr) auto; gap: 12px; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255, 255, 255, .06); }
+.jupiter-home .jh-tk-row:first-of-type { border-top: 0; }
+.jupiter-home .jh-tk-row b { display: block; font-weight: 600; font-size: 13px; overflow-wrap: anywhere; }
+.jupiter-home .jh-tk-row small { color: var(--jh-faint); font-size: 11px; }
+.jupiter-home .jh-tk-meter { height: 6px; border-radius: 999px; background: rgba(255, 255, 255, .06); overflow: hidden; }
+.jupiter-home .jh-tk-meter i { display: block; height: 100%; border-radius: 999px; background: var(--jh-ice); }
+.jupiter-home .jh-tk-num { font: 12px var(--jh-mono); color: var(--jh-muted); text-align: right; }
+@container jupiter-home (max-width: 760px) { .jupiter-home .jh-tk-two, .jupiter-home .jh-tk-tiles { grid-template-columns: 1fr; } }

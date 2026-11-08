@@ -1,0 +1,5 @@
+# Navigation decisions
+
+- 2026-11-04: Files and Settings retain the ribbon; MCP, Plugins, Workspace and Help dismiss it. Coordinate named surfaces synchronously, make exiting nodes inert immediately, and invalidate delayed Help on newer ribbon, dashboard or card navigation. Verification: `docs/superpowers/reviews/2026-11-04-navigation.md`.
+- 2026-11-04: Firecrawl MCP is configured at user scope for Claude Code and Codex through the official OAuth endpoint, with both sign-ins completed. The project also has its requested Firecrawl API key in ignored `.env`; no key values belong in project knowledge. The standalone Firecrawl CLI and Firecrawl skill were not installed.
+- 2026-11-04: The local desktop executable loads `src-tauri/target/release/runtime/ui`, not root `dist`, when the runtime is present. After a frontend build, copy verified assets into that runtime and `.cache/desktop-runtime/ui`, publishing index.html last and retaining old hashed assets for running views; reload the Workspace to use it without restarting agent sessions.

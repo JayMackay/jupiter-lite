@@ -1,0 +1,1472 @@
+{
+  "about": "Jupiter capability catalogue. Picks chosen by popularity and security, one per job. Edit freely; the Capabilities view reads this file. Installs are recorded in capabilities.lock.json.",
+  "checked": "2026-11-02",
+  "categories": [
+    {
+      "id": "harness",
+      "label": "Harness",
+      "blurb": "A harness is the working method your agents follow on every task: how they plan, build, test and review. It shapes how they work rather than what they know."
+    },
+    {
+      "id": "skills",
+      "label": "Skills",
+      "blurb": "Skills are packaged know how. Each one stays out of the way until a task needs it, then the agent loads it and follows its steps."
+    },
+    {
+      "id": "memory",
+      "label": "Memory",
+      "blurb": "Memory keeps context between sessions: decisions from earlier chats, a searchable map of your code, and a way to hand a whole repository to a model at once."
+    },
+    {
+      "id": "tools",
+      "label": "Tools",
+      "blurb": "Tools let agents act outside the chat: drive a browser, read current library docs and GitHub, research the web, control Unity and Blender, generate images and video, and make pixel art sprites and effects."
+    },
+    {
+      "id": "tokens",
+      "label": "Token Bill",
+      "blurb": "Token Bill is about what each session costs. These show how much context you are using and keep replies short when you want them to be."
+    }
+  ],
+  "items": [
+    {
+      "id": "andrej-karpathy-skills",
+      "cat": "harness",
+      "name": "andrej-karpathy-skills",
+      "repo": "multica-ai/andrej-karpathy-skills",
+      "status": "take",
+      "stars": 227976,
+      "why": "Popular (228k) and the safest kind of add-on: plain principles with no hooks. It goes into the knowledge hub.",
+      "what": "Four coding principles from Karpathy's notes on LLM mistakes: simple, focused, verified changes.",
+      "tags": [
+        "CLAUDE.md",
+        "plugin"
+      ],
+      "agents": [
+        "Claude Code"
+      ],
+      "risk": "Moved from forrestchang. Jupiter folds the principles into knowledge/instructions/principles.md instead of appending to CLAUDE.md. Overlaps ponytail.",
+      "setup": {
+        "kind": "plugin",
+        "marketplace": "karpathy-skills",
+        "plugins": [
+          "andrej-karpathy-skills"
+        ],
+        "codexSkills": {
+          "from": "skills",
+          "names": [
+            "karpathy-guidelines"
+          ]
+        }
+      },
+      "title": "Karpathy guidelines",
+      "desc": "Four short coding principles from Andrej Karpathy that keep every change simple, focused and checked.",
+      "labels": {
+        "type": [
+          "Plugin",
+          "Skill"
+        ],
+        "does": [
+          "Guidelines"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "superpowers",
+      "cat": "harness",
+      "name": "superpowers",
+      "repo": "obra/superpowers",
+      "status": "take",
+      "stars": 310618,
+      "why": "Most-starred harness (311k). One plan → build → review method for both agents.",
+      "what": "A complete method: brainstorm, plan, test-driven build and review, as skills.",
+      "tags": [
+        "plugin",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Review its hooks before enabling. It can load a logo that sends the version number (SUPERPOWERS_DISABLE_TELEMETRY turns that off). Choose this OR ECC, gstack or oh-my-claudecode.",
+      "setup": {
+        "kind": "plugin",
+        "marketplace": "superpowers-dev",
+        "plugins": [
+          "superpowers"
+        ],
+        "codexSkills": {
+          "from": "skills",
+          "names": [
+            "*"
+          ]
+        },
+        "note": "Installed from its own repository at the reviewed commit, not from the official marketplace, so it stays pinned. Its start-of-session hook runs through Git Bash."
+      },
+      "title": "Superpowers",
+      "desc": "A complete way of working: brainstorm the idea, write a plan, build it test first, then review the result before calling it done.",
+      "labels": {
+        "type": [
+          "Plugin",
+          "Skill"
+        ],
+        "does": [
+          "Planning",
+          "Testing",
+          "Debugging"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "ponytail",
+      "cat": "harness",
+      "name": "ponytail",
+      "repo": "DietrichGebert/ponytail",
+      "status": "skip",
+      "stars": 182092,
+      "why": "Same job as the Karpathy principles, but adds hooks.",
+      "what": "Pushes the agent to write less code by reusing what already exists.",
+      "tags": [
+        "plugin",
+        "hooks",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Two lifecycle hooks (needs Node). Overlaps the Karpathy principles. Install only from this repo; copies elsewhere may be fakes."
+    },
+    {
+      "id": "ecc",
+      "cat": "harness",
+      "name": "ecc (Everything Claude Code)",
+      "repo": "affaan-m/ECC",
+      "status": "skip",
+      "stars": 294772,
+      "why": "Same job as superpowers, much heavier, and limited Windows support.",
+      "what": "A huge kit: about 71 agents, 314 skills, hooks, rules, memory and the AgentShield scanner.",
+      "tags": [
+        "plugin",
+        "CLI",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Hooks load automatically and memory goes to ~/.ecc. Windows support is limited. Better to cherry-pick a few skills than install it whole."
+    },
+    {
+      "id": "gstack",
+      "cat": "harness",
+      "name": "gstack",
+      "repo": "garrytan/gstack",
+      "status": "skip",
+      "stars": 138590,
+      "why": "Same job as superpowers, plus a background browser, a tunnel and update checks.",
+      "what": "23 slash-command roles (CEO review, design review, QA, /ship) with a bundled browser.",
+      "tags": [
+        "skills",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex (experimental)"
+      ],
+      "risk": "Heavy: hooks, a CLAUDE.md edit, a background browser server, an optional ngrok tunnel, and update checks on by default. Needs Git Bash or WSL, and Smart App Control can block it."
+    },
+    {
+      "id": "oh-my-claudecode",
+      "cat": "harness",
+      "name": "oh-my-claudecode",
+      "repo": "Yeachan-Heo/oh-my-claudecode",
+      "status": "skip",
+      "stars": 40496,
+      "why": "Team-style orchestration, the same job as Jupiter.",
+      "what": "Team-style multi-agent orchestration with a status display.",
+      "tags": [
+        "plugin",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code"
+      ],
+      "risk": "Built for team-style orchestration. Needs tmux or WSL2 on Windows, a hand-edited settings.json and a background auto-resume process. It overlaps Jupiter."
+    },
+    {
+      "id": "archon",
+      "cat": "harness",
+      "name": "archon",
+      "repo": "coleam00/Archon",
+      "status": "reference",
+      "stars": 23799,
+      "why": "Same job as Jupiter. Read it for workflow ideas.",
+      "what": "A YAML workflow engine that drives Claude Code or Codex from issue to merged PR.",
+      "tags": [
+        "CLI",
+        "web console",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Does the same job as Jupiter, and telemetry is on by default (ARCHON_TELEMETRY_DISABLED=1). Read it for workflow ideas."
+    },
+    {
+      "id": "learn-claude-code",
+      "cat": "harness",
+      "name": "learn-claude-code",
+      "repo": "shareAI-lab/learn-claude-code",
+      "status": "reference",
+      "stars": 79684,
+      "why": "A course to read. Nothing to install.",
+      "what": "A 17-lesson Python course that builds a Claude Code-style agent loop from scratch.",
+      "tags": [
+        "course",
+        "MIT"
+      ],
+      "agents": [
+        "Anthropic API"
+      ],
+      "risk": "Not an add-on. Medium confidence this is the repo you meant."
+    },
+    {
+      "id": "claude-plugins-official",
+      "cat": "skills",
+      "name": "claude-plugins-official",
+      "repo": "anthropics/claude-plugins-official",
+      "status": "have",
+      "stars": 45714,
+      "why": "Anthropic's official marketplace, already added. The source for superpowers.",
+      "what": "Anthropic's curated plugin directory. Already added as a marketplace on this PC, with nothing installed from it yet.",
+      "tags": [
+        "marketplace"
+      ],
+      "agents": [
+        "Claude Code"
+      ],
+      "risk": "Anthropic doesn't verify the third-party plugins it lists. Review each one.",
+      "detect": {
+        "marketplace": "claude-plugins-official"
+      },
+      "title": "Claude plugin directory",
+      "desc": "Anthropic’s own directory of Claude Code plugins."
+    },
+    {
+      "id": "anthropic-skills",
+      "cat": "skills",
+      "name": "anthropic skills",
+      "repo": "anthropics/skills",
+      "status": "take",
+      "stars": 186352,
+      "why": "Official (186k), and the only document skills here (Word, PDF, PowerPoint, Excel).",
+      "what": "Anthropic's example skills and the document skills (Word, PDF, PowerPoint, Excel).",
+      "tags": [
+        "marketplace",
+        "Apache-2.0"
+      ],
+      "agents": [
+        "Claude Code"
+      ],
+      "risk": "The document skills are source-available, not open source.",
+      "setup": {
+        "kind": "skills",
+        "from": "skills",
+        "names": [
+          "docx",
+          "pdf",
+          "pptx",
+          "xlsx"
+        ],
+        "agents": [
+          "codex"
+        ],
+        "note": "Claude Code already gets these document skills from your Claude account, so Jupiter adds them to Codex only."
+      },
+      "title": "Document skills",
+      "desc": "Lets agents create and edit Word, PDF, PowerPoint and Excel files properly. Claude Code already has these through your Claude account.",
+      "labels": {
+        "type": [
+          "Skill"
+        ],
+        "does": [
+          "Documents"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ],
+      "agentNote": "Codex: copied skills. Claude Code: built in through the anthropic-skills plugin."
+    },
+    {
+      "id": "taste-skill",
+      "cat": "skills",
+      "name": "taste-skill",
+      "repo": "Leonxlnx/taste-skill",
+      "status": "skip",
+      "stars": 107748,
+      "why": "Same job as ui-ux-pro-max, and it fetches images online.",
+      "what": "Less generic frontend design: art direction plus a browser check of the result.",
+      "tags": [
+        "plugin",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Needs Node 22+ and Edge or Chrome, and looks up images online. Pick this or ui-ux-pro-max."
+    },
+    {
+      "id": "ui-ux-pro-max-skill",
+      "cat": "skills",
+      "name": "ui-ux-pro-max-skill",
+      "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "status": "take",
+      "stars": 143814,
+      "why": "More popular than taste-skill (144k vs 108k) and works offline. Pick one design skill.",
+      "what": "Design reference: styles, palettes, font pairings and UX rules for each framework.",
+      "tags": [
+        "plugin",
+        "CLI",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Needs Python 3 and writes into .claude/skills (--dry-run previews it). Overlaps taste-skill.",
+      "setup": {
+        "kind": "plugin",
+        "marketplace": "ui-ux-pro-max-skill",
+        "plugins": [
+          "ui-ux-pro-max"
+        ],
+        "codexSkills": {
+          "from": ".claude/skills",
+          "names": [
+            "*"
+          ]
+        },
+        "note": "Its search script needs Python 3."
+      },
+      "title": "UI UX Pro Max",
+      "desc": "A design reference for interfaces: styles, colour palettes, font pairings and UX rules for each framework.",
+      "labels": {
+        "type": [
+          "Plugin",
+          "Skill"
+        ],
+        "does": [
+          "UI Design",
+          "Design Systems"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "mattpocock-skills",
+      "cat": "skills",
+      "name": "mattpocock skills",
+      "repo": "mattpocock/skills",
+      "status": "skip",
+      "stars": 309222,
+      "why": "Very popular, but the same job as superpowers, and installing it for both agents duplicates every skill.",
+      "what": "\"Skills for Real Engineers\": engineering and productivity slash commands.",
+      "tags": [
+        "plugin",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Auto-updates. Install for one agent only or each skill appears twice. Overlaps superpowers."
+    },
+    {
+      "id": "addyosmani-agent-skills",
+      "cat": "skills",
+      "name": "addyosmani agent-skills",
+      "repo": "addyosmani/agent-skills",
+      "status": "skip",
+      "stars": 112550,
+      "why": "Same job as superpowers.",
+      "what": "25 workflow skills: spec, test, review, security, ship.",
+      "tags": [
+        "plugin",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Has a hooks folder (not checked). Overlaps superpowers and mattpocock."
+    },
+    {
+      "id": "wshobson-agents",
+      "cat": "skills",
+      "name": "wshobson agents",
+      "repo": "wshobson/agents",
+      "status": "skip",
+      "stars": 42080,
+      "why": "Mostly duplicates superpowers. Add a single plugin later only if a project needs it.",
+      "what": "A marketplace of 94 plugins (about 202 agents and 185 skills). Install single plugins, not the lot.",
+      "tags": [
+        "marketplace",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Some plugins carry their own hooks."
+    },
+    {
+      "id": "awesome-claude-skills",
+      "cat": "skills",
+      "name": "awesome-claude-skills",
+      "repo": "travisvn/awesome-claude-skills",
+      "status": "reference",
+      "stars": 15666,
+      "why": "A list for finding skills. Jupiter's Discover source.",
+      "what": "A curated list of skills. A place to discover, not something to install.",
+      "tags": [
+        "list"
+      ],
+      "agents": [],
+      "risk": ""
+    },
+    {
+      "id": "planning-with-files",
+      "cat": "memory",
+      "name": "planning-with-files",
+      "repo": "OthmanAdi/planning-with-files",
+      "status": "skip",
+      "stars": 27811,
+      "why": "superpowers already writes plans to files.",
+      "what": "Keeps the agent's plan in Markdown files so it survives /clear and context compaction.",
+      "tags": [
+        "skill",
+        "plugin",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Hooks run every turn."
+    },
+    {
+      "id": "repomix",
+      "cat": "memory",
+      "name": "repomix",
+      "repo": "yamadashy/repomix",
+      "status": "take",
+      "stars": 29111,
+      "why": "Packs a repo for big-context tools such as Gemini. No hooks, and its secret scan stays on.",
+      "what": "Packs a whole repo into one AI-ready file when you need it. No hooks.",
+      "tags": [
+        "CLI",
+        "MCP",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Keep its secret scan on (never use --no-security-check).",
+      "setup": {
+        "kind": "mcp",
+        "server": "repomix",
+        "package": "repomix",
+        "args": [
+          "--mcp"
+        ],
+        "agents": [
+          "claude",
+          "codex"
+        ]
+      },
+      "title": "Repomix",
+      "desc": "Packs a whole repository into one file when a model needs to see all of it at once.",
+      "labels": {
+        "type": [
+          "MCP",
+          "CLI"
+        ],
+        "does": [
+          "Repositories",
+          "Research"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "agentmemory",
+      "cat": "memory",
+      "name": "agentmemory",
+      "repo": "rohitg00/agentmemory",
+      "status": "take",
+      "stars": 30072,
+      "why": "Local session memory shared by Claude Code and Codex, with no account. Chosen over claude-mem for privacy.",
+      "what": "One local memory server shared by Claude Code and Codex. The best fit for a two-agent setup.",
+      "tags": [
+        "MCP",
+        "hooks",
+        "Apache-2.0"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Many hooks (12 for Claude Code, 6 for Codex) and a localhost server. Medium confidence it is the repo you meant. Review the hooks at install; it stays on localhost with auth on.",
+      "setup": {
+        "kind": "mcp",
+        "server": "agentmemory",
+        "package": "@agentmemory/mcp",
+        "agents": [
+          "claude",
+          "codex"
+        ],
+        "note": "Adds the memory tools only. Automatic capture needs its background service plus 12 hooks that record every prompt, and on Windows that service needs iii-engine installed by hand, so it is left out."
+      },
+      "title": "Agent Memory",
+      "desc": "A memory both agents share, so decisions and fixes from earlier sessions are still known next time.",
+      "labels": {
+        "type": [
+          "MCP"
+        ],
+        "does": [
+          "Memory",
+          "Search"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "claude-mem",
+      "cat": "memory",
+      "name": "claude-mem",
+      "repo": "thedotmack/claude-mem",
+      "status": "skip",
+      "stars": 109182,
+      "why": "More popular (109k), but needs an account, can send sessions to a hosted service, and only works with Claude Code. Same job as agentmemory.",
+      "what": "Records sessions, compresses them and feeds the useful parts into later sessions.",
+      "tags": [
+        "plugin",
+        "hooks",
+        "Apache-2.0"
+      ],
+      "agents": [
+        "Claude Code"
+      ],
+      "risk": "Six hooks plus a background worker. Needs a sign-in, and its observer trial and Pro modes can send session data to a hosted service. Use local-only mode."
+    },
+    {
+      "id": "graphify",
+      "cat": "memory",
+      "name": "graphify",
+      "repo": "Graphify-Labs/graphify",
+      "status": "take",
+      "stars": 140518,
+      "why": "Most-starred code map (141k), parsed locally. Run it on demand per project and keep the optional API pass off.",
+      "what": "Turns code, docs and PDFs into a knowledge graph you can query. Feeds the Memory and graph view.",
+      "tags": [
+        "skill",
+        "CLI",
+        "Apache-2.0"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Moved from safishamsi. Adds a hook before every file search. Run it on demand per project.",
+      "setup": {
+        "kind": "uv-tool",
+        "package": "graphifyy",
+        "bin": "graphify",
+        "note": "Installs the graphify command only (PyPI “graphifyy”; the npm package of that name is a different project). Run “graphify install” inside a project when you want its code map there; that adds a hook before file searches."
+      },
+      "title": "Graphify",
+      "desc": "Turns a project’s code, docs and PDFs into a knowledge graph that agents can query instead of reading every file.",
+      "labels": {
+        "type": [
+          "CLI"
+        ],
+        "does": [
+          "Code Map",
+          "Knowledge Graph"
+        ]
+      }
+    },
+    {
+      "id": "codegraph",
+      "cat": "memory",
+      "name": "codegraph",
+      "repo": "colbymchenry/codegraph",
+      "status": "skip",
+      "stars": 76157,
+      "why": "Same job as graphify, and it edits agent configs and has telemetry.",
+      "what": "A local code graph that updates as you edit, served over MCP.",
+      "tags": [
+        "CLI",
+        "MCP",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Medium confidence on the repo. It edits agent configs and has a telemetry section to check. Overlaps graphify and serena."
+    },
+    {
+      "id": "beads",
+      "cat": "memory",
+      "name": "beads",
+      "repo": "gastownhall/beads",
+      "status": "skip",
+      "stars": 28399,
+      "why": "Same job as Jupiter's to-do list, and it adds git hooks.",
+      "what": "A git-based issue tracker that agents use as task memory (the bd command).",
+      "tags": [
+        "CLI",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Moved from steveyegge. Installs agent and git hooks. Overlaps Jupiter's to-do list."
+    },
+    {
+      "id": "playwright-mcp",
+      "cat": "tools",
+      "name": "playwright-mcp",
+      "repo": "microsoft/playwright-mcp",
+      "status": "take",
+      "stars": 38950,
+      "why": "Microsoft's official browser automation (39k).",
+      "what": "Browser automation for testing what you build.",
+      "tags": [
+        "MCP",
+        "Apache-2.0"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "",
+      "setup": {
+        "kind": "mcp",
+        "server": "playwright",
+        "package": "@playwright/mcp",
+        "args": [
+          "--isolated"
+        ],
+        "agents": [
+          "claude",
+          "codex"
+        ],
+        "note": "Runs with --isolated, so the browser keeps no logins between sessions."
+      },
+      "title": "Playwright",
+      "desc": "Lets agents open a real browser, click through your app and take screenshots to check their own work.",
+      "labels": {
+        "type": [
+          "MCP"
+        ],
+        "does": [
+          "Browser",
+          "Automation",
+          "Testing"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "context7",
+      "cat": "tools",
+      "name": "context7",
+      "repo": "upstash/context7",
+      "status": "take",
+      "stars": 64048,
+      "why": "Most-starred docs tool (64k). Current library docs for both agents.",
+      "what": "Up-to-date library documentation for agents, so they stop guessing APIs.",
+      "tags": [
+        "MCP",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Your queries go to Upstash. A free API key is recommended.",
+      "setup": {
+        "kind": "mcp",
+        "server": "context7",
+        "package": "@upstash/context7-mcp",
+        "optionalEnv": [
+          "CONTEXT7_API_KEY"
+        ],
+        "agents": [
+          "claude",
+          "codex"
+        ]
+      },
+      "title": "Context7",
+      "desc": "Gives agents the current documentation for the libraries you use, so they stop guessing at APIs.",
+      "labels": {
+        "type": [
+          "MCP"
+        ],
+        "does": [
+          "Documentation",
+          "Research"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "github-mcp-server",
+      "cat": "tools",
+      "name": "github-mcp-server",
+      "repo": "github/github-mcp-server",
+      "status": "take",
+      "stars": 34141,
+      "why": "GitHub's official server, used read-only.",
+      "what": "GitHub's official server. Jupiter uses it read-only to watch repos.",
+      "tags": [
+        "MCP",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Keep the token narrow and out of files.",
+      "setup": {
+        "kind": "mcp",
+        "server": "github",
+        "url": "https://api.githubcopilot.com/mcp/readonly",
+        "headerEnv": "GITHUB_PAT_TOKEN",
+        "agents": [
+          "claude",
+          "codex"
+        ],
+        "note": "Uses GitHub’s read-only endpoint. Create a fine-grained token with read access to only the repositories you want watched and set it as the GITHUB_PAT_TOKEN environment variable. Project-level Codex entries are not supported for remote servers."
+      },
+      "title": "GitHub",
+      "desc": "Lets agents read your repositories, issues and pull requests. It can look but never change anything.",
+      "labels": {
+        "type": [
+          "MCP"
+        ],
+        "does": [
+          "Git",
+          "Repositories"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "firecrawl",
+      "cat": "tools",
+      "name": "firecrawl",
+      "repo": "firecrawl/firecrawl-mcp-server",
+      "status": "take",
+      "stars": 7743,
+      "why": "The official server. Claude's built-in web tools handle quick lookups; Firecrawl adds crawling.",
+      "what": "Web search, scraping and crawling for research.",
+      "tags": [
+        "MCP",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Needs a paid API key. Crawls cost credits.",
+      "setup": {
+        "kind": "mcp",
+        "server": "firecrawl",
+        "package": "firecrawl-mcp",
+        "env": [
+          "FIRECRAWL_API_KEY"
+        ],
+        "agents": [
+          "claude",
+          "codex"
+        ]
+      },
+      "title": "Firecrawl",
+      "desc": "Searches, scrapes and crawls websites for research and turns the pages into clean text.",
+      "labels": {
+        "type": [
+          "MCP"
+        ],
+        "does": [
+          "Web Scraping",
+          "Research"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "serena",
+      "cat": "tools",
+      "name": "serena",
+      "repo": "oraios/serena",
+      "status": "skip",
+      "stars": 30991,
+      "why": "Same job as graphify.",
+      "what": "Code search and editing powered by language servers. Strong on large codebases.",
+      "tags": [
+        "MCP",
+        "GPL-3.0"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Overlaps codegraph and graphify. The GPL licence only matters if you redistribute it."
+    },
+    {
+      "id": "unity",
+      "cat": "tools",
+      "name": "unity",
+      "repo": "CoplayDev/unity-mcp",
+      "url": "https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.0/manual/unity-mcp-overview.html",
+      "status": "have",
+      "stars": 15621,
+      "why": "Already set up for Beneath the Pale.",
+      "what": "Unity editor control. Already configured for Beneath the Pale. The official server ships in Unity's AI Assistant package; CoplayDev is the open-source alternative.",
+      "tags": [
+        "MCP"
+      ],
+      "agents": [
+        "Claude Code"
+      ],
+      "risk": "Check which server the project uses and your Unity plan.",
+      "detect": {
+        "mcp": [
+          "unity",
+          "unityMCP",
+          "unity-mcp",
+          "UnityMCP"
+        ]
+      },
+      "title": "Unity",
+      "desc": "Lets agents control the Unity editor while you work on Beneath the Pale.",
+      "site": true,
+      "href": "https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.0/manual/unity-mcp-overview.html",
+      "labels": {
+        "type": [
+          "MCP"
+        ],
+        "does": [
+          "Game Dev",
+          "3D"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ],
+      "agentNote": "Claude Code: the Beneath the Pale project. Codex: everywhere (unityMCP)."
+    },
+    {
+      "id": "blender-lab",
+      "cat": "tools",
+      "name": "blender lab",
+      "url": "https://projects.blender.org/lab/blender_mcp",
+      "status": "have",
+      "stars": null,
+      "why": "Already set up for the Beneath the Pale Blender folder.",
+      "what": "Blender control through Blender's own add-on. Already configured for the Beneath the Pale Blender folder.",
+      "tags": [
+        "MCP"
+      ],
+      "agents": [
+        "Claude Code"
+      ],
+      "risk": "Runs generated Python inside Blender with no guards, so approve each run.",
+      "detect": {
+        "mcp": [
+          "blender"
+        ]
+      },
+      "title": "Blender",
+      "desc": "Lets agents control Blender through its own add on, with you approving each run.",
+      "labels": {
+        "type": [
+          "MCP"
+        ],
+        "does": [
+          "3D",
+          "Modelling"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ],
+      "agentNote": "Claude Code: the BeneathThePale/Blender project. Codex: the Beneath the Pale project."
+    },
+    {
+      "id": "higgsfield",
+      "cat": "tools",
+      "name": "higgsfield",
+      "url": "https://higgsfield.ai/mcp",
+      "status": "take",
+      "stars": null,
+      "why": "Use when needed (paid credits). Chosen over fal: same job, and it's in your brief.",
+      "what": "Image and video generation. Use the official CLI from Claude Code; the hosted MCP server is for claude.ai.",
+      "tags": [
+        "CLI",
+        "MCP"
+      ],
+      "agents": [
+        "Claude Code"
+      ],
+      "risk": "Every generation costs credits.",
+      "repo": "higgsfield-ai/cli",
+      "setup": {
+        "kind": "npm-cli",
+        "package": "@higgsfield/cli",
+        "bin": "higgsfield",
+        "allowScripts": true,
+        "note": "Its install script downloads the hf program from Higgsfield’s GitHub releases and checks its SHA-256. Sign in afterwards with “higgsfield auth login”."
+      },
+      "title": "Higgsfield",
+      "desc": "Generates images and video from a prompt with Higgsfield’s models. Only used when you ask.",
+      "labels": {
+        "type": [
+          "CLI"
+        ],
+        "does": [
+          "Image Gen",
+          "Video Gen"
+        ]
+      }
+    },
+    {
+      "id": "pixelfx",
+      "cat": "tools",
+      "name": "pixelfx",
+      "repo": "patch-gg/pixelfx",
+      "status": "take",
+      "stars": null,
+      "why": "Ready made pixel art effects and sprite sheets for the pixel art games, from code rather than images.",
+      "what": "A library of 244 pixel art effects as code, sprite sheet export for any engine (Unity included), and a skill that makes new effects by drafting, rendering and refining.",
+      "tags": [
+        "skill",
+        "plugin",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Its tools run with Node from the shared checkout. Always pass --out with the project's asset folder, so nothing is written inside the checkout.",
+      "setup": {
+        "kind": "plugin",
+        "marketplace": "pixelfx",
+        "plugins": [
+          "pixelfx"
+        ],
+        "codexSkills": {
+          "from": "skills",
+          "names": [
+            "pixelfx"
+          ]
+        },
+        "shared": true,
+        "note": "Claude Code gets the pixelfx plugin (its skill). Codex gets the same skill. The tools run from the shared checkout .jupiter/tools/pixelfx; no npm install is needed."
+      },
+      "labels": {
+        "type": [
+          "Skill"
+        ],
+        "does": [
+          "Pixel Art",
+          "VFX",
+          "Animation",
+          "Sprites"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ],
+      "title": "PixelFX",
+      "desc": "Pixel art effects library for creating spells, explosions, combat effects, weather and animated sprite sheets."
+    },
+    {
+      "id": "claude-pxl",
+      "cat": "tools",
+      "name": "claude-pxl",
+      "repo": "crsolver/claude-pxl",
+      "status": "take",
+      "stars": null,
+      "why": "Pixel art written as small code files, so sprites and sheets stay editable and an agent can revise them.",
+      "what": "A compact pixel art DSL (.px.js) with a CLI that renders PNGs, sprite sheets with JSON and GIFs, a live painting viewer, and the agent skill.",
+      "tags": [
+        "skill",
+        "CLI",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Needs Node 22.18 or newer. The skill folder holds the whole tool; its CLI is node <skill folder>/bin/pxl.js.",
+      "setup": {
+        "kind": "skills",
+        "root": true,
+        "names": [
+          "pxl-pixel-art"
+        ],
+        "agents": [
+          "claude",
+          "codex"
+        ],
+        "exclude": [
+          "docs",
+          "test",
+          ".github"
+        ],
+        "note": "The repository is the skill, as its README installs it: copied (without docs and tests) to ~/.claude/skills/pxl-pixel-art and ~/.agents/skills/pxl-pixel-art. The CLI runs from there with Node; nothing else is installed."
+      },
+      "labels": {
+        "type": [
+          "CLI",
+          "Skill"
+        ],
+        "does": [
+          "Pixel Art",
+          "Sprites",
+          "Animation"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ],
+      "title": "Claude PXL",
+      "desc": "Pixel art toolkit driven by code, for creating sprites, animations and sprite sheets with live previews."
+    },
+    {
+      "id": "pixelbolt",
+      "cat": "tools",
+      "name": "pixelbolt",
+      "repo": "skulitom/Pixelbolt",
+      "status": "take",
+      "stars": null,
+      "why": "Pixel art from editable JSON recipes that an agent can validate, inspect and patch, with a local studio to look at and tweak them.",
+      "what": "A pixel art toolkit: MCP server, CLI and agent skill for sprites, tiles, icons, effects and short animations, plus a browser studio. Local, no account or key.",
+      "tags": [
+        "MCP",
+        "skill",
+        "CLI",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "The MCP server reads and writes inside the folder the agent starts it in (exports go to output/ there).",
+      "setup": {
+        "kind": "plugin",
+        "marketplace": "pixelbolt",
+        "plugins": [
+          "pixelbolt"
+        ],
+        "codexSkills": {
+          "from": "skills",
+          "names": [
+            "pixel-art"
+          ]
+        },
+        "shared": true,
+        "codexMcp": {
+          "server": "pixelbolt",
+          "script": "bin/pixelbolt.js",
+          "args": [
+            "mcp"
+          ]
+        },
+        "note": "Claude Code gets the pixelbolt plugin (its MCP server and skill). Codex gets the skill and the same MCP server, both run with Node from the reviewed checkout .jupiter/tools/pixelbolt."
+      },
+      "detect": {
+        "mcp": [
+          "pixelbolt"
+        ]
+      },
+      "editor": {
+        "script": "bin/pixelbolt.js",
+        "args": [
+          "preview"
+        ],
+        "label": "Open Editor",
+        "title": "Pixelbolt Studio"
+      },
+      "labels": {
+        "type": [
+          "MCP",
+          "Skill",
+          "Editor"
+        ],
+        "does": [
+          "Pixel Art",
+          "Animation",
+          "Sprites"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ],
+      "title": "Pixelbolt",
+      "desc": "Pixel art toolkit with an interactive editor, MCP integration and agent skills for creating sprites, animations and game assets."
+    },
+    {
+      "id": "fal-ai",
+      "cat": "tools",
+      "name": "fal.ai",
+      "url": "https://fal.ai",
+      "status": "skip",
+      "stars": null,
+      "why": "Same job as Higgsfield.",
+      "what": "Image, video, audio and 3D generation through a hosted MCP server. This repo already has a fal skill.",
+      "tags": [
+        "MCP"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Metered API."
+    },
+    {
+      "id": "claude-code-router",
+      "cat": "tools",
+      "name": "claude-code-router",
+      "repo": "musistudio/claude-code-router",
+      "status": "skip",
+      "stars": 37943,
+      "why": "Popular, but it reroutes your code to other model providers.",
+      "what": "Routes Claude Code and Codex to other model providers.",
+      "tags": [
+        "proxy",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Sends your prompts and code to whichever provider you configure. Changing the base URL also hides claude.ai connectors."
+    },
+    {
+      "id": "cc-switch",
+      "cat": "tools",
+      "name": "cc-switch",
+      "repo": "farion1231/cc-switch",
+      "status": "skip",
+      "stars": 150867,
+      "why": "Most-starred tool (151k), but it rewrites agent configs and can proxy your requests. Jupiter handles switching itself.",
+      "what": "A desktop app for switching providers and configs for Claude Code and Codex.",
+      "tags": [
+        "desktop app",
+        "proxy",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Rewrites agent configs and base URLs, can run a local proxy, and promotes third-party API relays. Jupiter's own settings cover switching."
+    },
+    {
+      "id": "multica",
+      "cat": "tools",
+      "name": "multica",
+      "repo": "multica-ai/multica",
+      "status": "reference",
+      "stars": 54526,
+      "why": "Same job as Jupiter. Borrow ideas.",
+      "what": "A workspace that runs several agent CLIs as a team.",
+      "tags": [
+        "desktop app"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "The same job as Jupiter, with its own licence and telemetry. Borrow ideas only."
+    },
+    {
+      "id": "vibe-kanban",
+      "cat": "tools",
+      "name": "vibe-kanban",
+      "repo": "BloopAI/vibe-kanban",
+      "status": "reference",
+      "stars": 28551,
+      "why": "Same job as Jupiter's to-do and agent views.",
+      "what": "A kanban board that runs coding agents.",
+      "tags": [
+        "web app",
+        "Apache-2.0"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Overlaps Jupiter's to-do list and agent view."
+    },
+    {
+      "id": "awesome-mcp-servers",
+      "cat": "tools",
+      "name": "awesome-mcp-servers",
+      "repo": "punkpeye/awesome-mcp-servers",
+      "status": "reference",
+      "stars": 97173,
+      "why": "A list for finding MCP servers. Jupiter's Discover source.",
+      "what": "A curated list of MCP servers. Jupiter's Discover source.",
+      "tags": [
+        "list"
+      ],
+      "agents": [],
+      "risk": "Listed servers aren't vetted."
+    },
+    {
+      "id": "claude-hud",
+      "cat": "tokens",
+      "name": "claude-hud",
+      "repo": "jarrodwatts/claude-hud",
+      "status": "take",
+      "stars": 29079,
+      "why": "A live context and usage meter that only reads.",
+      "what": "A status line showing context use, tools, agents and to-dos as you work.",
+      "tags": [
+        "plugin",
+        "MIT"
+      ],
+      "agents": [
+        "Claude Code"
+      ],
+      "risk": "Avoid very short refresh intervals in Git Bash.",
+      "setup": {
+        "kind": "plugin",
+        "marketplace": "claude-hud",
+        "plugins": [
+          "claude-hud"
+        ],
+        "note": "Afterwards, run /claude-hud:setup in a Claude Code chat to switch the status line on. It backs up your settings first."
+      },
+      "title": "Claude HUD",
+      "desc": "A status line under Claude Code showing how much context is used, which tools are running and what is left to do.",
+      "labels": {
+        "type": [
+          "Plugin"
+        ],
+        "does": [
+          "Status Line",
+          "Context"
+        ]
+      },
+      "agentSupport": [
+        "claude"
+      ]
+    },
+    {
+      "id": "rtk",
+      "cat": "tokens",
+      "name": "rtk",
+      "repo": "rtk-ai/rtk",
+      "status": "take",
+      "stars": 85225,
+      "why": "Popular (85k) and narrow: it only touches Bash output. Use the Apache-only rtk-oss build.",
+      "what": "Compresses shell command output before the agent reads it.",
+      "tags": [
+        "CLI",
+        "hook"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Only touches Bash tool calls. The main build includes BUSL-licensed code; rtk-oss is the Apache-only build. Use one saver only.",
+      "setup": {
+        "kind": "manual",
+        "bin": "rtk",
+        "note": "Set up by hand: download the Apache-only rtk-oss build (rtk-oss-x86_64-pc-windows-msvc.zip) from github.com/rtk-ai/rtk/releases, put rtk.exe on your PATH, then run “rtk init -g”. That adds a hook that rewrites every Bash command through rtk. Jupiter shows it as present once rtk is on your PATH."
+      },
+      "title": "rtk",
+      "desc": "Shortens the output of shell commands before the agent reads it, to save tokens."
+    },
+    {
+      "id": "caveman",
+      "cat": "tokens",
+      "name": "caveman",
+      "repo": "JuliusBrussee/caveman",
+      "status": "take",
+      "stars": 116695,
+      "why": "Popular (117k), for shorter replies. Install the skill only, not the CLI or Auto mode.",
+      "what": "Makes agents reply tersely to save output tokens.",
+      "tags": [
+        "skill",
+        "Apache-2.0"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Install the skill only. The full CLI sends usage stats, \"Auto\" sends prompts to its cloud, and it makes itself the default for plain claude.",
+      "setup": {
+        "kind": "skills",
+        "from": "skills",
+        "names": [
+          "caveman"
+        ],
+        "agents": [
+          "claude",
+          "codex"
+        ],
+        "note": "The skill only: no hooks, CLI or Auto mode."
+      },
+      "title": "Caveman",
+      "desc": "Switches agents to very short replies to save tokens, only when you turn it on with /caveman.",
+      "labels": {
+        "type": [
+          "Skill"
+        ],
+        "does": [
+          "Short Replies"
+        ]
+      },
+      "agentSupport": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "codex-plugin-cc",
+      "cat": "tokens",
+      "name": "codex-plugin-cc",
+      "repo": "openai/codex-plugin-cc",
+      "status": "skip",
+      "stars": 34793,
+      "why": "Jupiter already hands work between Claude Code and Codex.",
+      "what": "OpenAI's official plugin to call Codex from inside Claude Code (/codex:review).",
+      "tags": [
+        "plugin",
+        "Apache-2.0"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Overlaps Jupiter's own Claude-to-Codex handoff."
+    },
+    {
+      "id": "headroom",
+      "cat": "tokens",
+      "name": "headroom",
+      "repo": "headroomlabs-ai/headroom",
+      "status": "skip",
+      "stars": 78566,
+      "why": "Same job as rtk, but as a proxy with telemetry on.",
+      "what": "Compresses tool output and logs before they reach the model.",
+      "tags": [
+        "proxy",
+        "Apache-2.0"
+      ],
+      "agents": [
+        "Claude Code",
+        "Codex"
+      ],
+      "risk": "Puts a local proxy in the request path, with telemetry on unless HEADROOM_TELEMETRY=off. Overlaps rtk."
+    },
+    {
+      "id": "ccusage",
+      "cat": "tokens",
+      "name": "ccusage (suggested)",
+      "repo": "ryoppippi/ccusage",
+      "status": "skip",
+      "stars": 19288,
+      "why": "Jupiter's own Token Bill view will read the same logs.",
+      "what": "Reads Claude Code's local logs to show daily and monthly usage and cost.",
+      "tags": [
+        "CLI"
+      ],
+      "agents": [
+        "Claude Code"
+      ],
+      "risk": "My suggestion. Not verified in this review; check it before adding."
+    },
+    {
+      "id": "claude-code-best-practice",
+      "cat": "tokens",
+      "name": "claude-code-best-practice",
+      "repo": "shanraisshan/claude-code-best-practice",
+      "status": "reference",
+      "stars": 68427,
+      "why": "Worth reading (68k). Nothing to install.",
+      "what": "Best-practice guide and links for Claude Code, including keeping context lean.",
+      "tags": [
+        "guide",
+        "MIT"
+      ],
+      "agents": [],
+      "risk": ""
+    },
+    {
+      "id": "system-prompts-and-models",
+      "cat": "tokens",
+      "name": "system-prompts-and-models",
+      "repo": "x1xhlol/system-prompts-and-models-of-ai-tools",
+      "status": "skip",
+      "stars": 144412,
+      "why": "The most-starred here, but it's leaked proprietary prompts.",
+      "what": "A collection of leaked system prompts from AI tools.",
+      "tags": [
+        "collection"
+      ],
+      "agents": [],
+      "risk": "Leaked proprietary prompts: a licence and terms-of-use problem. Don't install it or copy from it."
+    }
+  ],
+  "tagging": "Card tags: labels.type (how it connects) then labels.does (what it does, most useful first), at most five, plus Claude Code or Codex only when agentSupport (verified) and what Jupiter finds configured point to just one. Agent support is never written as a label."
+}
