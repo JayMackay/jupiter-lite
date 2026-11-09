@@ -31,6 +31,7 @@
   "items": [
     {
       "id": "andrej-karpathy-skills",
+      "starter": true,
       "cat": "harness",
       "name": "andrej-karpathy-skills",
       "repo": "multica-ai/andrej-karpathy-skills",
@@ -77,6 +78,7 @@
     },
     {
       "id": "superpowers",
+      "starter": true,
       "cat": "harness",
       "name": "superpowers",
       "repo": "obra/superpowers",
@@ -264,6 +266,7 @@
     },
     {
       "id": "anthropic-skills",
+      "starter": true,
       "cat": "skills",
       "name": "anthropic skills",
       "repo": "anthropics/skills",
@@ -330,6 +333,7 @@
     },
     {
       "id": "ui-ux-pro-max-skill",
+      "starter": true,
       "cat": "skills",
       "name": "ui-ux-pro-max-skill",
       "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
@@ -660,6 +664,7 @@
     },
     {
       "id": "playwright-mcp",
+      "starter": true,
       "cat": "tools",
       "name": "playwright-mcp",
       "repo": "microsoft/playwright-mcp",
@@ -708,6 +713,7 @@
     },
     {
       "id": "context7",
+      "starter": true,
       "cat": "tools",
       "name": "context7",
       "repo": "upstash/context7",
@@ -983,6 +989,7 @@
     },
     {
       "id": "pixelfx",
+      "starter": true,
       "cat": "tools",
       "name": "pixelfx",
       "repo": "patch-gg/pixelfx",
@@ -1035,6 +1042,7 @@
     },
     {
       "id": "claude-pxl",
+      "starter": true,
       "cat": "tools",
       "name": "claude-pxl",
       "repo": "crsolver/claude-pxl",
@@ -1089,6 +1097,7 @@
     },
     {
       "id": "pixelbolt",
+      "starter": true,
       "cat": "tools",
       "name": "pixelbolt",
       "repo": "skulitom/Pixelbolt",

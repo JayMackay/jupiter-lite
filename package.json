@@ -14,7 +14,7 @@
     "desktop:prepare": "node desktop/prepare.mjs",
     "desktop:build": "tauri build",
     "desktop:build:appimage": "NO_STRIP=1 tauri build --bundles appimage",
-    "desktop:dev": "tauri dev",
+    "desktop:dev": "npm run build && node -e \"require('fs').cpSync('public/assets','dist/assets',{recursive:true})\" && tauri dev",
     "desktop:test": "node --test desktop/service/test/*.test.mjs",
     "desktop:test:ui": "node desktop/service/test/ui.mjs && node desktop/service/test/links-ui.mjs && node desktop/service/test/scroll-ui.mjs && node desktop/service/test/history-ui.mjs && node desktop/service/test/groups-ui.mjs && node desktop/service/test/chat-picker-ui.mjs && node desktop/service/test/conversation-ui.mjs && node desktop/service/test/theme-ui.mjs && node desktop/service/test/voice-ui.mjs && node desktop/service/test/desktop-dictation-ui.mjs && node desktop/service/test/mobile-ui.mjs && node desktop/service/test/workspace-edit-ui.mjs && node desktop/service/test/cards-ui.mjs && node desktop/service/test/capabilities-ui.mjs && node desktop/service/test/dashboard-ui.mjs && node desktop/service/test/work-board-ui.mjs && node desktop/service/test/work-inspector-ui.mjs && node desktop/service/test/navigation-ui.mjs",
     "test": "npm run desktop:test",

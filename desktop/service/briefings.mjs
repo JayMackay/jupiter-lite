@@ -126,8 +126,7 @@ export async function describeNews(news, question = '') {
 // "Jupiter scan test", "can you map my test project", "read test again", "update the test project".
 const SCAN = /^(?:(?:hey |ok |okay )?jupiter[,.!]?\s*)?(?:(?:can|could|would) you |please )?(scan|map(?: out)?|read|re-?read|update|refresh|re-?scan|re-?map|index)\s+(?:my |the |our )?["“']?(.+?)["”']?(?:\s+(?:project|folder|repo))?(?:\s+(again|for me|to update|please))*\s*[.?!]*$/i;
 
-export async function projectFolders(repo) {
-  const root = path.join(repo, 'projects');
+export async function projectFolders(repo, root = path.join(repo, 'projects')) {
   const names = await readdir(root, { withFileTypes: true }).catch(() => []);
   return names.filter(entry => entry.isDirectory() && !entry.name.startsWith('.')).map(entry => ({ name: entry.name, path: path.join(root, entry.name) }));
 }
@@ -135,21 +134,21 @@ export async function projectFolders(repo) {
 const squash = text => String(text).toLowerCase().replace(/[^a-z0-9]+/g, '');
 
 /** Returns { project, update } when the words ask to map a folder that exists in projects/. */
-export async function matchProjectScan(repo, text) {
+export async function matchProjectScan(repo, text, root) {
   const m = String(text).trim().match(SCAN);
   if (!m) return null;
   const wanted = squash(m[2].replace(/\b(project|folder|repo|again)\b/gi, ''));
   if (!wanted) return null;
-  const folders = await projectFolders(repo);
+  const folders = await projectFolders(repo, root);
   const project = folders.find(entry => squash(entry.name) === wanted) || folders.find(entry => squash(entry.name).startsWith(wanted) || wanted.startsWith(squash(entry.name)));
   if (!project) return null;
   const update = /^(?:re-?read|update|refresh|re-?scan|re-?map)$/i.test(m[1]) || /\bagain\b|\bupdate\b/i.test(text);
   return { project, update };
 }
 
-export async function findProject(repo, name) {
+export async function findProject(repo, name, root) {
   const wanted = squash(name);
-  const folders = await projectFolders(repo);
+  const folders = await projectFolders(repo, root);
   return folders.find(entry => squash(entry.name) === wanted) || folders.find(entry => squash(entry.name).includes(wanted)) || null;
 }
 

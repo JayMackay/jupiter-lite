@@ -94,6 +94,17 @@ test('new chats pick from <repo>/projects and can create a validated project fol
     assert.deepEqual((await (await request('/chat-projects')).json()).projects.map(item => item.name), ['Alpha game 2.0_v', 'beta', 'Gamma']);
     const refused = await request('/chat-projects', { name: '../../outside' });
     assert.equal(refused.status, 400);
+
+    // A chosen projects folder outside the repository replaces <repo>/projects until reset.
+    const elsewhere = await tempRepo('chosen-projects');
+    await mkdir(path.join(elsewhere, 'Delta'));
+    assert.equal((await request('/projects-folder', { path: path.join(elsewhere, 'missing') })).status, 400);
+    assert.equal((await request('/projects-folder', { path: 'relative/folder' })).status, 400);
+    const chosen = await (await request('/projects-folder', { path: elsewhere })).json();
+    assert.deepEqual({ root: chosen.root, custom: chosen.custom, names: chosen.projects.map(item => item.name) }, { root: elsewhere, custom: true, names: ['Delta'] });
+    assert.equal((await (await request('/chat-projects', { name: 'Epsilon' })).json()).path, path.join(elsewhere, 'Epsilon'));
+    const reset = await (await request('/projects-folder', { path: null })).json();
+    assert.deepEqual({ root: reset.root, custom: reset.custom }, { root: path.join(repo, 'projects'), custom: false });
   } finally { await service.close(); }
 });
 

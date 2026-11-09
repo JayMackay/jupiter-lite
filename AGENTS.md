@@ -1,7 +1,7 @@
 # Jupiter
 
 This repository is a desktop workspace and a starter context for its owner.
-Read `context/preferences.md`, `context/goals.md`, and the relevant project before
+Read `context/me.md`, `context/preferences.md`, `context/goals.md`, and the relevant project before
 working. Ask for missing personal preferences; do not invent a biography.
 
 ## Working rules

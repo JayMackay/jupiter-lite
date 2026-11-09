@@ -114,6 +114,14 @@ if (process.platform === 'darwin') {
 await cp(path.join(repo, 'dist'), path.join(runtime, 'ui'), { recursive: true });
 // Vite deliberately does not copy the enormous workspace junction. Bundle only UI assets.
 try { await access(path.join(repo, 'public', 'assets')); await cp(path.join(repo, 'public', 'assets'), path.join(runtime, 'ui', 'assets'), { recursive: true }); } catch { /* Optional brand assets. */ }
+// Skills, the catalogue and rules travel with the app; the service syncs them into the user's repository.
+const { MANAGED } = await import('./service/managed-content.mjs');
+const skipContent = new Set(['node_modules', '.git', '__pycache__', '.DS_Store']);
+for (const entry of MANAGED) {
+  const from = path.join(repo, ...entry.split('/'));
+  if (!await access(from).then(() => true, () => false)) continue;
+  await cp(from, path.join(runtime, 'content', ...entry.split('/')), { recursive: true, filter: source => !path.relative(from, source).split(path.sep).some(part => skipContent.has(part)) });
+}
 await writeFile(path.join(runtime, 'README.txt'), `Jupiter local runtime for ${process.platform}. User repositories, keys and CLI logins are not included.\n`);
 const licenseCandidates = [
   path.join(path.dirname(process.execPath), 'LICENSE'),

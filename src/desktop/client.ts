@@ -4,6 +4,7 @@ import { anySignal } from '../lib/abort'
 
 const params = new URLSearchParams(window.location.search)
 export const isDesktop = params.get('desktop') === '1'
+export const OPEN_SETUP_EVENT = 'jupiter-open-setup'
 export const surface = params.get('surface') === 'chats' ? 'chats' : 'workspace'
 export const clientId = crypto.randomUUID()
 const native = window as Window & { __JUPITER_BOOTSTRAP_TOKEN__?: string }
@@ -105,6 +106,23 @@ export const toggleChats = () => {
 export const deleteChat = (id: string) => api<{ deleted: boolean; id: string }>(`/sessions/${id}/history`, {}, 'DELETE')
 export const chatProjects = () => api<ChatProjects>('/chat-projects')
 export const createChatProject = (name: string) => api<ChatProject>('/chat-projects', { name })
+export const setProjectsFolder = (path: string | null) => api<ChatProjects>('/projects-folder', { path })
+// Resolves with the chosen folder, or null when the dialog is cancelled.
+export function pickProjectsFolder(): Promise<string | null> {
+  const requestId = crypto.randomUUID()
+  return new Promise((resolve, reject) => {
+    const cleanup = () => { window.removeEventListener('jupiter-picked-folder', picked); window.removeEventListener('pagehide', closed) }
+    const picked = (event: Event) => {
+      const detail = (event as CustomEvent<{ requestId: string; path: string | null }>).detail
+      if (detail?.requestId !== requestId) return
+      cleanup(); resolve(detail.path)
+    }
+    const closed = () => { cleanup(); reject(new Error('The folder picker window was closed.')) }
+    window.addEventListener('jupiter-picked-folder', picked)
+    window.addEventListener('pagehide', closed)
+    api('/projects-folder/pick', { requestId }).catch(error => { cleanup(); reject(error) })
+  })
+}
 
 export async function startDesktop() {
   if (started) return

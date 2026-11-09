@@ -3,7 +3,10 @@ import { fileURLToPath } from 'node:url';
 import { createService } from './server.mjs';
 import { saveJson } from './util.mjs';
 import { syncAgentRules } from './agent-rules.mjs';
+import { syncManagedContent } from './managed-content.mjs';
+import { readJson } from './util.mjs';
 import { createInterface } from 'node:readline';
+import { existsSync } from 'node:fs';
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -12,13 +15,22 @@ const repo = path.resolve(option('--repo') || process.env.JUPITER_REPO || path.j
 const uiDir = path.resolve(option('--ui') || path.join(directory, '../../dist'));
 const stateDir = path.resolve(option('--state') || path.join(repo, '.jupiter'));
 const writeNative = value => process.stdout.write(JSON.stringify(value) + '\n');
+// An installed app carries skills, the catalogue and rules next to its service (runtime/content).
+// A source checkout has none there: the repository already is the source.
+const content = path.join(directory, '..', 'content');
+if (existsSync(content)) {
+  try {
+    const report = await syncManagedContent({ source: content, repo, stateDir });
+    if (report.kept.length) console.error(`Kept your edited copies of ${report.kept.length} managed file(s): ${report.kept.slice(0, 10).join(', ')}`);
+  } catch (error) { console.error(`Could not update the bundled skills and rules: ${error.message}`); }
+}
 const service = await createService({ repo, uiDir, stateDir, native: writeNative, restoreSessions: true, voiceOptions: { listen: true } });
 // Diagnostics are readable project state. Window credentials travel only over
 // the private startup pipe to the desktop shell, never through this file.
 await saveJson(path.join(stateDir, 'runtime.json'), { pid: process.pid, origin: service.origin });
 writeNative({ type: 'ready', ...service.urls });
 // Keep the agents' global instructions in step with knowledge/instructions/tool-rules.md.
-syncAgentRules(repo).catch(error => console.error(`Could not update the agents' tool rules: ${error.message}`));
+syncAgentRules(repo, { nickname: (await readJson(path.join(stateDir, 'settings.json'), null))?.nickname }).catch(error => console.error(`Could not update the agents' tool rules: ${error.message}`));
 let exiting = false;
 async function stop() {
   if (exiting) return; exiting = true;

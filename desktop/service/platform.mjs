@@ -34,8 +34,23 @@ export function commandSearchRoots(env = process.env, home = os.homedir()) {
   const roots = [];
   if (isWindows && env.APPDATA) roots.push(path.join(env.APPDATA, 'npm'));
   if (isWindows) roots.push(path.join(env.LOCALAPPDATA || path.join(home, 'AppData', 'Local'), 'agy', 'bin'));
+  // The standalone Codex installer's folder, found before a restart picks up the new PATH.
+  if (isWindows) roots.push(path.join(env.LOCALAPPDATA || path.join(home, 'AppData', 'Local'), 'Programs', 'OpenAI', 'Codex', 'bin'));
+  // Default Node.js and Git install folders, so tools installed during setup work straight away.
+  if (isWindows && env.ProgramFiles) roots.push(path.join(env.ProgramFiles, 'nodejs'), path.join(env.ProgramFiles, 'Git', 'cmd'));
+  else if (!isWindows) roots.push('/opt/homebrew/bin', '/usr/local/bin');
   roots.push(path.join(home, '.opencode', 'bin'), path.join(home, '.kimi-code', 'bin'), path.join(home, '.local', 'bin'));
   return roots;
+}
+
+// Adds the known install folders that exist to PATH, so child processes started before the
+// user's PATH was refreshed still find tools installed a moment ago.
+export function withCommandRoots(env = process.env, home = os.homedir()) {
+  const key = Object.keys(env).find(name => name.toUpperCase() === 'PATH') || 'PATH';
+  const current = String(env[key] || '').split(path.delimiter).filter(Boolean);
+  const known = new Set(current.map(folder => isWindows ? folder.toLowerCase() : folder));
+  const extra = commandSearchRoots(env, home).filter(folder => !known.has(isWindows ? folder.toLowerCase() : folder) && existsSync(folder));
+  return extra.length ? { ...env, [key]: [...current, ...extra].join(path.delimiter) } : env;
 }
 
 export function commandExtensions() {

@@ -2,8 +2,33 @@
 
 The application and your project folder are separate. The Windows installer
 (or, on macOS and Linux, a fresh build) updates the app and its local service.
-It does not replace your cards, skills, context, credentials or agent
-conversations.
+It does not replace your cards, context, credentials or agent conversations.
+Skills, the capability catalogue and tool rules ship with the app and are
+refreshed on start; a file you edited or deleted is left as you made it.
+
+## Automatic updates
+
+An installed Jupiter checks GitHub Releases shortly after start and every six
+hours. When a signed update exists it offers **Install and restart**. Open chats
+close for the restart and reopen afterwards.
+
+### Publishing updates (maintainers)
+
+One-time signing setup:
+
+1. From the repository folder, run
+   `npx tauri signer generate -w "$env:USERPROFILE\.tauri\jupiter.key"` (PowerShell;
+   use `~/.tauri/jupiter.key` on macOS and Linux) and keep the
+   private key and its password safe. Losing it means installed apps can no
+   longer update.
+2. In the GitHub repository settings, add the secrets
+   `TAURI_SIGNING_PRIVATE_KEY` (the private key file's contents) and
+   `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`, and the variable
+   `TAURI_UPDATER_PUBKEY` (the contents of `jupiter.key.pub`).
+
+Each release: merge to `main`, then run **Prepare release** in GitHub Actions.
+The build signs the installers and publishes `latest.json`, which installed apps
+read. Apps installed before signing was set up need one manual install.
 
 ## Application
 

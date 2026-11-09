@@ -16,24 +16,22 @@ import { opencodeVersion, opencodeEnvironment, readOpencodeState, watchOpencode 
 import { antigravityLogPath, prepareAntigravityLog, readAntigravityConversation, validAntigravityId, watchAntigravity } from './antigravity.mjs';
 import { opencodeStatePath } from './opencode.mjs';
 
-// New chats start in a folder under <repo>/projects. The New chat dialog lists
-// those folders and can create one.
+// New chats start in a folder under the projects folder: <repo>/projects unless the
+// user chose another one. The New chat dialog lists those folders and can create one.
 const projectFolderName = /^[\p{L}\p{N}._ ]+$/u;
-export async function chatProjects(repo) {
-  const root = path.join(repo, 'projects');
+export async function chatProjects(repo, root = path.join(repo, 'projects')) {
   // With no projects yet, a chat starts in the projects folder itself.
   await mkdir(root, { recursive: true });
   const entries = await readdir(root, { withFileTypes: true });
   const projects = entries.filter(entry => entry.isDirectory() && !entry.name.startsWith('.')).map(entry => ({ name: entry.name, path: path.join(root, entry.name) }));
   return { root, projects: projects.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })) };
 }
-export async function createChatProject(repo, value) {
+export async function createChatProject(repo, value, root = path.join(repo, 'projects')) {
   const name = typeof value === 'string' ? value.trim() : '';
   // Windows drops trailing dots and reserves device names, so neither can be a folder.
   if (!name || name.length > 80 || !projectFolderName.test(name) || /^\.+$/.test(name) || name.endsWith('.') || /^(con|prn|aux|nul|com\d|lpt\d)(\.|$)/i.test(name)) {
     throw Object.assign(new Error('Name the project folder with letters, numbers, spaces, dots or underscores.'), { status: 400 });
   }
-  const root = path.join(repo, 'projects');
   await mkdir(root, { recursive: true });
   const folder = path.join(root, name);
   try { await mkdir(folder); }

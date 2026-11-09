@@ -1,5 +1,7 @@
 # Credentials and local agent state
 .env
+# Written by first-run setup: the owner's name.
+context/me.md
 .env.*
 !.env.example
 **/auth.json

@@ -27,7 +27,6 @@ import '../styles/dashboard.css'
 
 type View = 'projects' | 'todo' | 'news' | 'notes' | 'agents' | 'connections' | 'capabilities' | 'archive' | 'tokens' | 'library'
 
-const OWNER = () => { try { return localStorage.getItem('jupiter.ownerName') || 'Jay' } catch { return 'Jay' } }
 // Remembered while the app runs, so returning from a search or a project restores the open panel.
 let rememberedView: View | null = null
 let rememberedTab: CapabilityTab = 'harness'
@@ -138,9 +137,9 @@ export default function Dashboard({ entities, offline, cards }: DashboardProps) 
     return () => window.removeEventListener('keydown', onKey)
   }, [view, setView])
 
-  // One greeting per visit: the seed and the owner name are fixed while the Dashboard is open, so only
-  // a new day part (for example morning to afternoon) can change the words, never a clock tick.
-  const [owner] = useState(OWNER)
+  // One greeting per visit: the seed is fixed while the Dashboard is open, so only a new day part
+  // (for example morning to afternoon) or a new name from setup can change the words, never a clock tick.
+  const owner = desktop.settings.nickname || desktop.settings.ownerName?.split(' ')[0] || ''
   const [seed] = useState(Math.random)
   const [lastLine] = useState(lastGreeting)
   const part = dayPart(new Date(now))

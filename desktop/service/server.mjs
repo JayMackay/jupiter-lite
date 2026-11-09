@@ -52,10 +52,12 @@ import { WakeWord } from './wake-word.mjs';
 import { randomUUID } from 'node:crypto';
 import { ConnectionsOverview } from './connections.mjs';
 import { Capabilities } from './capabilities.mjs';
+import { agentStatus, elevenLabsStatus, elevenLabsVoices, saveElevenLabs, saveProfile } from './setup.mjs';
+import { syncAgentRules } from './agent-rules.mjs';
 
 const listen = server => new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', () => resolve(`http://127.0.0.1:${server.address().port}`)); });
 
-export async function createService({ repo, uiDir, stateDir, token = secret(), native = () => {}, restoreSessions = false, mcpOptions, mobileOptions, capabilityOptions, newsOptions, voiceOptions = {} }) {
+export async function createService({ repo, uiDir, stateDir, token = secret(), native = () => {}, restoreSessions = false, mcpOptions, mobileOptions, capabilityOptions, newsOptions, voiceOptions = {}, setupOptions = {} }) {
   repo = await realpath(repo);
   stateDir ||= path.join(repo, '.jupiter');
   const dictation = mobileOptions?.dictation || new MobileDictation(repo);
@@ -87,10 +89,11 @@ export async function createService({ repo, uiDir, stateDir, token = secret(), n
     return info;
   };
   const projectList = () => recentProjects({ repo, sessions: sessions.list(), pinned: settings.pinnedProjects || [] });
+  const projectsRoot = () => settings.projectsDir || path.join(repo, 'projects');
   const connections = new ConnectionsOverview({ repo, projects: projectList, workspaceInventory: mcp, mcpOptions });
   const capabilities = new Capabilities({ repo, stateDir, connections, projects: projectList, ...capabilityOptions });
   // A tool's own editor (Pixelbolt's studio), started from its card and stopped when Jupiter closes.
-  const editors = capabilityOptions?.editors || new ToolEditors({ toolsDir: capabilities.toolsDir, cwd: path.join(repo, 'projects') });
+  const editors = capabilityOptions?.editors || new ToolEditors({ toolsDir: capabilities.toolsDir, cwd: projectsRoot() });
   const nativeWindows = capabilityOptions?.nativeWindows ?? Boolean(process.env.JUPITER_PARENT_PID);
   const withEditors = list => ({ ...list, items: list.items.map(item => item.editor ? { ...item, editorState: editors.state(item.id) } : item) });
   let selectedId = sessions.active().some(item => item.id === settings.selectedId) ? settings.selectedId : sessions.active()[0]?.id || null;
@@ -103,6 +106,7 @@ export async function createService({ repo, uiDir, stateDir, token = secret(), n
   let voiceHistory = await readJson(transcriptPath, []);
   let transcriptSave = Promise.resolve();
   let voiceOwner = null;
+  let starterRunning = false;
   let closing = false;
   const clients = new Set();
   let mobile;
@@ -229,7 +233,7 @@ export async function createService({ repo, uiDir, stateDir, token = secret(), n
         case 'get_weather': return { say: await weather.describe(`${args.when === 'tomorrow' ? 'tomorrow ' : ''}${args.place ? `in ${args.place}` : ''}`, settings.weatherPlace || 'London') };
         case 'get_news': return { say: (await describeNews(news, String(args.topic || ''))).text };
         case 'map_project': {
-          const project = await findProject(repo, String(args.name || ''));
+          const project = await findProject(repo, String(args.name || ''), projectsRoot());
           if (!project) throw new Error(`There is no folder called ${args.name} in projects.`);
           return await mapProject(project, args.update === true);
         }
@@ -327,7 +331,7 @@ export async function createService({ repo, uiDir, stateDir, token = secret(), n
     }
     offer = null;
     if (parseTicketRequest(text)) return false; // a ticket about the news or the weather is still a ticket
-    const scan = await matchProjectScan(repo, text).catch(() => null);
+    const scan = await matchProjectScan(repo, text, projectsRoot()).catch(() => null);
     if (scan) {
       try { await mapProject(scan.project, scan.update); await say('reply', scan.update ? `On it. Rereading ${scan.project.name} and updating its map.` : `On it. Mapping ${scan.project.name} now, I'll tell you when it's done.`); }
       catch (error) { await say('reply', `I couldn't start the map: ${publicError(error)}`); }
@@ -631,8 +635,74 @@ export async function createService({ repo, uiDir, stateDir, token = secret(), n
           }
           return json(response, 200, result);
         }
-        if (method === 'GET' && url.pathname === '/api/chat-projects') return json(response, 200, await chatProjects(repo));
-        if (method === 'POST' && url.pathname === '/api/chat-projects') return json(response, 201, await createChatProject(repo, data.name));
+        if (method === 'GET' && url.pathname === '/api/chat-projects') return json(response, 200, { ...await chatProjects(repo, projectsRoot()), custom: Boolean(settings.projectsDir) });
+        if (method === 'POST' && url.pathname === '/api/chat-projects') return json(response, 201, await createChatProject(repo, data.name, projectsRoot()));
+        if (method === 'POST' && url.pathname === '/api/projects-folder/pick') {
+          if (typeof data.requestId !== 'string' || !/^[a-f\d-]{36}$/i.test(data.requestId)) throw new Error('Invalid folder picker request.');
+          native({ type: 'pick-folder', requestId: data.requestId, title: 'Choose your projects folder' });
+          return json(response, 200, { requested: true });
+        }
+        if (method === 'POST' && url.pathname === '/api/projects-folder') {
+          if (data.path === null) settings.projectsDir = null;
+          else {
+            const folder = typeof data.path === 'string' ? path.resolve(data.path) : '';
+            if (!folder || !path.isAbsolute(String(data.path)) || !(await stat(folder).then(item => item.isDirectory(), () => false))) throw Object.assign(new Error('Choose an existing folder.'), { status: 400 });
+            settings.projectsDir = folder;
+          }
+          await saveSettings(); broadcast('settings', { settings });
+          return json(response, 200, { ...await chatProjects(repo, projectsRoot()), custom: Boolean(settings.projectsDir) });
+        }
+        // First-run setup. Every step can also be revisited later from Settings.
+        if (method === 'GET' && url.pathname === '/api/setup') {
+          return json(response, 200, { done: settings.setupDone === true, profile: { name: settings.ownerName || '', nickname: settings.nickname || '' }, projects: { root: projectsRoot(), custom: Boolean(settings.projectsDir) },
+            agents: await agentStatus(setupOptions), starter: await capabilities.starter(), starterRunning, elevenlabs: await elevenLabsStatus(repo) });
+        }
+        if (method === 'POST' && url.pathname === '/api/setup/profile') {
+          const profile = await saveProfile(repo, data);
+          Object.assign(settings, profile); await saveSettings(); broadcast('settings', { settings });
+          syncAgentRules(repo, { nickname: profile.nickname, ...setupOptions }).catch(() => {});
+          return json(response, 200, profile);
+        }
+        if (method === 'POST' && url.pathname === '/api/setup/agent') {
+          const agent = (await agentStatus(setupOptions)).find(item => item.id === data.agent);
+          if (!agent || !['install', 'signin'].includes(data.action) || (agent.requirement && data.action !== 'install')) throw Object.assign(new Error('Choose something to install or sign in to.'), { status: 400 });
+          const cwd = projectsRoot(); await mkdir(cwd, { recursive: true });
+          let session;
+          if (data.action === 'install') {
+            if (!agent.install) throw Object.assign(new Error(agent.note || `Install ${agent.label} by hand: ${agent.docs}`), { status: 409 });
+            session = await sessions.create({ agent: 'shell', cwd, name: `Install ${agent.label}` });
+            // The shell needs a moment to show its prompt before the command is typed.
+            setTimeout(() => { try { sessions.input(session.id, `${agent.install}\r`); } catch { /* The tab was closed. */ } }, 1500);
+          } else {
+            if (!agent.installed) throw Object.assign(new Error(`Install ${agent.label} first.`), { status: 409 });
+            // A first run of the CLI walks through its own browser sign-in.
+            session = await sessions.create({ agent: agent.id, cwd, name: `Sign In To ${agent.label}`, bypass: false });
+          }
+          focus(session.id);
+          return json(response, 201, { sessionId: session.id });
+        }
+        if (method === 'POST' && url.pathname === '/api/setup/starter') {
+          if (starterRunning) return json(response, 202, { started: false, running: true });
+          if (data.acceptHooks !== true) throw Object.assign(new Error('Agree to install the starter tools, including any hooks they add.'), { status: 400 });
+          starterRunning = true;
+          capabilities.installStarter({ acceptHooks: true, onProgress: progress => broadcast('setup-progress', { progress }) })
+            .then(result => broadcast('setup-progress', { done: result }))
+            .catch(error => broadcast('setup-progress', { error: publicError(error) }))
+            .finally(() => { starterRunning = false; });
+          return json(response, 202, { started: true });
+        }
+        if (method === 'POST' && url.pathname === '/api/setup/elevenlabs/voices') return json(response, 200, { voices: await elevenLabsVoices(data.key, setupOptions.fetcher) });
+        if (method === 'POST' && url.pathname === '/api/setup/elevenlabs') return json(response, 200, await saveElevenLabs(repo, data, setupOptions.fetcher));
+        if (method === 'POST' && url.pathname === '/api/setup/done') {
+          settings.setupDone = data.done !== false; await saveSettings(); broadcast('settings', { settings });
+          return json(response, 200, { done: settings.setupDone });
+        }
+        // App updates are checked and installed by the desktop shell; results arrive as a window event.
+        if (method === 'POST' && url.pathname === '/api/update') {
+          if (!['check', 'install'].includes(data.action)) throw Object.assign(new Error('Unknown update action.'), { status: 400 });
+          native({ type: `update-${data.action}` });
+          return json(response, 202, { requested: true });
+        }
         if (method === 'POST' && url.pathname === '/api/groups/delete') {
           // The group's color and collapsed state go with it; the chats stay.
           const name = groupLabel(data.name);

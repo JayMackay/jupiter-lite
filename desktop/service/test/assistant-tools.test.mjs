@@ -1,7 +1,7 @@
 // The assistant's tools for the app: work items, brainstorm boards and handing work to Claude.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cp, mkdir, mkdtemp, readFile, readdir } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readFile, readdir, realpath } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,7 +11,8 @@ import { createService } from '../server.mjs';
 const root = path.resolve(fileURLToPath(new URL('../../..', import.meta.url)));
 
 test('Jupiter can add a feature, build a brainstorm board and hand the feature to Claude', async () => {
-  const temp = await mkdtemp(path.join(os.tmpdir(), 'jupiter-tools-'));
+  // Windows may report the temp folder in 8.3 short form; the service resolves the long form.
+  const temp = await realpath(await mkdtemp(path.join(os.tmpdir(), 'jupiter-tools-')));
   const repo = path.join(temp, 'repo');
   await mkdir(path.join(repo, 'workspace'), { recursive: true });
   await cp(path.join(root, 'workspace/_shared'), path.join(repo, 'workspace/_shared'), { recursive: true });

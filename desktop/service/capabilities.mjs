@@ -12,6 +12,7 @@ import { cp, lstat, mkdir, readFile, readdir, readlink, rm, stat, symlink, write
 import os from 'node:os';
 import path from 'node:path';
 import { commandPath } from './agents.mjs';
+import { resolveCommand, withCommandRoots } from './platform.mjs';
 import { readJson, saveJson } from './util.mjs';
 
 const isWindows = process.platform === 'win32';
@@ -30,10 +31,13 @@ const pathKey = value => { const resolved = path.resolve(value); return isWindow
 
 // Runs a program without a shell. Windows .cmd shims (npm, npx) go through cmd.exe with
 // arguments the catalogue and the checks above have already restricted to safe characters.
+// Git and npm installed during setup are found in their default folders before PATH refreshes.
 export function runCommand(file, args, { cwd, timeout = 10 * 60 * 1000, env = process.env } = {}) {
-  const shim = isWindows && /^(npm|npx)$/i.test(file);
-  const program = shim ? (env.ComSpec || 'cmd.exe') : file;
-  const argv = shim ? ['/d', '/c', file, ...args] : args;
+  env = withCommandRoots(env);
+  const resolved = path.isAbsolute(file) ? file : resolveCommand(file, env) || file;
+  const shim = isWindows && (/^(npm|npx)$/i.test(resolved) || /\.(cmd|bat)$/i.test(resolved));
+  const program = shim ? (env.ComSpec || 'cmd.exe') : resolved;
+  const argv = shim ? ['/d', '/c', path.isAbsolute(file) ? resolved : file, ...args] : args;
   return new Promise((resolve, reject) => execFile(program, argv, { cwd, timeout, env, windowsHide: true, maxBuffer: 8 * 1024 * 1024 }, (error, stdout, stderr) => {
     if (error) reject(Object.assign(new Error(String(stderr || stdout || error.message).trim().split(/\r?\n/).slice(-6).join('\n') || error.message), { status: 502 }));
     else resolve({ stdout: String(stdout), stderr: String(stderr) });
@@ -516,6 +520,30 @@ export class Capabilities {
       if (token) this.reviews.delete(id);
       return this.list();
     });
+  }
+
+  // The free starter set: catalogue items marked "starter", installed one after another after a
+  // single consent. One failure is reported and the rest still install.
+  async starter() {
+    return (await this.list()).items.filter(item => item.starter).map(item => ({ id: item.id, name: item.name, what: item.what || '', cat: item.cat, state: item.state }));
+  }
+  async installStarter({ acceptHooks = false, onProgress = () => {} } = {}) {
+    if (acceptHooks !== true) throw fail('Agree to install the starter tools, including any hooks they add.', 400);
+    const pending = (await this.starter()).filter(item => item.state === 'available');
+    const results = [];
+    for (const item of pending) {
+      onProgress({ id: item.id, name: item.name, state: 'installing' });
+      try {
+        const review = await this.review(item.id);
+        await this.install(item.id, { token: review.token, acceptHooks: true });
+        results.push({ id: item.id, name: item.name, ok: true });
+        onProgress({ id: item.id, name: item.name, state: 'installed' });
+      } catch (error) {
+        results.push({ id: item.id, name: item.name, ok: false, error: error.message });
+        onProgress({ id: item.id, name: item.name, state: 'failed', error: error.message });
+      }
+    }
+    return { results, starter: await this.starter() };
   }
 
   async restore(item, entry) {

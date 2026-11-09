@@ -13,7 +13,7 @@ export interface ChatSession {
   open: boolean; pinned: boolean; updatedAt: string; preview?: string; hasConversation?: boolean; restoreError?: string | null
 }
 export interface ChatProject { name: string; path: string }
-export interface ChatProjects { root: string; projects: ChatProject[] }
+export interface ChatProjects { root: string; projects: ChatProject[]; custom?: boolean }
 export interface RecentProject { path: string; name: string; sources: ('workspace' | 'jupiter' | 'claude' | 'codex')[]; pinned: boolean; lastUsedAt: string | null }
 export interface Handoff { status: 'summarizing' | 'opening' | 'done' | 'failed'; error?: string | null; sessionId?: string | null; file?: string | null; at: string }
 export interface Notice { id: string; sessionId: string; name: string; kind: string; text: string; at: string }
@@ -21,7 +21,7 @@ export interface Operation { id: string; text: string; status: string; result?: 
 /** Jupiter's own conversations, listed in the Activity tab. */
 export interface JupiterChat { id: string; title: string; named: boolean; created: string; updated: string }
 export interface JupiterChatList { active: string | null; chats: JupiterChat[] }
-export interface Settings { defaultAgent: AgentId; transcribeProvider?: 'local' | 'openai' | 'openrouter' | 'off'; defaultBypass: boolean; terminalFontSize?: number; terminalAppearance?: 'focus' | 'original'; workspaceTheme?: ThemePreference; chatTheme?: ThemePreference; workspaceRoute?: string | null; selectedId?: string | null; coordinatorEffort?: 'medium' | 'high'; voiceName?: string; voiceStyle?: string; handoffAfter?: number; terminalOptionMeta?: boolean; collapsedGroups?: string[]; groupColors?: Record<string, string>; systemEvents?: SystemEventsMode }
+export interface Settings { defaultAgent: AgentId; ownerName?: string; nickname?: string; setupDone?: boolean; projectsDir?: string | null; transcribeProvider?: 'local' | 'openai' | 'openrouter' | 'off'; defaultBypass: boolean; terminalFontSize?: number; terminalAppearance?: 'focus' | 'original'; workspaceTheme?: ThemePreference; chatTheme?: ThemePreference; workspaceRoute?: string | null; selectedId?: string | null; coordinatorEffort?: 'medium' | 'high'; voiceName?: string; voiceStyle?: string; handoffAfter?: number; terminalOptionMeta?: boolean; collapsedGroups?: string[]; groupColors?: Record<string, string>; systemEvents?: SystemEventsMode }
 export type SystemEventsMode = 'full' | 'compact' | 'hidden'
 export interface VoiceOwner { clientId: string; surface: 'chats' | 'workspace' }
 export interface FileEntry { name: string; path: string; directory: boolean; size: number; modifiedAt: string | null }
@@ -41,4 +41,13 @@ export interface ServiceEvent {
   operation?: Operation; chats?: JupiterChatList; settings?: Settings; owner?: VoiceOwner | null; window?: string; route?: string; preview?: Preview; handoff?: Handoff
   /** workspace-changed: the page file that changed, relative to the repo. */
   path?: string
+  /** setup-progress: one starter tool's state, the finished run, or why it stopped. */
+  progress?: StarterProgress; done?: { results: { id: string; name: string; ok: boolean; error?: string }[]; starter: StarterItem[] }
+}
+export interface SetupAgent { id: 'git' | 'node' | 'claude' | 'codex'; label: string; requirement?: boolean; installed: boolean; signedIn: boolean; install: string | null; docs: string; note?: string }
+export interface StarterItem { id: string; name: string; what: string; cat: string; state: string }
+export interface StarterProgress { id: string; name: string; state: 'installing' | 'installed' | 'failed'; error?: string }
+export interface SetupState {
+  done: boolean; profile: { name: string; nickname: string }; projects: { root: string; custom: boolean }
+  agents: SetupAgent[]; starter: StarterItem[]; starterRunning: boolean; elevenlabs: { configured: boolean; voiceId: string | null }
 }

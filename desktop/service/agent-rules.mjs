@@ -34,6 +34,9 @@ export async function syncAgentRules(repo, options = {}) {
   try { rules = await readFile(path.join(repo, 'knowledge/instructions/tool-rules.md'), 'utf8'); }
   catch (error) { if (error.code === 'ENOENT') return []; throw error; }
   const changed = [];
+  // Rules are shared across machines, so paths are written as {{JUPITER_REPO}} and filled in here.
+  rules = rules.replaceAll('{{JUPITER_REPO}}', repo.split(path.sep).join('/'));
+  if (options.nickname) rules = `${rules.trim()}\n- **Name.** Call the user ${options.nickname}.`;
   for (const file of ruleTargets(options)) {
     const before = await readFile(file, 'utf8').catch(error => { if (error.code === 'ENOENT') return ''; throw error; });
     const after = withRules(before, rules);

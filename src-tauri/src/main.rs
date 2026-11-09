@@ -10,6 +10,46 @@ use std::os::windows::process::CommandExt;
 use std::os::windows::io::{AsRawHandle, FromRawHandle, OwnedHandle};
 
 struct Service(Mutex<Option<Child>>);
+// True only when the build carries an updater public key (release builds with signing set up).
+struct UpdaterEnabled(bool);
+
+// Asks the local service to save and quit, then makes sure it has stopped.
+fn stop_service(app: &tauri::AppHandle) {
+    if let Some(mut child) = app.state::<Service>().0.lock().unwrap().take() {
+        if let Some(mut stdin) = child.stdin.take() { let _ = stdin.write_all(b"quit\n"); }
+        for _ in 0..80 { if child.try_wait().ok().flatten().is_some() { break; } std::thread::sleep(std::time::Duration::from_millis(100)); }
+        let _ = child.kill(); let _ = child.wait();
+    }
+}
+
+fn update_event(app: &tauri::AppHandle, detail: serde_json::Value) {
+    if let Some(window) = app.get_webview_window("workspace") {
+        let _ = window.eval(format!("window.dispatchEvent(new CustomEvent('jupiter-update',{{detail:{detail}}}))"));
+    }
+}
+
+fn run_update(app: tauri::AppHandle, install: bool) {
+    if !app.state::<UpdaterEnabled>().0 { update_event(&app, serde_json::json!({ "state": "unavailable" })); return; }
+    tauri::async_runtime::spawn(async move {
+        use tauri_plugin_updater::UpdaterExt;
+        let error = |app: &tauri::AppHandle, message: String| update_event(app, serde_json::json!({ "state": "error", "message": message }));
+        let handle = app.clone();
+        // Windows installers close the app themselves; save chats and stop the service first.
+        let updater = match app.updater_builder().on_before_exit(move || stop_service(&handle)).build() { Ok(updater) => updater, Err(e) => return error(&app, e.to_string()) };
+        match updater.check().await {
+            Ok(Some(update)) if !install => update_event(&app, serde_json::json!({ "state": "available", "version": update.version, "notes": update.body })),
+            Ok(Some(update)) => {
+                update_event(&app, serde_json::json!({ "state": "installing", "version": update.version }));
+                match update.download_and_install(|_, _| {}, || {}).await {
+                    Ok(()) => { stop_service(&app); app.restart(); },
+                    Err(e) => error(&app, e.to_string()),
+                }
+            },
+            Ok(None) => update_event(&app, serde_json::json!({ "state": "current" })),
+            Err(e) => error(&app, e.to_string()),
+        }
+    });
+}
 #[cfg(windows)]
 struct ServiceJob(Mutex<Option<OwnedHandle>>);
 #[cfg(windows)]
@@ -346,14 +386,19 @@ fn guarded_setup(app: &mut tauri::App, setup: impl FnOnce(&mut tauri::App) -> Re
 }
 
 fn main() {
-    let result = tauri::Builder::default()
+    let context = tauri::generate_context!();
+    let updater = context.config().plugins.0.contains_key("updater");
+    let builder = tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, args, _| {
             if args.iter().any(|arg| arg == "--quit") { app.exit(0); }
             else if let Some(label) = requested_window(&args) { reveal(app, label); }
             else { reveal(app, "workspace"); }
         }))
         .plugin(recall_plugin())
-        .plugin(tauri_plugin_window_state::Builder::default().with_state_flags(StateFlags::SIZE | StateFlags::POSITION | StateFlags::MAXIMIZED).build())
+        .plugin(tauri_plugin_window_state::Builder::default().with_state_flags(StateFlags::SIZE | StateFlags::POSITION | StateFlags::MAXIMIZED).build());
+    let builder = if updater { builder.plugin(tauri_plugin_updater::Builder::new().build()) } else { builder };
+    let result = builder
+        .manage(UpdaterEnabled(updater))
         .manage(Service(Mutex::new(None)))
         .setup(|app| guarded_setup(app, |app| {
             if std::env::args().any(|arg| arg == "--quit") { app.handle().exit(0); return Ok(()); }
@@ -449,6 +494,19 @@ fn main() {
                                 });
                             }
                         },
+                        "update-check" => run_update(app_handle.clone(), false),
+                        "update-install" => run_update(app_handle.clone(), true),
+                        "pick-folder" => {
+                            if let (Some(window), Some(request_id)) = (app_handle.get_webview_window("workspace"), event["requestId"].as_str()) {
+                                let request_id = request_id.to_owned();
+                                let title = event["title"].as_str().unwrap_or("Choose a folder").to_owned();
+                                std::thread::spawn(move || {
+                                    let folder = rfd::FileDialog::new().set_parent(&window).set_title(&title).pick_folder();
+                                    let detail = serde_json::json!({ "requestId": request_id, "path": folder });
+                                    let _ = window.eval(format!("window.dispatchEvent(new CustomEvent('jupiter-picked-folder',{{detail:{detail}}}))"));
+                                });
+                            }
+                        },
                         "reveal" => { if let Some(file) = event["path"].as_str() { let _ = external_links::reveal_path(file); } },
                         // A tool's own editor (Pixelbolt Studio) in its own Jupiter window rather than a browser.
                         // Only a local editor on 127.0.0.1 is opened, and the window gets no Jupiter sign-in
@@ -530,7 +588,7 @@ fn main() {
                 .on_tray_icon_event(|tray, event| { if let TrayIconEvent::Click { button: MouseButton::Left, button_state: MouseButtonState::Up, .. } = event { reveal(tray.app_handle(), "workspace"); } })
                 .build(app)?;
             Ok(())
-        })).build(tauri::generate_context!());
+        })).build(context);
     match result {
         Ok(app) => app.run(|app, event| {
             #[cfg(target_os = "macos")]
@@ -538,11 +596,7 @@ fn main() {
             if let tauri::RunEvent::Exit = event {
                 #[cfg(windows)]
                 if let Some(shortcut) = app.try_state::<win_key::WinKeyShortcut>() { shortcut.shutdown(); }
-                if let Some(mut child) = app.state::<Service>().0.lock().unwrap().take() {
-                    if let Some(mut stdin) = child.stdin.take() { let _ = stdin.write_all(b"quit\n"); }
-                    for _ in 0..80 { if child.try_wait().ok().flatten().is_some() { break; } std::thread::sleep(std::time::Duration::from_millis(100)); }
-                    let _ = child.kill(); let _ = child.wait();
-                }
+                stop_service(app);
                 #[cfg(windows)]
                 if let Some(job) = app.try_state::<ServiceJob>() { job.0.lock().unwrap().take(); }
             }
