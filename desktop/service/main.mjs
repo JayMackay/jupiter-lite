@@ -24,7 +24,7 @@ if (existsSync(content)) {
     if (report.kept.length) console.error(`Kept your edited copies of ${report.kept.length} managed file(s): ${report.kept.slice(0, 10).join(', ')}`);
   } catch (error) { console.error(`Could not update the bundled skills and rules: ${error.message}`); }
 }
-const service = await createService({ repo, uiDir, stateDir, native: writeNative, restoreSessions: true, voiceOptions: { listen: true } });
+const service = await createService({ repo, uiDir, stateDir, native: writeNative, restoreSessions: true, voiceOptions: { listen: true }, setupOptions: { firstRun: true } });
 // Diagnostics are readable project state. Window credentials travel only over
 // the private startup pipe to the desktop shell, never through this file.
 await saveJson(path.join(stateDir, 'runtime.json'), { pid: process.pid, origin: service.origin });

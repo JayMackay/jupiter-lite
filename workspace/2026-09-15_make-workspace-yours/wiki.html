@@ -10,153 +10,217 @@
 <style>
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{scroll-behavior:smooth}
-html[data-jupiter-report=document] body{padding:0;margin:0;line-height:1.65;font-size:14px}
+:root{--w-bg:#050913;--w-ink:#e9eefb;--w-muted:#93a1bf;--w-faint:#64708c;--w-line:rgba(255,255,255,.08);--w-line-strong:rgba(255,255,255,.14);--w-glass:rgba(255,255,255,.045);--w-glass-hi:rgba(255,255,255,.085);--w-accent:#7dd3fc;--w-accent-2:#a78bfa;--w-accent-3:#5eead4;--w-r-lg:26px;--w-r-md:18px;--w-r-sm:12px;--w-blur:saturate(170%) blur(22px);--w-ease:cubic-bezier(.2,.7,.2,1);color-scheme:dark}
+html{scroll-behavior:smooth;background:var(--w-bg)}
+html[data-jupiter-report=document] body{padding:0;margin:0;line-height:1.7;font-size:15px;color:var(--w-ink);background:transparent;font-family:Inter,'Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select{font:inherit}
 button,a,input,select{touch-action:manipulation}
 button{cursor:pointer}
-a{text-decoration:none}
+a{text-decoration:none;color:var(--w-accent)}
 p{margin:0 0 16px}
-.wiki-layout{min-height:100vh;display:grid;grid-template-columns:224px minmax(0,1fr)}
-.sidebar{border-right:1px solid var(--jupiter-border);position:sticky;top:0;height:100dvh;overflow-y:auto;padding:30px 14px 20px;background:var(--jupiter-bg);z-index:30}
-.brand{padding:4px 14px 26px;display:block;text-align:center;border-bottom:1px solid var(--jupiter-border);margin-bottom:22px}
-.brand .sigil{display:block;font-size:30px;line-height:1;color:var(--jupiter-accent);margin-bottom:15px}
-.brand strong{font-family:Georgia,serif;font-weight:500;letter-spacing:.1em;font-size:20px;line-height:1.3;display:block}
-.brand small{display:block;font-size:9px;letter-spacing:.28em;color:var(--jupiter-muted);margin-top:10px}
-.nav-group{margin:0 0 22px}
-.nav-group h2{font:500 10px/1.4 var(--jupiter-font)!important;letter-spacing:.15em;color:var(--jupiter-muted)!important;margin:0 12px 9px!important;padding:0!important}
-.nav-link{display:flex;align-items:center;gap:10px;min-height:35px;padding:7px 11px;color:var(--jupiter-muted)!important;border:1px solid transparent;border-radius:5px;line-height:1.3;margin:2px 0;font-size:12px}
-.nav-link .nav-mark{width:14px;text-align:center;opacity:.7;font-size:12px}
-.nav-link:hover{background:color-mix(in srgb,var(--jupiter-accent) 5%,transparent);color:var(--jupiter-text)!important}
-.nav-link[aria-current=page]{color:var(--jupiter-text)!important;background:color-mix(in srgb,var(--jupiter-accent) 11%,transparent);border-color:color-mix(in srgb,var(--jupiter-accent) 28%,transparent)}
-.sidebar-foot{border-top:1px solid var(--jupiter-border);padding:16px 12px;color:var(--jupiter-muted);font-size:10px;line-height:1.8}
+code{font:12.5px/1.5 ui-monospace,'Cascadia Code',Consolas,monospace;background:rgba(125,211,252,.08);border:1px solid rgba(125,211,252,.14);color:#cdefff;border-radius:7px;padding:1px 6px}
+::selection{background:rgba(125,211,252,.3)}
+
+/* Background: slow aurora with parallax */
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:radial-gradient(1200px 700px at 70% -10%,#0d1a33 0%,transparent 60%),var(--w-bg)}
+.aurora .layer{position:absolute;width:62vmax;height:62vmax;border-radius:50%;will-change:transform}
+.aurora .layer::before{content:'';position:absolute;inset:0;border-radius:inherit;filter:blur(70px);opacity:.55;animation:drift 26s var(--w-ease) infinite alternate}
+.aurora .l1{left:-18vmax;top:-22vmax;transform:translate3d(calc(var(--mx,0)*50px),calc(var(--sy,0)*-.06px + var(--my,0)*40px),0)}
+.aurora .l1::before{background:radial-gradient(circle,#1d4ed8 0%,transparent 62%)}
+.aurora .l2{right:-22vmax;top:8vmax;transform:translate3d(calc(var(--mx,0)*-70px),calc(var(--sy,0)*-.14px + var(--my,0)*-50px),0)}
+.aurora .l2::before{background:radial-gradient(circle,#7c3aed 0%,transparent 60%);animation-duration:32s;opacity:.4}
+.aurora .l3{left:20vmax;bottom:-34vmax;transform:translate3d(calc(var(--mx,0)*30px),calc(var(--sy,0)*-.1px + var(--my,0)*-30px),0)}
+.aurora .l3::before{background:radial-gradient(circle,#0e7490 0%,transparent 60%);animation-duration:38s;opacity:.45}
+.aurora .grain{position:absolute;inset:0;opacity:.05;background-image:radial-gradient(rgba(255,255,255,.7) 1px,transparent 1px);background-size:3px 3px;mix-blend-mode:overlay}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(4%,6%) scale(1.08)}100%{transform:translate(-5%,2%) scale(.96)}}
+
+/* Liquid glass surfaces */
+.sidebar,.topbar,.page-header,.concept-rail,.stat-grid>div,.link-grid a,.table-wrap,.callout,.region,.flow,.diagram,.layer-card,.search-results{background:linear-gradient(180deg,var(--w-glass-hi),var(--w-glass));border:1px solid var(--w-line);-webkit-backdrop-filter:var(--w-blur);backdrop-filter:var(--w-blur);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 18px 50px -20px rgba(0,0,0,.6)}
+
+/* Layout */
+.wiki-layout{min-height:100vh;display:grid;grid-template-columns:262px minmax(0,1fr)}
+.sidebar{position:sticky;top:14px;margin:14px 0 14px 14px;height:calc(100dvh - 28px);overflow-y:auto;padding:22px 14px 16px;border-radius:var(--w-r-lg);z-index:30;scrollbar-width:none}
+.sidebar::-webkit-scrollbar{display:none}
+.brand{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:12px;padding:6px 10px 20px;margin-bottom:16px;border-bottom:1px solid var(--w-line);color:var(--w-ink)}
+.brand .sigil{grid-row:span 2;display:grid;place-items:center;width:42px;height:42px}
+.brand .sigil img{width:150%;height:150%;object-fit:contain;margin:-25%;filter:drop-shadow(0 4px 12px rgba(125,211,252,.45))}
+.hero-orb .core img{width:150%;height:150%;margin:-25%;object-fit:contain;filter:drop-shadow(0 4px 14px rgba(125,211,252,.45))}
+.brand strong{display:block;font-size:17px;font-weight:650;letter-spacing:-.01em;line-height:1.1;align-self:end}
+.brand small{display:block;font-size:9.5px;letter-spacing:.22em;color:var(--w-muted);margin-top:4px;align-self:start}
+.nav-group{margin:0 0 18px}
+.nav-group h2{font:600 10px/1.4 Inter,system-ui,sans-serif!important;letter-spacing:.18em;color:var(--w-faint)!important;margin:0 12px 8px!important;padding:0!important;border:0!important}
+.nav-link{position:relative;display:flex;align-items:center;gap:11px;min-height:38px;padding:8px 12px;color:var(--w-muted)!important;border-radius:var(--w-r-sm);line-height:1.3;margin:1px 0;font-size:13px;transition:background .25s var(--w-ease),color .25s var(--w-ease),transform .25s var(--w-ease)}
+.nav-link .nav-mark{width:18px;text-align:center;opacity:.75;font-size:12px}
+.nav-link:hover{background:rgba(255,255,255,.05);color:var(--w-ink)!important;transform:translateX(2px)}
+.nav-link[aria-current=page]{color:var(--w-ink)!important;background:linear-gradient(90deg,rgba(125,211,252,.16),rgba(167,139,250,.08));box-shadow:inset 0 0 0 1px rgba(125,211,252,.22)}
+.nav-link[aria-current=page]::before{content:'';position:absolute;left:-1px;top:9px;bottom:9px;width:3px;border-radius:3px;background:linear-gradient(var(--w-accent),var(--w-accent-2));box-shadow:0 0 12px var(--w-accent)}
+.sidebar-foot{border-top:1px solid var(--w-line);padding:14px 12px 4px;color:var(--w-faint);font-size:10.5px;line-height:1.9;letter-spacing:.04em}
 .content-shell{min-width:0}
-.topbar{min-height:68px;display:flex;align-items:center;gap:18px;padding:12px 28px;border-bottom:1px solid var(--jupiter-border);position:sticky;top:0;background:var(--jupiter-bg);z-index:20}
-.breadcrumbs{font-size:11px;color:var(--jupiter-muted);flex:1;min-width:0;overflow-wrap:anywhere}
-.breadcrumbs span{padding:0 7px;opacity:.5}
-.search-box{position:relative;width:min(320px,40vw)}
-.search-box input{width:100%;min-height:36px;background:var(--jupiter-surface);border:1px solid var(--jupiter-border);border-radius:6px;padding:8px 12px;color:var(--jupiter-text);font-size:12px}
-.search-results{position:absolute;top:calc(100% + 6px);right:0;width:min(520px,85vw);max-height:65vh;overflow:auto;padding:7px;background:var(--jupiter-surface);border:1px solid var(--jupiter-border);border-radius:8px;box-shadow:0 12px 40px #0006}
-.search-result{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--jupiter-text);border-radius:4px;padding:10px 12px}
-.search-result:hover,.search-result:focus{background:color-mix(in srgb,var(--jupiter-accent) 10%,transparent)}
-.search-result small{display:block;color:var(--jupiter-muted);font-size:10px;margin-top:3px}
-.search-status{font-size:11px;color:var(--jupiter-muted);padding:5px 12px}
-.reading-layout{display:grid;grid-template-columns:minmax(0,1fr) 210px;max-width:1536px;margin:0 auto}
-.reading-main{min-width:0;padding:36px clamp(22px,3.5vw,58px) 60px}
-.page-header{padding:0 0 26px;border-bottom:1px solid var(--jupiter-border);margin-bottom:28px}
-.page-header .eyebrow{color:var(--jupiter-muted);font-size:10px;text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px}
-.page-header h1{margin-bottom:12px!important;font-size:clamp(25px,3.1vw,40px)!important;max-width:none!important}
-.page-intro{color:var(--jupiter-muted);font-size:14px;max-width:72ch;margin:0}
-.page-header .badge{margin-top:16px}
-.badge{display:inline-flex;border:1px solid var(--jupiter-border);border-radius:20px;padding:4px 9px;font-size:10px;font-weight:500;color:var(--jupiter-muted);letter-spacing:.025em}
-.content-block{margin:28px 0;scroll-margin-top:90px}
-.content-block>h2{margin:0 0 16px!important;padding:0!important;font-size:20px!important;border:0!important}
-.content-block>h3{font-size:15px}
-.content-block p,.content-block li{max-width:90ch}
-.content-block ul,.content-block ol{padding-left:21px}
-.content-block li{margin-bottom:7px}
-.lead{font-size:19px;line-height:1.65!important}
-.hero-copy{max-width:78ch}
-.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:24px 0}
-.stat-grid>div{padding:17px 12px;border:1px solid var(--jupiter-border);border-radius:7px;background:var(--jupiter-surface)}
-.stat-grid strong{display:block;font-size:21px;font-weight:500;line-height:1.3}
-.stat-grid span{display:block;color:var(--jupiter-muted);font-size:10px;line-height:1.5;margin-top:7px}
-.art-figure{padding:0;margin:24px 0;border:1px solid var(--jupiter-border);border-radius:8px;overflow:hidden;background:var(--jupiter-surface)}
-.art-link{display:block}
-.art-figure img{display:block;width:100%;height:auto;max-height:520px;object-fit:contain;background:#0e1115}
-.art-figure figcaption{padding:12px 16px;font-size:11px;line-height:1.7;color:var(--jupiter-muted)}
-.callout{border:1px solid color-mix(in srgb,var(--jupiter-accent) 25%,transparent);border-left:3px solid var(--jupiter-accent);border-radius:5px;padding:16px 18px;margin:20px 0;background:color-mix(in srgb,var(--jupiter-accent) 4%,var(--jupiter-bg));font-size:12px}
-.callout p{margin:6px 0 0}
-.link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.link-grid a{display:block;padding:18px;border:1px solid var(--jupiter-border);background:var(--jupiter-surface);border-radius:7px;color:var(--jupiter-text)}
-.link-grid a:hover{border-color:var(--jupiter-accent)}
-.link-grid strong,.link-grid span{display:block}
-.link-grid span{font-size:12px;color:var(--jupiter-muted);margin-top:6px}
-.table-wrap{max-width:100%;overflow:auto;margin:17px 0}
-.table-wrap table{display:table!important;margin:0;min-width:480px}
-.table-wrap :is(th,td){text-align:left;border-bottom:1px solid var(--jupiter-border);padding:11px 13px!important;vertical-align:top;font-size:12px}
-.table-wrap th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--jupiter-muted)}
-.table-wrap tr:last-child td{border-bottom:0}
-.table-wrap td:first-child{font-weight:500}
-.table-wrap td code{font-size:10px;overflow-wrap:anywhere}
-.source-line{border-top:1px solid var(--jupiter-border);padding-top:16px;margin-top:30px;color:var(--jupiter-muted);font-size:10px;line-height:2!important}
-.source-line a{text-decoration:underline}
-.flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 12px;margin:20px 0;border:1px solid var(--jupiter-border);border-radius:8px;background:var(--jupiter-surface);font-size:12px}
-.flow span{text-align:center}
-.flow b{color:var(--jupiter-muted)}
-.concept-rail{border-left:1px solid var(--jupiter-border);padding:30px 16px;align-self:start;position:sticky;top:68px;max-height:calc(100dvh - 68px);overflow:auto}
-.concept-rail h2{font-size:10px!important;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px!important;padding:0!important;color:var(--jupiter-muted)!important}
-.concept-rail .rail-intro{font-size:10px;color:var(--jupiter-muted);line-height:1.7}
-.concept-link{display:block;padding:12px 10px;margin:0 0 7px;border:1px solid var(--jupiter-border);border-radius:5px;background:var(--jupiter-surface);color:var(--jupiter-text)!important;font-size:11px;line-height:1.5}
-.concept-link:hover{border-color:var(--jupiter-accent)}
-.concept-link small{display:block;color:var(--jupiter-muted);font-size:9px;margin-top:5px}
-.rail-toc{margin-top:28px;padding-top:18px;border-top:1px solid var(--jupiter-border)}
-.rail-toc a{display:block;font-size:10px;color:var(--jupiter-muted)!important;padding:5px 0;line-height:1.6}
-.rail-toc a:hover{color:var(--jupiter-accent)!important}
-.rail-bottom{font-size:10px;margin-top:24px}
-.source-document{margin:9px 0;border:1px solid var(--jupiter-border);border-radius:6px;scroll-margin-top:88px;overflow:hidden}
-.source-document summary{padding:13px 15px;cursor:pointer;font-size:12px;background:var(--jupiter-surface)}
-.source-document summary small{display:block;padding-left:15px;color:var(--jupiter-muted);font-size:10px;line-height:1.6;margin-top:4px}
-.source-meta{display:flex;gap:8px;flex-wrap:wrap;padding:12px 15px;border-top:1px solid var(--jupiter-border);font-size:10px;color:var(--jupiter-muted)}
-.source-meta code{display:block;width:100%;overflow-wrap:anywhere}
-.source-meta button{margin-left:auto}
-.source-text{white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.8 ui-monospace,Consolas,monospace;padding:18px;margin:0;border-top:1px solid var(--jupiter-border);max-height:640px;overflow:auto;background:var(--jupiter-bg)!important}
-.source-meta button,.toolbar-button{background:var(--jupiter-surface);color:var(--jupiter-text);border:1px solid var(--jupiter-border);border-radius:5px;padding:7px 10px;font-size:11px}
-.region{border:1px solid var(--jupiter-border);border-radius:6px;margin:8px 0;padding:0 16px;background:var(--jupiter-surface)}
-.region summary{cursor:pointer;padding:13px 0;list-style:none;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:500}
-.region summary::after{content:'+';margin-left:auto;color:var(--jupiter-muted)}
-.region[open] summary::after{content:'−'}
-.region p,.region li{font-size:12px}
-.region-number{font:10px ui-monospace,monospace;color:var(--jupiter-muted)}
-.wiki-diagram{width:100%;height:auto;color:var(--jupiter-accent);background:var(--jupiter-surface);border:1px solid var(--jupiter-border);border-radius:8px;margin:6px 0 20px}
-.asset-controls{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin:24px 0 12px}
-.asset-controls label{display:grid;gap:6px;font-size:10px;color:var(--jupiter-muted)}
-.asset-controls label:first-child{flex:1;min-width:150px}
-.asset-controls :is(input,select){background:var(--jupiter-surface);color:var(--jupiter-text);border:1px solid var(--jupiter-border);border-radius:5px;padding:9px 11px;font-size:12px;min-height:38px;max-width:100%}
-.page-footer{display:flex;justify-content:space-between;gap:15px;border-top:1px solid var(--jupiter-border);padding-top:22px;margin-top:40px;font-size:11px}
-.page-footer a{max-width:48%}
-.page-footer small{display:block;font-size:9px;color:var(--jupiter-muted);margin-bottom:4px}
-.muted{color:var(--jupiter-muted);font-size:11px}
-.skip-link{position:fixed;top:-80px;left:12px;background:var(--jupiter-bg);padding:10px;z-index:100}
-.skip-link:focus{top:8px}
+.topbar{position:sticky;top:14px;z-index:20;display:flex;align-items:center;gap:16px;min-height:60px;margin:14px 14px 0 22px;padding:10px 12px 10px 22px;border-radius:var(--w-r-md)}
+.breadcrumbs{font-size:12px;color:var(--w-muted);flex:1;min-width:0;overflow-wrap:anywhere;letter-spacing:.02em}
+.breadcrumbs span{padding:0 8px;opacity:.4}
+.breadcrumbs b{color:var(--w-ink);font-weight:600}
+.search-box{position:relative;width:min(340px,42vw)}
+.search-box input{width:100%;min-height:40px;background:rgba(0,0,0,.25);border:1px solid var(--w-line-strong);border-radius:999px;padding:9px 16px;color:var(--w-ink);font-size:13px;transition:border-color .2s,box-shadow .2s}
+.search-box input:focus{outline:0;border-color:rgba(125,211,252,.55);box-shadow:0 0 0 4px rgba(125,211,252,.12)}
+.search-results{position:absolute;top:calc(100% + 8px);right:0;width:min(520px,86vw);max-height:65vh;overflow:auto;padding:8px;border-radius:var(--w-r-md);background:rgba(10,16,30,.85)}
+.search-result{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--w-ink);border-radius:10px;padding:10px 12px}
+.search-result:hover,.search-result:focus{background:rgba(125,211,252,.1);outline:0}
+.search-result small{display:block;color:var(--w-muted);font-size:11px;margin-top:3px}
+.search-status{font-size:11px;color:var(--w-muted);padding:6px 12px}
+.reading-layout{display:grid;grid-template-columns:minmax(0,1fr) 232px;gap:22px;max-width:1440px;margin:0 auto;padding:22px 14px 0 22px}
+.reading-main{min-width:0;padding:0 0 70px}
+
+/* Page header: glass hero */
+.page-header{position:relative;overflow:hidden;padding:40px clamp(24px,4vw,52px) 36px;border-radius:var(--w-r-lg);margin-bottom:34px}
+.page-header::after{content:'';position:absolute;inset:-40% -10% auto auto;width:60%;height:140%;background:radial-gradient(closest-side,rgba(125,211,252,.14),transparent);pointer-events:none}
+.page-header .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--w-accent-3);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.16em;margin-bottom:18px}
+.page-header .eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--w-accent-3);box-shadow:0 0 10px var(--w-accent-3)}
+.page-header h1{margin:0 0 14px!important;padding:0!important;border:0!important;font-size:clamp(32px,4.6vw,58px)!important;line-height:1.04!important;letter-spacing:-.035em;font-weight:720!important;color:var(--w-ink)!important;max-width:16ch!important}
+.page-header h1 .grad{display:block;background:linear-gradient(100deg,var(--w-accent) 0%,var(--w-accent-2) 55%,var(--w-accent-3) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;padding-bottom:.08em}
+.page-intro{position:relative;z-index:1;color:var(--w-muted);font-size:16px;max-width:60ch;margin:0}
+.badge,.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--w-line-strong);border-radius:999px;padding:6px 13px;font-size:11.5px;font-weight:500;color:var(--w-ink);background:rgba(255,255,255,.04)}
+.page-header .badge{margin-top:20px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;position:relative;z-index:1}
+.hero-orb{position:absolute;right:clamp(20px,5vw,70px);top:50%;width:170px;height:170px;margin-top:-85px;transform:translate3d(calc(var(--mx,0)*-22px),calc(var(--my,0)*-22px + var(--sy,0)*.08px),0);pointer-events:none}
+.hero-orb .core{position:absolute;inset:0;display:grid;place-items:center}
+.hero-orb .ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(125,211,252,.25);animation:spin 28s linear infinite}
+.hero-orb .ring:nth-child(2){inset:10px 0 -6px 14px;border-color:rgba(167,139,250,.22);animation-duration:40s;animation-direction:reverse}
+.hero-orb .ring::after{content:'';position:absolute;top:12%;left:14%;width:7px;height:7px;border-radius:50%;background:var(--w-accent);box-shadow:0 0 12px var(--w-accent)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.wiki-page[data-page=overview] .page-header{padding-top:56px;padding-bottom:50px;min-height:330px}
+.wiki-page[data-page=overview] .page-header h1,.wiki-page[data-page=overview] .page-intro{max-width:min(58ch,calc(100% - 210px))!important}
+
+/* Content */
+.content-block{margin:34px 0;scroll-margin-top:100px}
+.content-block>h2{margin:0 0 16px!important;padding:0!important;font-size:22px!important;letter-spacing:-.02em;font-weight:650!important;border:0!important;color:var(--w-ink)!important;display:flex;align-items:center;gap:12px}
+.content-block>h2::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--w-line-strong),transparent)}
+.content-block>h3{font-size:16px}
+.content-block p,.content-block li{max-width:78ch;color:#c8d1e6}
+.content-block ul,.content-block ol{padding-left:22px}
+.content-block li{margin-bottom:9px}
+.content-block li::marker{color:var(--w-accent)}
+.content-block strong{color:var(--w-ink)}
+.lead{font-size:20px;line-height:1.6!important;color:var(--w-ink)!important;letter-spacing:-.01em}
+.hero-copy{max-width:72ch;margin-bottom:8px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:26px 0}
+.stat-grid>div{padding:20px 18px;border-radius:var(--w-r-md);transition:transform .35s var(--w-ease),border-color .35s}
+.stat-grid>div:hover{transform:translateY(-3px);border-color:rgba(125,211,252,.3)}
+.stat-grid strong{display:block;font-size:17px;font-weight:650;line-height:1.3;letter-spacing:-.01em}
+.stat-grid span{display:block;color:var(--w-muted);font-size:11.5px;line-height:1.5;margin-top:8px}
+.link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.link-grid a{position:relative;display:block;padding:22px;border-radius:var(--w-r-md);color:var(--w-ink);overflow:hidden;transition:transform .35s var(--w-ease),border-color .35s}
+.link-grid a::after{content:'→';position:absolute;right:20px;top:20px;color:var(--w-accent);opacity:.5;transition:transform .35s var(--w-ease),opacity .35s}
+.link-grid a:hover{transform:translateY(-4px);border-color:rgba(125,211,252,.35)}
+.link-grid a:hover::after{transform:translateX(4px);opacity:1}
+.link-grid strong{display:block;font-size:16px;letter-spacing:-.01em}
+.link-grid span{display:block;font-size:13px;color:var(--w-muted);margin-top:6px;padding-right:20px}
+.callout{position:relative;border-radius:var(--w-r-md);padding:18px 20px 18px 22px;margin:22px 0;font-size:13.5px;overflow:hidden}
+.callout::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--w-accent),var(--w-accent-2))}
+.callout strong{color:var(--w-accent)}
+.callout p{margin:6px 0 0;color:#c8d1e6}
+.flow{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:18px;margin:22px 0;border-radius:var(--w-r-md);font-size:13px}
+.flow span{padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--w-line-strong);text-align:center}
+.flow b{color:var(--w-accent);font-weight:400}
+.table-wrap{max-width:100%;overflow:auto;margin:16px 0;border-radius:var(--w-r-md)}
+.table-wrap table{display:table!important;width:100%;margin:0;min-width:520px;border-collapse:collapse;background:transparent!important}
+.table-wrap :is(th,td){text-align:left;border:0!important;border-bottom:1px solid var(--w-line)!important;padding:13px 16px!important;vertical-align:top;font-size:13px;background:transparent!important}
+.table-wrap th{font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--w-faint);font-weight:600;background:rgba(255,255,255,.025)!important}
+.table-wrap tbody tr{transition:background .2s}
+.table-wrap tbody tr:hover{background:rgba(125,211,252,.05)}
+.table-wrap tr:last-child td{border-bottom:0!important}
+.table-wrap td:first-child{font-weight:600;color:var(--w-ink)}
+.table-wrap td{color:#c8d1e6}
+.region{border-radius:var(--w-r-md);margin:10px 0;padding:0 20px;transition:border-color .3s}
+.region[open]{border-color:rgba(125,211,252,.25)}
+.region summary{cursor:pointer;padding:16px 0;list-style:none;display:flex;align-items:center;gap:14px;font-size:14.5px;font-weight:600}
+.region summary::-webkit-details-marker{display:none}
+.region summary::after{content:'+';margin-left:auto;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;border:1px solid var(--w-line-strong);color:var(--w-accent);transition:transform .3s var(--w-ease)}
+.region[open] summary::after{transform:rotate(45deg)}
+.region p,.region li{font-size:13.5px}
+.region>:not(summary){animation:open .4s var(--w-ease)}
+@keyframes open{from{opacity:0;transform:translateY(-4px)}}
+.region-number{display:grid;place-items:center;min-width:34px;height:26px;padding:0 8px;border-radius:999px;font:600 11px ui-monospace,monospace;color:var(--w-accent);background:rgba(125,211,252,.08);border:1px solid rgba(125,211,252,.2)}
+.muted{color:var(--w-muted);font-size:12px}
+.source-line{border-top:1px solid var(--w-line);padding-top:16px;margin-top:30px;color:var(--w-muted);font-size:11px}
+
+/* Mermaid diagrams */
+.diagram{position:relative;margin:22px 0;padding:30px 22px 22px;border-radius:var(--w-r-lg);overflow:hidden;text-align:center}
+.diagram::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(500px 220px at 20% 0%,rgba(125,211,252,.10),transparent 70%),radial-gradient(420px 240px at 90% 100%,rgba(167,139,250,.10),transparent 70%);background-color:transparent}
+.diagram::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.35;background-image:radial-gradient(rgba(255,255,255,.18) 1px,transparent 1px);background-size:22px 22px;mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%)}
+.diagram pre.mermaid{position:relative;z-index:1;margin:0;padding:0;background:none!important;border:0!important;white-space:pre;font-size:0;min-height:120px;overflow-x:auto}
+.diagram pre.mermaid[data-processed]{font-size:inherit;min-height:0}
+.diagram svg{max-width:100%;height:auto;overflow:visible}
+.diagram figcaption{position:relative;z-index:1;margin-top:16px;font-size:12px;color:var(--w-muted)}
+.diagram .node :is(rect,polygon,circle,path),.diagram .actor{filter:drop-shadow(0 0 12px rgba(125,211,252,.28)) drop-shadow(0 10px 18px rgba(0,0,0,.45));transition:filter .3s}
+.diagram .node:hover :is(rect,polygon,circle,path){filter:drop-shadow(0 0 18px rgba(125,211,252,.6))}
+.diagram .node .label,.diagram .nodeLabel{font-weight:600;letter-spacing:.01em}
+.diagram .flowchart-link,.diagram .messageLine0,.diagram .messageLine1{stroke-width:2px!important;stroke-dasharray:7 6;animation:flowdash 1.4s linear infinite}
+.diagram .cluster rect{rx:16px;ry:16px;stroke-dasharray:4 5}
+.diagram .cluster-label>g{transform:translateY(10px)}
+.diagram .cluster-label text{font-size:12px;font-weight:600;letter-spacing:.06em;fill:var(--w-muted)!important}
+.diagram .edgeLabel,.diagram .edgeLabel rect{font-size:12px}
+@keyframes flowdash{to{stroke-dashoffset:-26}}
+
+/* Right rail */
+.concept-rail{position:sticky;top:96px;align-self:start;max-height:calc(100dvh - 110px);overflow:auto;padding:22px 16px;border-radius:var(--w-r-lg);scrollbar-width:none}
+.concept-rail h2{font:600 10px/1.4 Inter,system-ui,sans-serif!important;letter-spacing:.18em;text-transform:uppercase;margin:0 0 12px!important;padding:0!important;border:0!important;color:var(--w-faint)!important}
+.concept-rail .rail-intro{font-size:11px;color:var(--w-muted);line-height:1.6;margin-bottom:12px}
+.concept-link{display:block;padding:11px 13px;margin:0 0 8px;border-radius:var(--w-r-sm);background:rgba(255,255,255,.035);border:1px solid var(--w-line);color:var(--w-ink)!important;font-size:12.5px;line-height:1.45;transition:border-color .25s,transform .25s var(--w-ease)}
+.concept-link:hover{border-color:rgba(125,211,252,.35);transform:translateX(3px)}
+.concept-link small{display:block;color:var(--w-accent-3);font-size:10px;letter-spacing:.06em;margin-top:4px}
+.rail-toc{margin-top:22px;padding-top:16px;border-top:1px solid var(--w-line)}
+.rail-toc a{display:block;font-size:12px;color:var(--w-muted)!important;padding:6px 0 6px 12px;line-height:1.5;border-left:1px solid var(--w-line);transition:color .2s,border-color .2s}
+.rail-toc a:hover{color:var(--w-ink)!important;border-left-color:var(--w-accent)}
+.rail-bottom{font-size:12px;margin-top:20px}
+.rail-bottom a,.sidebar-foot a,.content-block p a{color:var(--w-accent)!important}
+
+/* Footer navigation */
+.page-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:44px;padding-top:22px;border-top:1px solid var(--w-line);font-size:13px}
+.page-footer a{display:inline-flex;align-items:center;gap:10px;padding:9px 16px;border-radius:999px;background:linear-gradient(180deg,var(--w-glass-hi),var(--w-glass));border:1px solid var(--w-line-strong);color:var(--w-ink)!important;transition:transform .3s var(--w-ease),border-color .3s,box-shadow .3s}
+.page-footer a:last-child{margin-left:auto}
+.page-footer a:hover{transform:translateY(-2px);border-color:rgba(125,211,252,.45);box-shadow:0 8px 24px -10px rgba(125,211,252,.5)}
+.page-footer small{font-size:9.5px;letter-spacing:.16em;color:var(--w-faint)}
+
+/* Template parts kept for compatibility */
+.art-figure{margin:24px 0;border-radius:var(--w-r-md);overflow:hidden;border:1px solid var(--w-line)}
+.art-figure img{display:block;width:100%;height:auto}
+.art-figure figcaption{padding:12px 16px;font-size:12px;color:var(--w-muted)}
+.layer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.layer-card{border-radius:var(--w-r-md);overflow:hidden}
+.layer-card-body{padding:18px}
+.skip-link{position:fixed;top:-80px;left:12px;background:var(--w-bg);color:var(--w-ink);padding:10px 14px;border-radius:10px;z-index:100}
+.skip-link:focus{top:12px}
+.toolbar-button{background:rgba(255,255,255,.06);color:var(--w-ink);border:1px solid var(--w-line-strong);border-radius:999px;padding:8px 14px;font-size:12px}
 #menu-toggle{display:none}
 #nav-backdrop{display:none}
-.print-button{white-space:nowrap}
 .noscript{padding:18px}
 .js-loading .wiki-page:not([data-page=overview]){display:none}
-.wiki-page:focus{outline:0}
-@media(max-width:1160px){.wiki-layout{grid-template-columns:198px minmax(0,1fr)}.reading-layout{grid-template-columns:minmax(0,1fr) 180px}.concept-rail{padding:25px 12px}.reading-main{padding:30px 24px 50px}.topbar{padding:12px 22px}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:960px){.reading-layout{display:block}.concept-rail{position:static;border-left:0;border-top:1px solid var(--jupiter-border);max-height:none;padding:24px}.concept-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.concept-link{margin:0}.rail-toc{display:none}.rail-bottom{margin-top:14px}.search-box{width:250px}.print-button{display:none}}
-@media(max-width:700px){.wiki-layout{display:block}.sidebar{display:none;position:fixed;left:0;top:0;width:250px;max-width:85vw;height:100dvh;box-shadow:15px 0 40px #0008}.nav-open .sidebar{display:block}.nav-open #nav-backdrop{display:block;position:fixed;inset:0;z-index:25;background:#0008;border:0}.topbar{padding:12px 16px;gap:10px;flex-wrap:wrap;min-height:65px}#menu-toggle{display:block}.breadcrumbs{font-size:10px}.search-box{width:100%;order:3}.search-results{width:100%;max-height:55vh}.reading-main{padding:26px 18px 42px}.page-header{margin-bottom:22px}.lead{font-size:17px}.link-grid{grid-template-columns:1fr}.concept-rail{padding:24px 18px}.content-block>h2{font-size:19px!important}.flow{gap:8px;font-size:11px}.table-wrap :is(td,th){padding:9px!important}.stat-grid strong{font-size:20px}.source-text{font-size:10px}.concept-links{grid-template-columns:1fr}}
-@media print{.sidebar,.topbar,.concept-rail,.page-footer,.source-line,.asset-controls{display:none!important}.wiki-layout,.reading-layout{display:block}.reading-main{padding:0}.wiki-page[hidden]{display:none!important}.wiki-page{break-inside:auto}.art-figure{break-inside:avoid}.source-text{max-height:none}}
-.nav-link.nav-sub{margin-left:16px;font-size:10px;min-height:30px;padding-left:8px}
-.nav-sub .nav-mark{font:9px ui-monospace,monospace;opacity:.6}
-.layer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.layer-card{border:1px solid var(--jupiter-border);border-radius:8px;overflow:hidden;background:var(--jupiter-surface)}
-.layer-card .art-figure{border:0;border-radius:0;margin:0}
-.layer-card .art-figure img{aspect-ratio:16/10;object-fit:cover;max-height:280px}
-.layer-card .art-figure figcaption{font-size:9px;padding:9px 12px}
-.layer-card-body{padding:18px}
-.layer-card-body .eyebrow{font-size:10px;letter-spacing:.12em;color:var(--jupiter-muted)}
-.layer-card-body h3{margin:9px 0 12px!important;font-size:18px!important}
-.layer-card-body h3 a{color:var(--jupiter-text)}
-.layer-card-body p{font-size:12px;line-height:1.8}
-.layer-open{font-size:11px}
-.region .art-figure{margin:5px 0 18px}
-.region .art-figure img{max-height:450px}
-.layer-back{font-size:11px}
-@media(max-width:1160px){.layer-grid{grid-template-columns:1fr}}
-@media print{.nav-sub{display:none}}
+.wiki-page:focus,html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
+:focus-visible{outline:2px solid var(--w-accent);outline-offset:2px}
+
+/* Motion: page entrance and scroll reveal */
+.wiki-page:not([hidden]) .page-header{animation:rise .7s var(--w-ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(16px) scale(.99)}}
+.motion .content-block{opacity:0;transform:translateY(22px);transition:opacity .7s var(--w-ease),transform .7s var(--w-ease)}
+.motion .content-block.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.motion .content-block{opacity:1;transform:none}.aurora .layer,.hero-orb{transform:none!important}}
+
+/* Responsive */
+@media(max-width:1200px){.reading-layout{grid-template-columns:minmax(0,1fr) 200px}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:980px){.reading-layout{display:block;padding:18px 14px 0}.concept-rail{position:static;max-height:none;margin:0 0 40px}.concept-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.concept-link{margin:0}.rail-toc{display:none}.hero-orb{width:130px;height:130px;margin-top:-65px}.hero-orb .core{inset:22px;font-size:40px}.wiki-page[data-page=overview] .page-header h1,.wiki-page[data-page=overview] .page-intro{max-width:calc(100% - 150px)!important}}
+@media(max-width:760px){.wiki-layout{display:block}.sidebar{display:none;position:fixed;left:0;top:0;margin:10px;width:270px;max-width:85vw;height:calc(100dvh - 20px)}.nav-open .sidebar{display:block}.nav-open #nav-backdrop{display:block;position:fixed;inset:0;z-index:25;background:rgba(2,6,15,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:0}.topbar{margin:10px 10px 0;padding:10px 12px;gap:10px;flex-wrap:wrap}#menu-toggle{display:block}.breadcrumbs{font-size:11px}.search-box{width:100%;order:3}.search-results{width:100%}.reading-layout{padding:14px 10px 0}.page-header{padding:30px 22px 28px}.wiki-page[data-page=overview] .page-header{min-height:0;padding-top:150px}.hero-orb{top:24px;left:22px;right:auto;margin:0;width:110px;height:110px}.hero-orb .core{inset:18px;font-size:34px}.wiki-page[data-page=overview] .page-header h1,.wiki-page[data-page=overview] .page-intro{max-width:none!important}.link-grid,.concept-links{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr;gap:10px}.lead{font-size:18px}.page-footer{grid-template-columns:1fr}.page-footer a:last-child{grid-column:1}.flow{justify-content:flex-start}}
+@media print{.aurora,.sidebar,.topbar,.concept-rail,.page-footer,.hero-orb{display:none!important}.wiki-layout,.reading-layout{display:block}.wiki-page[hidden]{display:none!important}.motion .content-block{opacity:1;transform:none}}
 </style>
 </head>
 <body>
+<div class="aurora" aria-hidden="true"><div class="layer l1"></div><div class="layer l2"></div><div class="layer l3"></div><div class="grain"></div></div>
 <a class="skip-link" href="#overview">Skip to content</a>
 <button id="nav-backdrop" type="button" aria-label="Close contents"></button>
 <div class="wiki-layout">
 <aside class="sidebar" id="wiki-navigation">
-  <a class="brand" href="#overview"><span class="sigil" aria-hidden="true">J</span><strong>Jupiter</strong><small>THE JUPITER WIKI</small></a>
+  <a class="brand" href="#overview"><span class="sigil"><img src="media/jupiter-j.png" alt="Jupiter J logo"></span><strong>Jupiter</strong><small>THE JUPITER WIKI</small></a>
   <nav aria-label="Wiki sections">
     <section class="nav-group"><h2>GET STARTED</h2>
       <a class="nav-link" data-page="overview" href="#overview"><span class="nav-mark" aria-hidden="true">◈</span>Jupiter</a>
@@ -177,7 +241,6 @@ html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
     </section>
     <section class="nav-group"><h2>MAKE IT YOURS</h2>
       <a class="nav-link" data-page="settings" href="#settings"><span class="nav-mark" aria-hidden="true">◌</span>Settings</a>
-      <a class="nav-link" data-page="updates" href="#updates"><span class="nav-mark" aria-hidden="true">↻</span>Updates</a>
       <a class="nav-link" data-page="keys" href="#keys"><span class="nav-mark" aria-hidden="true">⚿</span>Keys and privacy</a>
       <a class="nav-link" data-page="troubleshooting" href="#troubleshooting"><span class="nav-mark" aria-hidden="true">?</span>Troubleshooting</a>
     </section>
@@ -188,12 +251,12 @@ html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
 <div class="topbar">
   <button class="toolbar-button" id="menu-toggle" type="button" aria-expanded="false" aria-controls="wiki-navigation">☰ Contents</button>
   <div class="breadcrumbs">Jupiter wiki<span>/</span><b id="breadcrumb-group">GET STARTED</b><span>/</span><b id="breadcrumb-page">Jupiter</b></div>
-  <div class="search-box" role="search"><label class="sr-only" for="wiki-search">Search the wiki</label><input id="wiki-search" type="search" placeholder="Search the wiki… /" autocomplete="off" aria-controls="search-results"><div id="search-results" class="search-results" hidden></div></div>
+  <div class="search-box" role="search"><label class="sr-only" for="wiki-search">Search the wiki</label><input id="wiki-search" type="search" placeholder="Search the wiki" autocomplete="off" aria-controls="search-results"><div id="search-results" class="search-results" hidden></div></div>
 </div>
 <div class="reading-layout"><main id="main-content" class="reading-main">
 
 <article class="wiki-page" data-page="overview" data-title="Jupiter" data-group="GET STARTED" tabindex="-1">
-  <header class="page-header"><div class="eyebrow">JUPITER WIKI / GET STARTED</div><h1>Jupiter</h1><p class="page-intro">A desktop workspace for working with AI agents: chat with them, keep what they make, and teach them how you like to work.</p><span class="badge">Start here</span></header>
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / GET STARTED</div><h1>Your agents.<span class="grad">One workspace.</span></h1><p class="page-intro">A desktop workspace for working with AI agents: chat with them, keep what they make, and teach them how you like to work.</p><div class="chips"><span class="chip">◈ 14 short guides</span><span class="chip">✦ Made for clarity</span></div><div class="hero-orb" aria-hidden="true"><span class="core"><img src="media/jupiter-j.png" alt="Jupiter J logo"></span></div></header>
   <div class="hero-copy">
     <p class="lead">Jupiter puts real Claude Code and Codex sessions next to a Workspace that keeps their results as readable cards, reports and files.</p>
     <p>Everything lives in one folder on your computer as ordinary files. Skills teach the agents recurring tasks, the knowledge folder remembers your decisions, and Capabilities adds tools such as a browser, current library docs and pixel art kits.</p>
@@ -209,11 +272,26 @@ html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
       <a href="#install"><strong>Install and set up</strong><span>Download, first launch and the five setup steps</span></a>
       <a href="#chats"><strong>Use Jupiter</strong><span>Chats, Workspace cards, files, boards and voice</span></a>
       <a href="#skills"><strong>Skills and tools</strong><span>What skills are, where they live and how to add more</span></a>
-      <a href="#settings"><strong>Make it yours</strong><span>Settings, customising with agents, updates and keys</span></a>
+      <a href="#settings"><strong>Make it yours</strong><span>Settings, customising, keys and troubleshooting</span></a>
     </div>
   </section>
   <section class="content-block"><h2>How it fits together</h2>
-    <div class="flow"><span>You ask in Chats</span><b>→</b><span>The agent works, using skills and tools</span><b>→</b><span>Results land in Workspace</span><b>→</b><span>You decide and reply</span></div>
+    <figure class="diagram"><pre class="mermaid">
+flowchart LR
+  you(["◉  You"]) -- ask --> chats("›_  Chats<br/>Claude Code · Codex")
+  chats -- use --> tools{{"◇  Skills and tools"}}
+  chats -- write --> folder[("▤  Your folder")]
+  folder --> cards("▣  Workspace cards")
+  cards -- review and decide --> you
+  classDef person fill:#0f2a3f,stroke:#7dd3fc,stroke-width:2px,color:#e9eefb
+  classDef agent fill:#1e1745,stroke:#a78bfa,stroke-width:2px,color:#f1ecff
+  classDef store fill:#0a2b2a,stroke:#5eead4,stroke-width:2px,color:#e6fffb
+  classDef output fill:#13213d,stroke:#93c5fd,stroke-width:2px,color:#e9eefb
+  class you person
+  class chats,tools agent
+  class folder store
+  class cards output
+</pre><figcaption>You ask, the agent works with its skills and tools, and the results land as cards you can review.</figcaption></figure>
     <aside class="callout"><strong>Your accounts, your files</strong><p>Jupiter starts the real CLIs you sign in to, so their normal limits and billing apply. Nothing in your workspace is uploaded unless you ask an agent or a tool to do so.</p></aside>
   </section>
   <footer class="page-footer"><span></span><a href="#install"><small>NEXT</small>Install and set up →</a></footer>
@@ -233,6 +311,26 @@ html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
     <p>Jupiter asks where to keep your workspace. <strong>Documents\Jupiter</strong> is suggested; any folder works. If you pick a folder that already has files in it, a <code>Jupiter</code> folder is created inside it. The workspace starts with skills, knowledge, workflows and the sample cards.</p>
   </section>
   <section class="content-block" id="wizard"><h2>The setup wizard</h2>
+    <figure class="diagram"><pre class="mermaid">
+flowchart TB
+  subgraph first["First launch"]
+    direction LR
+    install(["↓  Install"]) --> folder("⌂  Pick a folder")
+  end
+  subgraph wizard["Setup wizard"]
+    direction LR
+    you("1 · You") --> projects("2 · Projects") --> agents("3 · Agents") --> tools("4 · Tools") --> voice("5 · Voice") --> ready(["✦  Ready"])
+  end
+  first ~~~ wizard
+  classDef start fill:#0f2a3f,stroke:#7dd3fc,stroke-width:2px,color:#e9eefb
+  classDef choice fill:#2a1d12,stroke:#fbbf24,stroke-width:2px,color:#fff7e6
+  classDef step fill:#1e1745,stroke:#a78bfa,stroke-width:2px,color:#f1ecff
+  classDef done fill:#0a2b2a,stroke:#5eead4,stroke-width:2px,color:#e6fffb
+  class install start
+  class folder choice
+  class you,projects,agents,tools,voice step
+  class ready done
+</pre><figcaption>First launch, then five short steps. Every step can be revisited later.</figcaption></figure>
     <p>The wizard opens over a blurred Workspace. Leave it at any point and return with <strong>Back to setup</strong>, or reopen it later from <strong>Settings → Run setup again</strong>.</p>
     <details class="region" open><summary><span class="region-number">01</span>You</summary><p>Your name, and what Jupiter should call you in greetings and replies.</p></details>
     <details class="region"><summary><span class="region-number">02</span>Projects</summary><p>The folder that holds your projects. It can be anywhere, including an existing code folder. Change it later from the project picker.</p></details>
@@ -378,6 +476,31 @@ html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
 <article class="wiki-page" data-page="skills" data-title="Skills" data-group="SKILLS AND TOOLS" tabindex="-1">
   <header class="page-header"><div class="eyebrow">JUPITER WIKI / SKILLS AND TOOLS</div><h1>Skills</h1><p class="page-intro">Packaged know-how. A skill stays out of the way until a task needs it, then the agent loads it and follows its steps.</p><span class="badge">Reference</span></header>
   <section class="content-block" id="where"><h2>Where skills live</h2>
+    <figure class="diagram"><pre class="mermaid">
+flowchart LR
+  subgraph ws["▤  This workspace"]
+    a(".agents/skills")
+    c(".claude/skills")
+  end
+  subgraph user["⌂  Your user folder"]
+    ua("~/.agents/skills")
+    uc("~/.claude/skills<br/>and plugins")
+  end
+  cap{{"⚙  Capabilities"}} -. installs .-> ua
+  cap -. installs .-> uc
+  a --> codex(["Codex"])
+  ua --> codex
+  c --> claude(["Claude Code"])
+  uc --> claude
+  classDef path fill:#0f2236,stroke:#3b6f93,stroke-width:1.5px,color:#cdefff
+  classDef tool fill:#2a1d12,stroke:#fbbf24,stroke-width:2px,color:#fff7e6
+  classDef codex fill:#0a2b2a,stroke:#5eead4,stroke-width:2px,color:#e6fffb
+  classDef claude fill:#1e1745,stroke:#a78bfa,stroke-width:2px,color:#f1ecff
+  class a,c,ua,uc path
+  class cap tool
+  class codex codex
+  class claude claude
+</pre><figcaption>Workspace skills travel with this folder; skills from Capabilities are available everywhere.</figcaption></figure>
     <div class="table-wrap"><table><thead><tr><th scope="col">Location</th><th scope="col">Used by</th><th scope="col">What is there</th></tr></thead><tbody>
       <tr><td><code>.agents/skills/</code></td><td>Codex, in this workspace</td><td>The workspace skills. This is the copy to edit.</td></tr>
       <tr><td><code>.claude/skills/</code></td><td>Claude Code, in this workspace</td><td>Complete copies of the same skills for Claude Code.</td></tr>
@@ -491,21 +614,7 @@ html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
       <tr><td>Project</td><td>Your workspace folder and <strong>Run setup again</strong></td></tr>
     </tbody></table></div>
   </section>
-  <footer class="page-footer"><a href="#knowledge"><small>PREVIOUS</small>← Knowledge and rules</a><a href="#updates"><small>NEXT</small>Updates →</a></footer>
-</article>
-
-<article class="wiki-page" data-page="updates" data-title="Updates" data-group="MAKE IT YOURS" tabindex="-1">
-  <header class="page-header"><div class="eyebrow">JUPITER WIKI / MAKE IT YOURS</div><h1>Updates</h1><p class="page-intro">New versions arrive by themselves, and your own edits are kept.</p><span class="badge">Reference</span></header>
-  <section class="content-block"><h2>How it works</h2>
-    <div class="flow"><span>Jupiter starts</span><b>→</b><span>Checks for a new version</span><b>→</b><span>Banner: install and restart</span><b>→</b><span>Skills and samples refreshed</span></div>
-    <ul>
-      <li>Updates are signed; Jupiter installs only a version that passes the signature check.</li>
-      <li>Skills, workflows, rules and the sample cards are refreshed with each update.</li>
-      <li>A file you edited or deleted is never overwritten. A file you never touched is updated.</li>
-      <li>Tools in Capabilities update separately, when you choose to.</li>
-    </ul>
-  </section>
-  <footer class="page-footer"><a href="#settings"><small>PREVIOUS</small>← Settings</a><a href="#keys"><small>NEXT</small>Keys and privacy →</a></footer>
+  <footer class="page-footer"><a href="#knowledge"><small>PREVIOUS</small>← Knowledge and rules</a><a href="#keys"><small>NEXT</small>Keys and privacy →</a></footer>
 </article>
 
 <article class="wiki-page" data-page="keys" data-title="Keys and privacy" data-group="MAKE IT YOURS" tabindex="-1">
@@ -526,7 +635,7 @@ html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
       <li>Never paste keys into chats, cards or tracked files.</li>
     </ul>
   </section>
-  <footer class="page-footer"><a href="#updates"><small>PREVIOUS</small>← Updates</a><a href="#troubleshooting"><small>NEXT</small>Troubleshooting →</a></footer>
+  <footer class="page-footer"><a href="#settings"><small>PREVIOUS</small>← Settings</a><a href="#troubleshooting"><small>NEXT</small>Troubleshooting →</a></footer>
 </article>
 
 <article class="wiki-page" data-page="troubleshooting" data-title="Troubleshooting" data-group="MAKE IT YOURS" tabindex="-1">
@@ -552,8 +661,8 @@ html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
 </div></div></div>
 <noscript><p class="noscript">Enable JavaScript for navigation, search and source documents. All page content remains in this file.</p></noscript>
 <script type="application/json" id="wiki-data">
-{"title":"Jupiter","concepts":{"overview":[["Install and set up","Start here","install"],["Your first task","Guide","first-task"]],"install":[["Starter tools","Capabilities","capabilities/starter"],["Voice","Optional","voice"]],"first-task":[["Chats and agents","Reference","chats"],["Teaching Jupiter","Knowledge","knowledge"]],"chats":[["Workspace and cards","Reference","workspace"],["Phone access","Voice","voice/phone"]],"workspace":[["Files and folders","Reference","files"],["workspace-authoring skill","Skill","skills/bundled"]],"files":[["Where skills live","Skills","skills/where"],["Keys and privacy","Reference","keys"]],"boards":[["game-wiki skill","Skill","skills/bundled"],["Voice","Reference","voice"]],"voice":[["Keys","Reference","keys"],["Settings","Reference","settings"]],"skills":[["Capabilities","Reference","capabilities"],["Updates keep your edits","Reference","updates"]],"capabilities":[["Skills","Reference","skills"],["Troubleshooting","Help","troubleshooting"]],"knowledge":[["Skills","Reference","skills"],["Files and folders","Reference","files"]],"settings":[["Run setup again","Guide","install/wizard"],["Voice","Reference","voice"]],"updates":[["Keys and privacy","Reference","keys"]],"keys":[["Voice","Reference","voice"],["Troubleshooting","Help","troubleshooting"]],"troubleshooting":[["Install and set up","Guide","install"]]},"sources":[]}
-</script>
+{"title":"Jupiter","concepts":{"overview":[["Install and set up","Start here","install"],["Your first task","Guide","first-task"]],"install":[["Starter tools","Capabilities","capabilities/starter"],["Voice","Optional","voice"]],"first-task":[["Chats and agents","Reference","chats"],["Teaching Jupiter","Knowledge","knowledge"]],"chats":[["Workspace and cards","Reference","workspace"],["Phone access","Voice","voice/phone"]],"workspace":[["Files and folders","Reference","files"],["workspace-authoring skill","Skill","skills/bundled"]],"files":[["Where skills live","Skills","skills/where"],["Keys and privacy","Reference","keys"]],"boards":[["game-wiki skill","Skill","skills/bundled"],["Voice","Reference","voice"]],"voice":[["Keys","Reference","keys"],["Settings","Reference","settings"]],"skills":[["Capabilities","Reference","capabilities"],["Knowledge and rules","Reference","knowledge"]],"capabilities":[["Skills","Reference","skills"],["Troubleshooting","Help","troubleshooting"]],"knowledge":[["Skills","Reference","skills"],["Files and folders","Reference","files"]],"settings":[["Run setup again","Guide","install/wizard"],["Voice","Reference","voice"]],"keys":[["Voice","Reference","voice"],["Troubleshooting","Help","troubleshooting"]],"troubleshooting":[["Install and set up","Guide","install"]]},"sources":[]}
+</script><script src="../_shared/vendor/mermaid.min.js"></script>
 <script>
 (() => {
   'use strict';
@@ -673,6 +782,31 @@ html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
     const a = document.createElement('a'); a.href = url; a.download = (source.path || source.id + '.md').split(/[/\\]/).pop(); a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
   window.addEventListener('hashchange', showRoute);
+  // Diagrams are drawn when their page is shown, because hidden elements have no size to lay out.
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'base', fontFamily: 'Inter, Segoe UI, system-ui, sans-serif',
+      flowchart: { curve: 'basis', padding: 18, nodeSpacing: 46, rankSpacing: 58, htmlLabels: false, subGraphTitleMargin: { top: 14, bottom: 12 } }, sequence: { mirrorActors: false, actorMargin: 70, boxMargin: 12 },
+      themeVariables: { background: '#050913', fontSize: '14px', primaryColor: '#10233a', primaryTextColor: '#e9eefb', primaryBorderColor: '#3b6f93', secondaryColor: '#1c1838', tertiaryColor: '#0b1626', lineColor: '#7dd3fc', textColor: '#c8d1e6',
+        clusterBkg: '#0b1626', clusterBorder: '#2a4560', edgeLabelBackground: '#0b1424', nodeTextColor: '#e9eefb',
+        actorBkg: '#10233a', actorBorder: '#3b6f93', actorTextColor: '#e9eefb', actorLineColor: '#2a4560', signalColor: '#7dd3fc', signalTextColor: '#e9eefb', noteBkgColor: '#1c1838', noteTextColor: '#e9eefb', noteBorderColor: '#a78bfa' } });
+    const draw = () => { const nodes = [...document.querySelectorAll('.wiki-page:not([hidden]) pre.mermaid:not([data-processed])')]; if (nodes.length) mermaid.run({ nodes }).catch(() => {}); };
+    addEventListener('hashchange', () => requestAnimationFrame(draw));
+    requestAnimationFrame(draw);
+  }
+  // Parallax and reveal; skipped when the reader prefers reduced motion.
+  const root = document.documentElement;
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    root.classList.add('motion');
+    let frame = 0, mx = 0, my = 0;
+    const paint = () => { frame = 0; root.style.setProperty('--mx', mx.toFixed(3)); root.style.setProperty('--my', my.toFixed(3)); root.style.setProperty('--sy', String(Math.round(scrollY))); };
+    const queue = () => { if (!frame) frame = requestAnimationFrame(paint); };
+    addEventListener('pointermove', event => { mx = event.clientX / innerWidth - .5; my = event.clientY / innerHeight - .5; queue(); }, { passive: true });
+    addEventListener('scroll', queue, { passive: true });
+    const reveal = new IntersectionObserver(entries => { for (const entry of entries) if (entry.isIntersecting) { entry.target.classList.add('in'); reveal.unobserve(entry.target); } }, { rootMargin: '0px 0px -8% 0px' });
+    const watch = () => { for (const block of document.querySelectorAll('.wiki-page:not([hidden]) .content-block:not(.in)')) reveal.observe(block); };
+    addEventListener('hashchange', () => requestAnimationFrame(watch));
+    requestAnimationFrame(watch);
+  }
   document.documentElement.classList.remove('js-loading');
   filterAssets(); showRoute();
 })();

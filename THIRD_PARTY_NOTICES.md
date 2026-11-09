@@ -3,6 +3,12 @@
 Jupiter is proprietary software (see [LICENSE](LICENSE)). It includes the
 open-source components listed below, each under its own licence.
 
+## Mermaid (MIT)
+
+`workspace/_shared/vendor/mermaid.min.js` is Mermaid 12.3.0, used to draw
+diagrams in Workspace reports. Its licence is in
+`workspace/_shared/vendor/mermaid.LICENSE.txt`.
+
 ## Workspace application foundation (MIT)
 
 Portions of this software are derived from a workspace application released

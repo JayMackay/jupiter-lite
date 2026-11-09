@@ -77,7 +77,7 @@ export async function createService({ repo, uiDir, stateDir, token = secret(), n
   const environment = parseEnv(await readFile(path.join(repo, '.env'), 'utf8').catch(() => ''));
   const settingsPath = path.join(stateDir, 'settings.json');
   const savedSettings = await readJson(settingsPath, null);
-  let settings = { defaultAgent: 'codex', defaultBypass: false, coordinatorModel: environment.JUPITER_COORDINATOR_MODEL?.trim() || null, terminalFontSize: 13, terminalAppearance: 'original', workspaceTheme: 'jupiter', chatTheme: 'jupiter', coordinatorEffort: 'medium', voiceName: 'marin', voiceStyle: defaultVoiceStyle, handoffAfter: 40, groupTabsByProject: false, systemEvents: 'compact', ...savedSettings };
+  let settings = { defaultAgent: 'codex', defaultBypass: false, coordinatorModel: environment.JUPITER_COORDINATOR_MODEL?.trim() || null, terminalFontSize: 13, terminalAppearance: 'original', workspaceTheme: 'jupiter', chatTheme: 'jupiter', coordinatorEffort: 'medium', voiceName: 'marin', voiceStyle: defaultVoiceStyle, handoffAfter: 40, groupTabsByProject: false, systemEvents: 'compact', ...(setupOptions.firstRun === true ? {} : { setupDone: true }), ...savedSettings };
   if (await dictation.initializeProvider?.(settings, savedSettings !== null)) await saveJson(settingsPath, settings);
   dictation.providerChoice = () => settings.transcribeProvider || null;
   const chooseDictation = async provider => {
@@ -698,6 +698,9 @@ export async function createService({ repo, uiDir, stateDir, token = secret(), n
           return json(response, 200, { done: settings.setupDone });
         }
         // App updates are checked and installed by the desktop shell; results arrive as a window event.
+        if (method === 'GET' && url.pathname === '/api/update') {
+          return json(response, 200, { version: process.env.JUPITER_APP_VERSION || null, enabled: process.env.JUPITER_UPDATER === '1' });
+        }
         if (method === 'POST' && url.pathname === '/api/update') {
           if (!['check', 'install'].includes(data.action)) throw Object.assign(new Error('Unknown update action.'), { status: 400 });
           native({ type: `update-${data.action}` });

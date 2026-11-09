@@ -454,7 +454,10 @@ fn main() {
             let log = fs::OpenOptions::new().create(true).append(true).open(&service_log)?;
             let mut command = Command::new(node);
             command.arg(script).arg("--repo").arg(&repo).arg("--ui").arg(ui).current_dir(&repo)
-                .env("JUPITER_PARENT_PID", std::process::id().to_string()).stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::from(log));
+                .env("JUPITER_PARENT_PID", std::process::id().to_string())
+                .env("JUPITER_APP_VERSION", app.package_info().version.to_string())
+                .env("JUPITER_UPDATER", if app.state::<UpdaterEnabled>().0 { "1" } else { "0" })
+                .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::from(log));
             #[cfg(target_os = "macos")]
             login_environment(&mut command);
             let mut child = hidden(&mut command).spawn()?;

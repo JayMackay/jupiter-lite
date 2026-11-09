@@ -23,10 +23,17 @@ try {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
-  await page.goto(url);
+  // The first load waits for Vite to prepare dependencies, which can be slow on a cold cache.
+  await page.goto(url, { timeout: 120000 });
   let steps = 0;
+  // Cards live in the dashboard's Projects panel.
+  const openCard = async (target, id) => {
+    const card = id ? target.locator(`.entity-card[data-entity="${id}"]`) : target.locator('.entity-card').first();
+    if (!await card.isVisible()) await target.locator('.jh-panel .jh-ph', { has: target.getByRole('heading', { name: 'Projects', exact: true }) }).click();
+    await card.click();
+  };
   for (const entity of entities) {
-    await page.locator(`.entity-card[data-entity="${entity.id}"]`).click();
+    await openCard(page, entity.id);
     await page.getByRole('tab', { name: entity.steps[entity.defaultStep ?? entity.steps.length - 1].name, exact: true }).waitFor();
     for (const [index, step] of entity.steps.entries()) {
       await page.locator('.step-tab').nth(index).click();
@@ -48,7 +55,7 @@ try {
       steps++;
     }
     await page.getByRole('button', { name: 'Workspace', exact: true }).click();
-    await page.locator('.entity-card').first().waitFor();
+    await page.locator('.jh-panels').waitFor();
   }
   assert.deepEqual(errors, []);
 
@@ -105,12 +112,12 @@ try {
   failed.setDefaultTimeout(15000);
   await failed.route('**/src/components/ReportViewer.tsx*', route => route.abort('failed'));
   await failed.goto(url);
-  await failed.locator('.entity-card').first().click();
+  await openCard(failed);
   await failed.getByRole('alert').waitFor();
   assert.equal(await failed.getByRole('button', { name: 'Workspace', exact: true }).count(), 1);
   await failed.getByRole('button', { name: 'Back to Workspace', exact: true }).click();
-  await failed.locator('.entity-card').first().waitFor();
-  await failed.locator('.entity-card').first().click();
+  await failed.locator('.jh-panels').waitFor();
+  await openCard(failed);
   await failed.getByRole('alert').waitFor();
   await failed.unroute('**/src/components/ReportViewer.tsx*');
   await failed.getByRole('button', { name: 'Reload page', exact: true }).click();
