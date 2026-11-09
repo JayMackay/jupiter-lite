@@ -1,151 +1,105 @@
 # Getting started
 
-Jaw is a local desktop workspace for working with several agents. Its files
-are ordinary project files, and its chats are ordinary CLI sessions. You can
-keep using the same agents outside the app.
+Jupiter Lite is a desktop workspace for working with AI coding agents. Chats are
+real Claude Code and Codex sessions; Workspace keeps the cards, reports and files
+they produce. Everything is stored as ordinary files in a folder you choose.
 
-**Required before setup: Codex CLI, Claude Code CLI or OpenCode, installed and
-configured with your own account.** Use at least one to guide the setup below.
-The optional voice coordinator requires Codex specifically; Kimi is another
-available terminal integration.
+## Install
 
-## Choose a folder
+Download the installer for your computer from
+[GitHub Releases](https://github.com/JayMackay/jupiter-lite/releases/latest):
 
-Create a repository from the GitHub template and clone your copy. The selected
-folder must contain `workspace/workspace.json`. Keep the application source and
-your project content together at first; this makes setup and agent handoffs easy.
-The template has no previous owner's projects, accounts or conversation history.
+| Computer | File |
+| --- | --- |
+| Windows | `Jupiter-Lite-…-windows-x64-setup.exe` |
+| Mac (Apple Silicon) | `Jupiter-Lite-…-macos.dmg` |
+| Linux | `Jupiter-Lite-…-x86_64.AppImage` |
 
-## Install the desktop app
+On Windows the installer runs for your user only and needs no administrator
+rights. If SmartScreen warns about an unknown publisher, choose **More info →
+Run anyway**. On a Mac, drag Jupiter to Applications; see the
+[macOS notes](../../docs/macos.md) if it asks for confirmation the first time.
 
-On Windows x64, use the installer in GitHub Releases. It bundles the Node
-runtime and local service and installs for the current Windows user. WebView2
-is installed by its bootstrapper if needed. No administrator terminal is needed
-for ordinary app use.
+## First launch
 
-Run **Start Jaw.cmd** from the cloned folder. The app remembers the selected
-repository. It opens Workspace and Chats as separate windows with separate
-taskbar identities. Closing a chat saves it to History; restoring its full
-conversation also relies on that CLI's native session files.
+Jupiter asks where to keep your workspace. **Documents\Jupiter** is suggested;
+you can choose any other folder. It is filled with a starter workspace: skills,
+knowledge, workflows and these sample cards. Nothing needs to be cloned.
 
-On an Apple Silicon Mac, download the macOS `.dmg` from GitHub Releases, or build
-the app from source with Node.js 22.20+, Rust and the Xcode Command Line Tools:
+The setup wizard then walks through five steps. You can leave it and come back
+with **Back to setup**, or run it again later from **Settings → Run setup again**.
 
-```bash
-./setup.sh check      # report prerequisites
-./setup.sh desktop    # build JayAgenticWorkspace.app and a .dmg
-```
+1. **You.** Your name and what Jupiter should call you.
+2. **Projects.** The folder that holds your projects. It can be anywhere, such
+   as an existing code folder.
+3. **Agents.** Git and Node.js, which the tools need, then Claude Code and Codex.
+   Missing ones install with one click, and **Sign in** opens the agent so you
+   can log in with your own Claude or ChatGPT account.
+4. **Tools.** A free starter set installed after one confirmation: working
+   methods, document and design skills, a browser for checking UI, current
+   library docs and three pixel art tools. Tools you already have are taken over
+   so Jupiter can keep them up to date.
+5. **Voice.** Optional. Paste an ElevenLabs API key, pick a voice, and Jupiter
+   reads its replies aloud.
 
-Drag **JayAgenticWorkspace.app** to Applications, then double-click
-**Start Jaw.command** in the cloned folder. The app is ad-hoc signed but
-not notarised; a copy you build yourself opens without a prompt. Shortcuts use
-⌘ instead of Ctrl, and ⌘C/⌘V copy and paste in terminals. See the [macOS notes](../../docs/macos.md).
+## Your first chat
 
-## Connect one agent
+In Chats, press **+**, choose Claude Code or Codex, pick a working folder and give
+the chat a clear name. Ordinary agent permissions are the default; bypass is a
+deliberate per-chat choice.
 
-Install at least one required CLI using its current official instructions for
-your operating system:
+Try: “Read my project brief and turn it into a small plan. Ask me for anything
+that is missing.”
 
-- [Codex CLI](https://developers.openai.com/codex/cli)
-- [Claude Code](https://code.claude.com/docs/en/setup)
-- [OpenCode](https://opencode.ai/docs/)
+Claude Code can use a Claude Pro or Max login and Codex an eligible ChatGPT
+login. Jupiter starts the real installed CLI, so its normal sign-in, limits and
+billing apply; no API key is needed for chats.
 
-[Kimi Code CLI](https://moonshotai.github.io/kimi-cli/en/) is available as an
-additional terminal integration after the base setup.
+## Updates
 
-Finish the CLI's sign-in flow with your own account. In Chats, press **+**, choose
-the provider and a descriptive English title. Start with a task such as
-`Dream Game Plan`. Choose the repository as the working folder. The normal CLI
-permission flow is enabled by default; bypass is a deliberate per-chat choice.
+Jupiter checks for new versions when it starts. When one is ready, a banner
+offers to install it and restart. Updated skills, workflows and sample cards are
+copied into your workspace at the same time. A file you have edited or deleted
+is never overwritten.
 
-Try: “Read my project brief and turn it into a small project plan. Ask me for missing requirements.”
+## Optional keys
 
-## Subscriptions, API keys and OpenCode
+Keys live in `.env` in your workspace folder, which stays on your computer.
+The Voice step writes the ElevenLabs key for you. Add others only if you use them:
 
-Claude Code can use a Claude Pro or Max login. Codex can use an eligible ChatGPT
-subscription login. You do not need to add an API key to Jaw for those chats:
-it starts the real installed CLI and keeps its normal authentication and limits.
-See [Claude authentication](https://code.claude.com/docs/en/authentication) and
-[Codex authentication](https://developers.openai.com/codex/auth).
-
-For OpenCode, install and configure it first using its own provider setup. Check
-that `opencode` runs from a terminal, then choose **+ > OpenCode** in Jaw.
-Your chosen provider determines authentication and billing. A native Claude Code
-subscription does not automatically provide access through third-party clients.
-
-OpenCode chats support History, pinned tabs, files and clipboard screenshots.
-The app observes native session events to keep the correct conversation ID;
-your native OpenCode data must remain available for resume. Keep one conversation
-per Jaw tab. Use a new tab for a new task. OpenCode controls its model and
-reasoning settings. Auto-approve is off by default, and explicit deny rules still
-apply when it is enabled.
-
-OpenCode 1.x and 2.x use different plugin APIs. Jaw selects the corresponding
-small session observer at launch, without writing global configuration. OpenCode
-2.x runs a private server for each terminal so tab histories stay separate.
-The MCP inspector currently lists Claude, Codex, Kimi and Cursor configurations;
-use OpenCode's native MCP controls to inspect its own connections.
+| Key | Used for |
+| --- | --- |
+| `OPENAI_API_KEY` | The live voice coordinator |
+| `FAL_KEY` | Image, video and 3D generation with fal.ai |
+| `OPENROUTER_API_KEY` | Cloud dictation (local Whisper is free and the default) |
 
 ## Explore the examples
 
-The pinned game card is a project hub. Research is a readable report with source
-links. Dev contains this guide and customization ideas. All are marked as samples so
-they do not vanish into the time-based archive. Archive them when you no longer
-need them. Archive changes metadata; it does not delete their media files.
+The sample cards show a project hub, a research report and this guide. They are
+marked as samples, so they stay visible until you archive them. Archiving changes
+the card's status only; its files are kept.
 
-Use Files to inspect `projects`, `inbox`, `knowledge`, `processes` and the skill
-folders. A Markdown file opens in Preview; switch to Edit and Save to change it.
-The Help button opens a quick guide without creating a new chat.
+Use Files to look through `projects`, `inbox`, `knowledge`, `processes` and the
+skill folders. Markdown opens in Preview; switch to Edit and Save to change it.
 
-## Optional voice
+## On another computer
 
-Copy `.env.example` to `.env` and add your own `OPENAI_API_KEY` to enable the
-OpenAI Live connection. Never commit that file. Sign in to Codex for the
-coordinator. Its model follows your account configuration; an optional
-`JUPITER_COORDINATOR_MODEL` overrides it. Model access depends on your account.
-
-Voice requests can focus a chat, inspect a report, update a card or hand a larger
-task to a worker. Direct actions stay quick; a visible worker handles deliverables.
-Medium is the minimum default effort; difficult work can use high or xhigh.
-Max requires an explicit request. The app reports tool results before calling
-an action complete.
-
-CLI account billing and OpenAI voice API billing are separate. No API generation
-is needed to browse the samples or use a signed-in CLI. Optional dictation into
-terminals is described in [voice dictation](../../knowledge/voice-dictation.md).
+Install Jupiter, choose a workspace folder and sign in to your agents again.
+Your workspace is plain files: keep it in Git or a synced folder if you want the
+same cards and knowledge on both computers. Keys in `.env`, agent logins and chat
+histories stay on the computer where they were made.
 
 ## Build from source
 
-Install [Node.js](https://nodejs.org/en/download), Rust's MSVC toolchain and
-[Tauri's Windows prerequisites](https://v2.tauri.app/start/prerequisites/#windows):
-Microsoft C++ Build Tools and WebView2. Node.js 22.20+ is required by this template.
+Only needed if you want to change the app itself. Install Node.js 22.20+, Rust
+and the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/), then:
 
 ```powershell
+git clone https://github.com/JayMackay/jupiter-lite.git
+cd jupiter-lite
 powershell -ExecutionPolicy Bypass -File .\Setup.ps1 -Mode Check
 powershell -ExecutionPolicy Bypass -File .\Setup.ps1 -Mode Desktop
 ```
 
 On macOS and Linux, `./setup.sh check` and `./setup.sh desktop` do the same.
-
-Check only reports prerequisites. Desktop installs project dependencies and
-builds an installer in `src-tauri/target/release/bundle/nsis`. It does not install
-or restart the app for you. An agent should prepare updates, then ask before
-interrupting active chats with an install or restart.
-
-For a report-only browser preview:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\Setup.ps1 -Mode Preview
-```
-
-On macOS or Linux, run `./setup.sh preview`.
-
-That starts Vite and links `public/workspace` to the real Workspace folder.
-It does not start managed terminals or the voice service.
-
-## On another computer
-
-Clone your own repository, install the app, select the folder and sign in to
-your CLIs again. Recreate `.env` locally. Content travels through Git; credentials,
-local app state and native CLI histories do not. A fresh clone cannot recover
-conversations whose native history exists only on the previous computer.
+`npm run desktop:dev` runs the app from source.

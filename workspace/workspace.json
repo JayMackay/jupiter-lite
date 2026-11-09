@@ -32,11 +32,11 @@
     {
       "id": "make-workspace-yours",
       "title": "Make Workspace Yours",
-      "description": "Install the app, understand the daily workflow and choose what to customize.",
+      "description": "Install Jupiter Lite, run the setup wizard, learn the daily workflow and choose what to customize.",
       "type": "group",
       "category": "dev",
       "created": "2026-09-15",
-      "updated": "2026-10-28",
+      "updated": "2026-11-09",
       "folder": "2026-09-15_make-workspace-yours",
       "steps": [
         {

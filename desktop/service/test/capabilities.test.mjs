@@ -103,6 +103,19 @@ test('an existing marketplace of the same name is never silently replaced', asyn
   await assert.rejects(manager.review('helper'), /already has a marketplace called helper-market/);
 });
 
+test('a marketplace pinned by another Jupiter workspace is replaced with this pin', async () => {
+  const { manager, calls, home } = await setup();
+  await write(path.join(home, '.claude/plugins/known_marketplaces.json'), { 'helper-market': { source: { source: 'directory', path: 'C:\\Other\\Jupiter\\.jupiter\\capabilities\\helper\\abc' } } });
+  const review = await manager.review('helper');
+  await manager.install('helper', { token: review.token, acceptHooks: true });
+  const commands = calls.filter(call => call.name === 'claude').map(call => call.args.join(' '));
+  assert.equal(commands[0], 'plugin marketplace remove helper-market');
+  assert.ok(commands[1].startsWith('plugin marketplace add '));
+  await manager.remove('helper');
+  const undo = calls.filter(call => call.name === 'claude').slice(3).map(call => call.args.join(' '));
+  assert.deepEqual(undo, ['plugin uninstall helper@helper-market', 'plugin marketplace remove helper-market'], 'the remove step is not recorded as something to undo');
+});
+
 test('skills are copied to both agents with a marker, and a skill Jupiter did not install is left alone', async () => {
   const { manager, home } = await setup();
   await write(path.join(home, '.claude/skills/terse/SKILL.md'), '# mine');

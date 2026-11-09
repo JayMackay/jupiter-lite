@@ -112,7 +112,7 @@ subscription, running terminal, API balance or signed-in application.
 
 ## Talking to Jupiter
 
-Press the nose button to start or stop a voice conversation. Ask for quick actions
+Press the J button to start or stop a voice conversation. Ask for quick actions
 such as opening a chat, finding a card, checking recent work or changing a card's
 status. For a larger task, ask Jupiter to create an agent conversation and follow
 its result. You can continue working directly in any terminal.

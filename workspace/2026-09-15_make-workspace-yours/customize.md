@@ -1,60 +1,55 @@
 # Make Workspace yours
 
-## Change in Settings
+## Settings
 
-Use the right-hand Settings rail for the available display and behavior controls.
-Terminal text settings and tab colors live with Chats. The Win-key shortcut is
-optional: when enabled, a single Win press returns to hidden Jaw windows;
-when they are already in view, it opens Start. Win combinations remain normal.
-On macOS, the same option is under Settings > Shortcut: its key combination
-brings back the windows from any app, and clicking the Dock icon also restores
-them. The template leaves it disabled.
+The Settings rail on the right holds display and behavior options: theme,
+terminal text size, the default agent and new-chat permissions. **Run setup
+again** reopens the setup wizard to change your name, projects folder, agents,
+starter tools or voice.
 
-Choose chat permission bypass deliberately. Ordinary permissions are the default.
-Voice settings can adjust the voice profile, speed and conversation behavior.
-Some voice changes take effect on the next voice connection.
+The Win-key shortcut is optional: when enabled, a single Win press brings back
+hidden Jupiter windows. On macOS the same option is under Settings → Shortcut.
+
+Choose permission bypass deliberately; ordinary permissions are the default.
 
 ## Change with an agent
 
 | Ask for | Where it belongs |
 | --- | --- |
 | “Remember how I want reports written.” | `context/preferences.md` |
-| “Save this reliable modeling method.” | A focused note in `knowledge/` |
-| “Make this repeatable.” | A workflow in `processes/` and, if useful, a project skill |
-| “Add a report tab to this project.” | The existing card's steps in `workspace/workspace.json` |
+| “Save this reliable method.” | A focused note in `knowledge/` |
+| “Make this repeatable.” | A workflow in `processes/` and, if useful, a skill |
+| “Add a report tab to this project.” | The card's steps in `workspace/workspace.json` |
 | “Create a new research task.” | A dated Workspace folder and one registry entry |
-| “Change fonts, colors or spacing everywhere.” | Shared application and report styles |
-| “Add another main folder.” | Files rail defaults in the application source |
 
-A useful instruction is: “Read AGENTS.md, propose a small change, implement it,
-verify the result, and prepare the update. Ask before restarting the desktop app.”
+A useful instruction: “Read AGENTS.md, propose a small change, make it and check
+the result.”
 
 ## A small project structure
 
 Keep one pinned project hub with Brief, Plan and Assets tabs. Put lasting source
-files under `projects/<project>/`; keep the pages you read under its Workspace
-folder. Add one card for an independent task, not one card per generated image.
-Related iterations become tabs in the same card. Mark superseded work archived.
+files under your projects folder; keep the pages you read under the card's
+Workspace folder. Add one card per independent task, not one per generated image.
+Related iterations become tabs in the same card.
 
-## Optional providers
+## More tools
 
-The template does not install MCP servers globally. Use the MCP panel to inspect
-project and global configuration, then follow the provider's current instructions.
-For this project, use `.mcp.json` for Claude and `.codex/config.toml` for Codex.
-Connection credentials remain local or in the provider's own login store.
-Follow the selected client's documented environment-secret support rather than
-placing a token directly in a tracked connection file.
+Open **Capabilities** to add tools beyond the starter set. Each one is reviewed
+before it installs: you see what it adds, including any hooks that run
+automatically. Removing a tool undoes exactly what it added.
 
-For fal.ai, read the bundled `fal-ai-generation` skill, connect the MCP or use its
-Python helper, and set `FAL_KEY` in `.env`. Discover the exact model schema before
-starting a paid job. Higgsfield uses its own CLI setup and account.
+For a service that needs an account, such as fal.ai, add its key to `.env` in
+your workspace folder. Keys stay on your computer and are never committed.
+
+## Your edits and updates
+
+Updates bring new skills, workflows and sample cards. Jupiter only replaces files
+it delivered and you have not changed, so your own edits to `AGENTS.md`, skills
+or knowledge notes are kept.
 
 ## Design rules
 
 Use the shared dark report style, readable headings and consistent card spacing.
-Every report image must open at full size and offer a download. Keep wide tables
-scrollable inside the report, and test tabs at narrow window widths. Preserve
-the document surface while a tab loads so switching does not flash white.
-
-The Workspace authoring skill contains the maintained rules. If you change the
-design system, update that skill and the shared implementation together.
+Every report image should open at full size and offer a download. Keep wide
+tables scrollable inside the report. The Workspace authoring skill holds the
+maintained rules.

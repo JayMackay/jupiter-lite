@@ -98,7 +98,7 @@ function ToolsStep({ state, refresh }: { state: SetupState; refresh: () => Promi
     if (event.progress) { const item = event.progress; setProgress(current => ({ ...current, [item.id]: item })) }
     if (event.done || event.error) { setRunning(false); if (event.error) setError(event.error); void refresh() }
   }), [refresh])
-  const pending = state.starter.filter(item => item.state === 'available')
+  const pending = state.starter.filter(item => item.state === 'available' || item.state === 'present')
   const claude = state.agents.find(agent => agent.id === 'claude')
   const missing = state.agents.filter(agent => agent.requirement && !agent.installed).map(agent => agent.label)
   const blocked = missing.length > 0 || !claude?.installed
@@ -110,7 +110,7 @@ function ToolsStep({ state, refresh }: { state: SetupState; refresh: () => Promi
     <p className="setup-lead">A free starter set: working methods, document and design skills, a browser for checking UI, current library docs, and three pixel art tools. Paid tools (Higgsfield, fal, Firecrawl) stay optional in Capabilities.</p>
     <ul className="setup-tools">{state.starter.map(item => {
       const live = progress[item.id]
-      const label = live ? (live.state === 'installing' ? 'Installing…' : live.state === 'installed' ? 'Installed' : 'Failed') : item.state === 'available' ? 'Not installed' : item.state === 'installed' || item.state === 'present' ? 'Installed' : item.state
+      const label = live ? (live.state === 'installing' ? 'Installing…' : live.state === 'installed' ? 'Installed' : 'Failed') : item.state === 'available' ? 'Not installed' : item.state === 'present' ? 'Found, not managed' : item.state === 'installed' ? 'Installed' : item.state
       return <li key={item.id} className={live?.state || item.state}><strong>{item.name}</strong><small>{item.what}</small><span>{label}</span>{live?.error && <em>{live.error}</em>}</li>
     })}</ul>
     {blocked && pending.length > 0 && <p className="desk-muted setup-note">Install {[...missing, ...(claude?.installed ? [] : ['Claude Code'])].join(', ')} on the Agents step first. The tools are downloaded with Git, run with Node.js, and several are Claude Code plugins.</p>}

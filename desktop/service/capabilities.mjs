@@ -290,6 +290,7 @@ export class Capabilities {
   plan(item, pin, targets) {
     const setup = item.setup; const steps = [];
     if (setup.kind === 'plugin') {
+      if (pin.replaceMarketplace) steps.push({ label: `Remove the ${setup.marketplace} marketplace another Jupiter workspace added`, file: 'claude', args: ['plugin', 'marketplace', 'remove', setup.marketplace] });
       steps.push({ label: `Add the pinned ${setup.marketplace} marketplace to Claude Code`, file: 'claude', args: ['plugin', 'marketplace', 'add', pin.folder] });
       for (const plugin of setup.plugins) steps.push({ label: `Install ${plugin} for Claude Code`, file: 'claude', args: ['plugin', 'install', `${plugin}@${setup.marketplace}`, '--scope', 'user'] });
       if (setup.codexSkills && pin.skills?.length) steps.push({ label: `Copy ${pin.skills.join(', ')} into Codex skills`, copy: { agents: ['codex'], names: pin.skills, from: setup.codexSkills.from } });
@@ -370,14 +371,17 @@ export class Capabilities {
       const marketplace = await readJsonFile(path.join(pin.folder, '.claude-plugin/marketplace.json'));
       if (marketplace?.name !== setup.marketplace) throw fail(`The pinned code names its marketplace "${marketplace?.name || 'nothing'}", not "${setup.marketplace}". Update the catalogue after checking the repo.`, 409);
       const known = (await readJsonFile(path.join(this.claudeHome, 'plugins/known_marketplaces.json')))?.[setup.marketplace];
-      if (known && !lock.installed[id]) throw fail(`Claude Code already has a marketplace called ${setup.marketplace} (from ${known.source?.repo || known.source?.path || known.installLocation || 'elsewhere'}), so it is not pinned. Remove it with “claude plugin marketplace remove ${setup.marketplace}”, then review again.`, 409);
+      // A marketplace pinned by another Jupiter workspace is replaced with this one's pin.
+      const otherJupiter = known && String(known.source?.path || known.installLocation || '').replace(/\\/g, '/').includes(`/.jupiter/capabilities/${id}/`);
+      if (otherJupiter && !lock.installed[id]) pin.replaceMarketplace = true;
+      else if (known && !lock.installed[id]) throw fail(`Claude Code already has a marketplace called ${setup.marketplace} (from ${known.source?.repo || known.source?.path || known.installLocation || 'elsewhere'}), so it is not pinned. Remove it with “claude plugin marketplace remove ${setup.marketplace}”, then review again.`, 409);
       const missing = setup.plugins.filter(plugin => !inspection.plugins.some(entry => entry.name === plugin));
       if (missing.length) throw fail(`The pinned marketplace has no plugin called ${missing.join(', ')}.`, 409);
     }
     const chosen = this.targets(setup, targets);
     const steps = this.plan(item, pin, chosen);
     const token = randomBytes(18).toString('base64url');
-    const review = { id, token, commit: pin.commit || null, version: pin.version || null, folder: pin.folder || null, skills: pin.skills || null, targets: chosen, createdAt: Date.now(),
+    const review = { id, token, commit: pin.commit || null, version: pin.version || null, folder: pin.folder || null, skills: pin.skills || null, replaceMarketplace: pin.replaceMarketplace === true, targets: chosen, createdAt: Date.now(),
       steps: steps.map(step => step.link ? `link ${path.join(this.toolsDir, step.link.name)} → ${pin.folder}` : step.copy ? `copy ${step.copy.names.join(', ')} → ${step.copy.agents.map(agent => this.skillDirs[agent]).join(' and ')}` : step.codexProject ? `write [mcp_servers.${setup.server}] → ${path.join(step.codexProject.project, '.codex/config.toml')}` : [step.file, ...step.args].join(' ')),
       found: inspection, env: setup.env || (setup.headerEnv ? [setup.headerEnv] : []), optionalEnv: setup.optionalEnv || [], notes: [setup.note, item.risk].filter(Boolean),
       previous: lock.installed[id] ? { commit: lock.installed[id].commit, version: lock.installed[id].version } : null };
@@ -427,6 +431,7 @@ export class Capabilities {
     }
     const resolved = ['npm', 'git'].includes(step.file) ? step.file : this.which(step.file) || step.file;
     const result = await this.run(resolved, step.args, { cwd: step.cwd });
+    if (step.file === 'claude' && step.args[0] === 'plugin' && step.args[2] === 'remove') return [];
     if (step.file === 'claude' && step.args[0] === 'plugin' && step.args[1] === 'marketplace') return [{ type: 'claude-marketplace', name: item.setup.marketplace }];
     if (step.file === 'claude' && step.args[0] === 'plugin') return [{ type: 'claude-plugin', id: step.args[2] }];
     if (step.file === 'claude' && step.args[0] === 'mcp') return [{ type: 'claude-mcp', name: item.setup.server, scope: step.args[3], cwd: step.cwd || null, target: step.target }];
@@ -486,7 +491,7 @@ export class Capabilities {
         if (!review || review.token !== token) throw fail('Review this capability again before installing; the review has changed.', 409);
         if (Date.now() - review.createdAt > REVIEW_TTL) { this.reviews.delete(id); throw fail('That review is more than 30 minutes old. Review it again.', 409); }
         if (review.found?.hooks.length && acceptHooks !== true) throw fail('This adds hooks that run automatically. Tick that you have read them, then install.', 400);
-        pin = { commit: review.commit, version: review.version, folder: review.folder, skills: review.skills }; chosen = review.targets;
+        pin = { commit: review.commit, version: review.version, folder: review.folder, skills: review.skills, replaceMarketplace: review.replaceMarketplace }; chosen = review.targets;
         if (existing) {
           // An update replaces the old pin completely, so nothing from it is left behind.
           const problems = await this.removeActions(id, existing.actions);
@@ -529,7 +534,8 @@ export class Capabilities {
   }
   async installStarter({ acceptHooks = false, onProgress = () => {} } = {}) {
     if (acceptHooks !== true) throw fail('Agree to install the starter tools, including any hooks they add.', 400);
-    const pending = (await this.starter()).filter(item => item.state === 'available');
+    // "present" ones are on this computer but not managed here, so updates can't be checked; take them over when possible.
+    const pending = (await this.starter()).filter(item => item.state === 'available' || item.state === 'present');
     const results = [];
     for (const item of pending) {
       onProgress({ id: item.id, name: item.name, state: 'installing' });
@@ -539,6 +545,7 @@ export class Capabilities {
         results.push({ id: item.id, name: item.name, ok: true });
         onProgress({ id: item.id, name: item.name, state: 'installed' });
       } catch (error) {
+        if (item.state === 'present') { results.push({ id: item.id, name: item.name, ok: true, kept: true }); onProgress({ id: item.id, name: item.name, state: 'installed' }); continue; }
         results.push({ id: item.id, name: item.name, ok: false, error: error.message });
         onProgress({ id: item.id, name: item.name, state: 'failed', error: error.message });
       }
