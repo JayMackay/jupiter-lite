@@ -114,14 +114,24 @@ if (process.platform === 'darwin') {
 await cp(path.join(repo, 'dist'), path.join(runtime, 'ui'), { recursive: true });
 // Vite deliberately does not copy the enormous workspace junction. Bundle only UI assets.
 try { await access(path.join(repo, 'public', 'assets')); await cp(path.join(repo, 'public', 'assets'), path.join(runtime, 'ui', 'assets'), { recursive: true }); } catch { /* Optional brand assets. */ }
-// Skills, the catalogue and rules travel with the app; the service syncs them into the user's repository.
-const { MANAGED } = await import('./service/managed-content.mjs');
-const skipContent = new Set(['node_modules', '.git', '__pycache__', '.DS_Store']);
-for (const entry of MANAGED) {
-  const from = path.join(repo, ...entry.split('/'));
-  if (!await access(from).then(() => true, () => false)) continue;
-  await cp(from, path.join(runtime, 'content', ...entry.split('/')), { recursive: true, filter: source => !path.relative(from, source).split(path.sep).some(part => skipContent.has(part)) });
+// A fresh workspace travels with the app: the first launch creates it, and later updates sync the
+// managed parts (skills, catalogue, rules). Only committed files are packed, so local state, voice
+// clips, tests and source never reach users.
+const STARTER = ['.agents/skills', '.claude/skills', '.codex/config.toml', '.mcp.json', '.env.example', '.gitignore', 'AGENTS.md', 'CLAUDE.md', 'JUPITER.md',
+  'context', 'inbox/.gitkeep', 'knowledge/capabilities.json', 'knowledge/capabilities.lock.json', 'knowledge/instructions', 'knowledge/news', 'knowledge/notes',
+  'knowledge/todo.md', 'knowledge/video-watch.md', 'knowledge/voice-dictation.md', 'processes', 'workspace'];
+const tracked = spawnSync('git', ['ls-files', '-z', '--', ...STARTER], { cwd: repo, encoding: 'utf8', windowsHide: true });
+if (tracked.status !== 0) throw new Error(`git ls-files failed: ${tracked.stderr || tracked.error?.message}`);
+const files = tracked.stdout.split('\0').filter(Boolean);
+const content = path.join(runtime, 'content');
+for (const file of files) {
+  const shown = spawnSync('git', ['show', `HEAD:${file}`], { cwd: repo, windowsHide: true, maxBuffer: 64 * 1024 * 1024 });
+  if (shown.status !== 0) continue; // added but not yet committed
+  const target = path.join(content, ...file.split('/'));
+  await mkdir(path.dirname(target), { recursive: true });
+  await writeFile(target, shown.stdout);
 }
+console.log(`[jupiter] packed ${files.length} starter workspace files`);
 await writeFile(path.join(runtime, 'README.txt'), `Jupiter local runtime for ${process.platform}. User repositories, keys and CLI logins are not included.\n`);
 const licenseCandidates = [
   path.join(path.dirname(process.execPath), 'LICENSE'),

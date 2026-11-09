@@ -172,13 +172,40 @@ impl std::fmt::Display for Cancelled {
 }
 impl std::error::Error for Cancelled {}
 
+// Copies the bundled starter workspace into a folder; files already there are never replaced.
+fn seed_workspace(from: &std::path::Path, to: &std::path::Path) -> std::io::Result<()> {
+    fs::create_dir_all(to)?;
+    for entry in fs::read_dir(from)? {
+        let entry = entry?;
+        let target = to.join(entry.file_name());
+        if entry.file_type()?.is_dir() { seed_workspace(&entry.path(), &target)?; }
+        else if !target.exists() { fs::copy(entry.path(), &target)?; }
+    }
+    Ok(())
+}
+
 fn repo_path(app: &tauri::AppHandle) -> Result<PathBuf, Box<dyn std::error::Error>> {
     let config = app.path().app_config_dir()?.join("repository.json");
     let args: Vec<String> = std::env::args().collect();
     let supplied = args.iter().position(|v| v == "--repo").and_then(|i| args.get(i + 1)).map(PathBuf::from);
     let saved = fs::read_to_string(&config).ok().and_then(|s| serde_json::from_str::<String>(&s).ok()).map(PathBuf::from);
     let current = std::env::current_dir().ok().filter(|root| root.join("workspace/workspace.json").is_file());
+    // Installed builds carry a starter workspace, so a first launch can create one instead of asking for a clone.
+    let starter = app.path().resource_dir()?.join("runtime").join("content");
+    let starter = starter.join("workspace/workspace.json").is_file().then_some(starter);
     let mut selected = supplied.or(saved).or(current);
+    if selected.is_none() {
+        if let (Some(ref starter), Ok(documents)) = (&starter, app.path().document_dir()) {
+            let default = documents.join("Jupiter");
+            let choice = rfd::MessageDialog::new().set_title("Welcome to Jupiter")
+                .set_description(format!("Jupiter keeps your workspace, skills and notes in a folder.\n\nUse {}?", default.display()))
+                .set_buttons(rfd::MessageButtons::OkCancelCustom("Use this folder".into(), "Choose another folder".into())).show();
+            if matches!(choice, rfd::MessageDialogResult::Ok) || matches!(choice, rfd::MessageDialogResult::Custom(ref label) if label == "Use this folder") {
+                seed_workspace(starter, &default)?;
+                selected = Some(default);
+            }
+        }
+    }
     loop {
         if let Some(ref root) = selected {
             if root.join("workspace/workspace.json").is_file() {
@@ -187,9 +214,17 @@ fn repo_path(app: &tauri::AppHandle) -> Result<PathBuf, Box<dyn std::error::Erro
                 return Ok(root.to_owned());
             }
         }
-        selected = rfd::FileDialog::new().set_title("Choose your Jupiter repository").pick_folder();
-        if selected.is_none() { return Err(Cancelled.into()); }
-        if !selected.as_ref().unwrap().join("workspace/workspace.json").is_file() {
+        let title = if starter.is_some() { "Choose a folder for your Jupiter workspace" } else { "Choose your Jupiter repository" };
+        selected = rfd::FileDialog::new().set_title(title).pick_folder();
+        let Some(chosen) = selected.clone() else { return Err(Cancelled.into()) };
+        if chosen.join("workspace/workspace.json").is_file() { continue; }
+        if let Some(ref starter) = starter {
+            // An empty folder becomes the workspace; otherwise a Jupiter folder is made inside it.
+            let empty = fs::read_dir(&chosen).map(|mut items| items.next().is_none()).unwrap_or(false);
+            let target = if empty { chosen } else { chosen.join("Jupiter") };
+            seed_workspace(starter, &target)?;
+            selected = Some(target);
+        } else {
             rfd::MessageDialog::new().set_title("Choose the Workspace folder").set_description("Select the repository folder containing workspace/workspace.json.").show();
         }
     }
