@@ -78,9 +78,8 @@ test('the wake word manager starts the listener, relays what it hears, mutes it 
   await mkdir(path.join(repo, '.cache/dictation/venv/Scripts'), { recursive: true });
   await mkdir(path.join(repo, '.cache/dictation/model'), { recursive: true });
   await writeFile(path.join(repo, '.cache/dictation/venv/Scripts/python.exe'), '');
-  await writeFile(path.join(repo, '.cache/dictation/venv/bin'), '').catch(() => {});
-  await mkdir(path.join(repo, '.cache/dictation/venv/bin'), { recursive: true }).catch(() => {});
-  await writeFile(path.join(repo, '.cache/dictation/venv/bin/python'), '').catch(() => {});
+  await mkdir(path.join(repo, '.cache/dictation/venv/bin'), { recursive: true });
+  await writeFile(path.join(repo, '.cache/dictation/venv/bin/python'), '');
   await writeFile(path.join(repo, '.cache/dictation/model/model.bin'), '');
   const children = [];
   const spawner = () => { const child = new EventEmitter(); child.stdout = new PassThrough(); child.stderr = new PassThrough(); child.stdin = new PassThrough(); child.written = []; child.stdin.on('data', chunk => child.written.push(String(chunk))); child.kill = () => child.emit('exit'); children.push(child); return child; };

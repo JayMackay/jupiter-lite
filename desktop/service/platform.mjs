@@ -38,7 +38,7 @@ export function commandSearchRoots(env = process.env, home = os.homedir()) {
   if (isWindows) roots.push(path.join(env.LOCALAPPDATA || path.join(home, 'AppData', 'Local'), 'Programs', 'OpenAI', 'Codex', 'bin'));
   // Default Node.js and Git install folders, so tools installed during setup work straight away.
   if (isWindows && env.ProgramFiles) roots.push(path.join(env.ProgramFiles, 'nodejs'), path.join(env.ProgramFiles, 'Git', 'cmd'));
-  else if (!isWindows) roots.push('/opt/homebrew/bin', '/usr/local/bin');
+  else if (!isWindows && env.HOME) roots.push('/opt/homebrew/bin', '/usr/local/bin');
   roots.push(path.join(home, '.opencode', 'bin'), path.join(home, '.kimi-code', 'bin'), path.join(home, '.local', 'bin'));
   return roots;
 }
