@@ -31,25 +31,17 @@
     },
     {
       "id": "make-workspace-yours",
-      "title": "Make Workspace Yours",
-      "description": "Install Jupiter Lite, run the setup wizard, learn the daily workflow and choose what to customize.",
-      "type": "group",
+      "title": "Jupiter Wiki",
+      "description": "How to use Jupiter: setup, chats, Workspace, files, voice, where skills live, Capabilities, settings and troubleshooting.",
+      "type": "standalone",
       "category": "dev",
       "created": "2026-09-15",
       "updated": "2026-11-09",
       "folder": "2026-09-15_make-workspace-yours",
       "steps": [
         {
-          "name": "Get started",
-          "path": "get-started.md"
-        },
-        {
-          "name": "Everyday use",
-          "path": "everyday-use.md"
-        },
-        {
-          "name": "Customize",
-          "path": "customize.md"
+          "name": "Wiki",
+          "path": "wiki.html"
         }
       ],
       "status": "active",

@@ -4,7 +4,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { agentStatus, cleanName, elevenLabsStatus, elevenLabsVoices, saveElevenLabs, saveProfile, setEnvValues } from '../setup.mjs';
-import { syncManagedContent } from '../managed-content.mjs';
+import { gitBlobId, syncManagedContent } from '../managed-content.mjs';
 import { syncAgentRules } from '../agent-rules.mjs';
 
 const temp = prefix => mkdtemp(path.join(os.tmpdir(), `jupiter-${prefix}-`));
@@ -94,6 +94,27 @@ test('managed content updates untouched files, keeps edited or deleted ones, and
   await put(source, '.agents/skills/new/SKILL.md', 'new v2');
   const third = await syncManagedContent({ source, repo, stateDir });
   assert.ok(third.kept.includes('.agents/skills/new/SKILL.md'), 'a deleted file stays deleted');
+});
+
+test('files left exactly as an earlier release shipped them are updated, and sample cards follow the shipped registry', async () => {
+  const source = await temp('history-source'), repo = await temp('history-repo'), stateDir = path.join(repo, '.jupiter');
+  const put = async (root, rel, text) => { await mkdir(path.dirname(path.join(root, rel)), { recursive: true }); await writeFile(path.join(root, rel), text); };
+  await put(repo, 'workspace/2026-09-15_make-workspace-yours/guide.md', 'old guide');
+  await put(repo, 'processes/mine.md', 'my own words');
+  await put(source, 'workspace/2026-09-15_make-workspace-yours/guide.md', 'new guide');
+  await put(source, 'processes/mine.md', 'shipped words');
+  await put(source, '.jupiter-history.json', JSON.stringify({ 'workspace/2026-09-15_make-workspace-yours/guide.md': [gitBlobId(Buffer.from('old guide'))] }));
+  const card = (steps, extra = {}) => ({ id: 'guide', title: 'Guide', sample: true, status: 'active', pinned: false, steps, ...extra });
+  await put(repo, 'workspace/workspace.json', JSON.stringify({ entities: [card([{ name: 'Old', path: 'guide.md' }], { status: 'archived' }), { id: 'mine', title: 'Mine', steps: [] }] }));
+  await put(source, 'workspace/workspace.json', JSON.stringify({ entities: [card([{ name: 'Wiki', path: 'wiki.html' }])] }));
+  const report = await syncManagedContent({ source, repo, stateDir });
+  assert.equal(await readFile(path.join(repo, 'workspace/2026-09-15_make-workspace-yours/guide.md'), 'utf8'), 'new guide');
+  assert.equal(await readFile(path.join(repo, 'processes/mine.md'), 'utf8'), 'my own words', 'an edited file is still kept');
+  assert.deepEqual(report.cards, ['guide']);
+  const registry = JSON.parse(await readFile(path.join(repo, 'workspace/workspace.json'), 'utf8'));
+  assert.deepEqual(registry.entities[0].steps, [{ name: 'Wiki', path: 'wiki.html' }]);
+  assert.equal(registry.entities[0].status, 'archived', 'the user\'s status is kept');
+  assert.equal(registry.entities[1].id, 'mine');
 });
 
 test('tool rules fill in this repository path and the nickname', async () => {

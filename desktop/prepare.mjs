@@ -132,6 +132,20 @@ for (const file of files) {
   await writeFile(target, shown.stdout);
 }
 console.log(`[jupiter] packed ${files.length} starter workspace files`);
+// Every committed version of each managed file, so an update can tell an untouched file from an edited one.
+const { MANAGED, HISTORY_FILE } = await import('./service/managed-content.mjs');
+const commits = spawnSync('git', ['rev-list', 'HEAD', '--', ...MANAGED], { cwd: repo, encoding: 'utf8', windowsHide: true, maxBuffer: 64 * 1024 * 1024 });
+if (commits.status !== 0) throw new Error(`git rev-list failed: ${commits.stderr || commits.error?.message}`);
+const history = {};
+for (const commit of commits.stdout.split('\n').filter(Boolean)) {
+  const tree = spawnSync('git', ['ls-tree', '-r', '-z', commit, '--', ...MANAGED], { cwd: repo, encoding: 'utf8', windowsHide: true, maxBuffer: 64 * 1024 * 1024 });
+  for (const line of tree.stdout.split('\0')) {
+    const match = /^\d+ blob ([0-9a-f]{40})\t(.+)$/.exec(line);
+    if (match) (history[match[2]] ||= new Set()).add(match[1]);
+  }
+}
+await writeFile(path.join(content, HISTORY_FILE), JSON.stringify(Object.fromEntries(Object.entries(history).map(([file, ids]) => [file, [...ids]]))));
+console.log(`[jupiter] recorded ${commits.stdout.split('\n').filter(Boolean).length} commits of managed content history`);
 await writeFile(path.join(runtime, 'README.txt'), `Jupiter local runtime for ${process.platform}. User repositories, keys and CLI logins are not included.\n`);
 const licenseCandidates = [
   path.join(path.dirname(process.execPath), 'LICENSE'),

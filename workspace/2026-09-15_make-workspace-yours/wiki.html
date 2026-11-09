@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en" data-jupiter-report="document" class="js-loading">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="How to use Jupiter: setup, chats, Workspace, skills, tools and settings.">
+<title>Jupiter Wiki</title>
+<link rel="stylesheet" href="../_shared/report.css">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+html[data-jupiter-report=document] body{padding:0;margin:0;line-height:1.65;font-size:14px}
+button,input,select{font:inherit}
+button,a,input,select{touch-action:manipulation}
+button{cursor:pointer}
+a{text-decoration:none}
+p{margin:0 0 16px}
+.wiki-layout{min-height:100vh;display:grid;grid-template-columns:224px minmax(0,1fr)}
+.sidebar{border-right:1px solid var(--jupiter-border);position:sticky;top:0;height:100dvh;overflow-y:auto;padding:30px 14px 20px;background:var(--jupiter-bg);z-index:30}
+.brand{padding:4px 14px 26px;display:block;text-align:center;border-bottom:1px solid var(--jupiter-border);margin-bottom:22px}
+.brand .sigil{display:block;font-size:30px;line-height:1;color:var(--jupiter-accent);margin-bottom:15px}
+.brand strong{font-family:Georgia,serif;font-weight:500;letter-spacing:.1em;font-size:20px;line-height:1.3;display:block}
+.brand small{display:block;font-size:9px;letter-spacing:.28em;color:var(--jupiter-muted);margin-top:10px}
+.nav-group{margin:0 0 22px}
+.nav-group h2{font:500 10px/1.4 var(--jupiter-font)!important;letter-spacing:.15em;color:var(--jupiter-muted)!important;margin:0 12px 9px!important;padding:0!important}
+.nav-link{display:flex;align-items:center;gap:10px;min-height:35px;padding:7px 11px;color:var(--jupiter-muted)!important;border:1px solid transparent;border-radius:5px;line-height:1.3;margin:2px 0;font-size:12px}
+.nav-link .nav-mark{width:14px;text-align:center;opacity:.7;font-size:12px}
+.nav-link:hover{background:color-mix(in srgb,var(--jupiter-accent) 5%,transparent);color:var(--jupiter-text)!important}
+.nav-link[aria-current=page]{color:var(--jupiter-text)!important;background:color-mix(in srgb,var(--jupiter-accent) 11%,transparent);border-color:color-mix(in srgb,var(--jupiter-accent) 28%,transparent)}
+.sidebar-foot{border-top:1px solid var(--jupiter-border);padding:16px 12px;color:var(--jupiter-muted);font-size:10px;line-height:1.8}
+.content-shell{min-width:0}
+.topbar{min-height:68px;display:flex;align-items:center;gap:18px;padding:12px 28px;border-bottom:1px solid var(--jupiter-border);position:sticky;top:0;background:var(--jupiter-bg);z-index:20}
+.breadcrumbs{font-size:11px;color:var(--jupiter-muted);flex:1;min-width:0;overflow-wrap:anywhere}
+.breadcrumbs span{padding:0 7px;opacity:.5}
+.search-box{position:relative;width:min(320px,40vw)}
+.search-box input{width:100%;min-height:36px;background:var(--jupiter-surface);border:1px solid var(--jupiter-border);border-radius:6px;padding:8px 12px;color:var(--jupiter-text);font-size:12px}
+.search-results{position:absolute;top:calc(100% + 6px);right:0;width:min(520px,85vw);max-height:65vh;overflow:auto;padding:7px;background:var(--jupiter-surface);border:1px solid var(--jupiter-border);border-radius:8px;box-shadow:0 12px 40px #0006}
+.search-result{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--jupiter-text);border-radius:4px;padding:10px 12px}
+.search-result:hover,.search-result:focus{background:color-mix(in srgb,var(--jupiter-accent) 10%,transparent)}
+.search-result small{display:block;color:var(--jupiter-muted);font-size:10px;margin-top:3px}
+.search-status{font-size:11px;color:var(--jupiter-muted);padding:5px 12px}
+.reading-layout{display:grid;grid-template-columns:minmax(0,1fr) 210px;max-width:1536px;margin:0 auto}
+.reading-main{min-width:0;padding:36px clamp(22px,3.5vw,58px) 60px}
+.page-header{padding:0 0 26px;border-bottom:1px solid var(--jupiter-border);margin-bottom:28px}
+.page-header .eyebrow{color:var(--jupiter-muted);font-size:10px;text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px}
+.page-header h1{margin-bottom:12px!important;font-size:clamp(25px,3.1vw,40px)!important;max-width:none!important}
+.page-intro{color:var(--jupiter-muted);font-size:14px;max-width:72ch;margin:0}
+.page-header .badge{margin-top:16px}
+.badge{display:inline-flex;border:1px solid var(--jupiter-border);border-radius:20px;padding:4px 9px;font-size:10px;font-weight:500;color:var(--jupiter-muted);letter-spacing:.025em}
+.content-block{margin:28px 0;scroll-margin-top:90px}
+.content-block>h2{margin:0 0 16px!important;padding:0!important;font-size:20px!important;border:0!important}
+.content-block>h3{font-size:15px}
+.content-block p,.content-block li{max-width:90ch}
+.content-block ul,.content-block ol{padding-left:21px}
+.content-block li{margin-bottom:7px}
+.lead{font-size:19px;line-height:1.65!important}
+.hero-copy{max-width:78ch}
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:24px 0}
+.stat-grid>div{padding:17px 12px;border:1px solid var(--jupiter-border);border-radius:7px;background:var(--jupiter-surface)}
+.stat-grid strong{display:block;font-size:21px;font-weight:500;line-height:1.3}
+.stat-grid span{display:block;color:var(--jupiter-muted);font-size:10px;line-height:1.5;margin-top:7px}
+.art-figure{padding:0;margin:24px 0;border:1px solid var(--jupiter-border);border-radius:8px;overflow:hidden;background:var(--jupiter-surface)}
+.art-link{display:block}
+.art-figure img{display:block;width:100%;height:auto;max-height:520px;object-fit:contain;background:#0e1115}
+.art-figure figcaption{padding:12px 16px;font-size:11px;line-height:1.7;color:var(--jupiter-muted)}
+.callout{border:1px solid color-mix(in srgb,var(--jupiter-accent) 25%,transparent);border-left:3px solid var(--jupiter-accent);border-radius:5px;padding:16px 18px;margin:20px 0;background:color-mix(in srgb,var(--jupiter-accent) 4%,var(--jupiter-bg));font-size:12px}
+.callout p{margin:6px 0 0}
+.link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.link-grid a{display:block;padding:18px;border:1px solid var(--jupiter-border);background:var(--jupiter-surface);border-radius:7px;color:var(--jupiter-text)}
+.link-grid a:hover{border-color:var(--jupiter-accent)}
+.link-grid strong,.link-grid span{display:block}
+.link-grid span{font-size:12px;color:var(--jupiter-muted);margin-top:6px}
+.table-wrap{max-width:100%;overflow:auto;margin:17px 0}
+.table-wrap table{display:table!important;margin:0;min-width:480px}
+.table-wrap :is(th,td){text-align:left;border-bottom:1px solid var(--jupiter-border);padding:11px 13px!important;vertical-align:top;font-size:12px}
+.table-wrap th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--jupiter-muted)}
+.table-wrap tr:last-child td{border-bottom:0}
+.table-wrap td:first-child{font-weight:500}
+.table-wrap td code{font-size:10px;overflow-wrap:anywhere}
+.source-line{border-top:1px solid var(--jupiter-border);padding-top:16px;margin-top:30px;color:var(--jupiter-muted);font-size:10px;line-height:2!important}
+.source-line a{text-decoration:underline}
+.flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 12px;margin:20px 0;border:1px solid var(--jupiter-border);border-radius:8px;background:var(--jupiter-surface);font-size:12px}
+.flow span{text-align:center}
+.flow b{color:var(--jupiter-muted)}
+.concept-rail{border-left:1px solid var(--jupiter-border);padding:30px 16px;align-self:start;position:sticky;top:68px;max-height:calc(100dvh - 68px);overflow:auto}
+.concept-rail h2{font-size:10px!important;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px!important;padding:0!important;color:var(--jupiter-muted)!important}
+.concept-rail .rail-intro{font-size:10px;color:var(--jupiter-muted);line-height:1.7}
+.concept-link{display:block;padding:12px 10px;margin:0 0 7px;border:1px solid var(--jupiter-border);border-radius:5px;background:var(--jupiter-surface);color:var(--jupiter-text)!important;font-size:11px;line-height:1.5}
+.concept-link:hover{border-color:var(--jupiter-accent)}
+.concept-link small{display:block;color:var(--jupiter-muted);font-size:9px;margin-top:5px}
+.rail-toc{margin-top:28px;padding-top:18px;border-top:1px solid var(--jupiter-border)}
+.rail-toc a{display:block;font-size:10px;color:var(--jupiter-muted)!important;padding:5px 0;line-height:1.6}
+.rail-toc a:hover{color:var(--jupiter-accent)!important}
+.rail-bottom{font-size:10px;margin-top:24px}
+.source-document{margin:9px 0;border:1px solid var(--jupiter-border);border-radius:6px;scroll-margin-top:88px;overflow:hidden}
+.source-document summary{padding:13px 15px;cursor:pointer;font-size:12px;background:var(--jupiter-surface)}
+.source-document summary small{display:block;padding-left:15px;color:var(--jupiter-muted);font-size:10px;line-height:1.6;margin-top:4px}
+.source-meta{display:flex;gap:8px;flex-wrap:wrap;padding:12px 15px;border-top:1px solid var(--jupiter-border);font-size:10px;color:var(--jupiter-muted)}
+.source-meta code{display:block;width:100%;overflow-wrap:anywhere}
+.source-meta button{margin-left:auto}
+.source-text{white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.8 ui-monospace,Consolas,monospace;padding:18px;margin:0;border-top:1px solid var(--jupiter-border);max-height:640px;overflow:auto;background:var(--jupiter-bg)!important}
+.source-meta button,.toolbar-button{background:var(--jupiter-surface);color:var(--jupiter-text);border:1px solid var(--jupiter-border);border-radius:5px;padding:7px 10px;font-size:11px}
+.region{border:1px solid var(--jupiter-border);border-radius:6px;margin:8px 0;padding:0 16px;background:var(--jupiter-surface)}
+.region summary{cursor:pointer;padding:13px 0;list-style:none;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:500}
+.region summary::after{content:'+';margin-left:auto;color:var(--jupiter-muted)}
+.region[open] summary::after{content:'−'}
+.region p,.region li{font-size:12px}
+.region-number{font:10px ui-monospace,monospace;color:var(--jupiter-muted)}
+.wiki-diagram{width:100%;height:auto;color:var(--jupiter-accent);background:var(--jupiter-surface);border:1px solid var(--jupiter-border);border-radius:8px;margin:6px 0 20px}
+.asset-controls{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin:24px 0 12px}
+.asset-controls label{display:grid;gap:6px;font-size:10px;color:var(--jupiter-muted)}
+.asset-controls label:first-child{flex:1;min-width:150px}
+.asset-controls :is(input,select){background:var(--jupiter-surface);color:var(--jupiter-text);border:1px solid var(--jupiter-border);border-radius:5px;padding:9px 11px;font-size:12px;min-height:38px;max-width:100%}
+.page-footer{display:flex;justify-content:space-between;gap:15px;border-top:1px solid var(--jupiter-border);padding-top:22px;margin-top:40px;font-size:11px}
+.page-footer a{max-width:48%}
+.page-footer small{display:block;font-size:9px;color:var(--jupiter-muted);margin-bottom:4px}
+.muted{color:var(--jupiter-muted);font-size:11px}
+.skip-link{position:fixed;top:-80px;left:12px;background:var(--jupiter-bg);padding:10px;z-index:100}
+.skip-link:focus{top:8px}
+#menu-toggle{display:none}
+#nav-backdrop{display:none}
+.print-button{white-space:nowrap}
+.noscript{padding:18px}
+.js-loading .wiki-page:not([data-page=overview]){display:none}
+.wiki-page:focus{outline:0}
+@media(max-width:1160px){.wiki-layout{grid-template-columns:198px minmax(0,1fr)}.reading-layout{grid-template-columns:minmax(0,1fr) 180px}.concept-rail{padding:25px 12px}.reading-main{padding:30px 24px 50px}.topbar{padding:12px 22px}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:960px){.reading-layout{display:block}.concept-rail{position:static;border-left:0;border-top:1px solid var(--jupiter-border);max-height:none;padding:24px}.concept-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.concept-link{margin:0}.rail-toc{display:none}.rail-bottom{margin-top:14px}.search-box{width:250px}.print-button{display:none}}
+@media(max-width:700px){.wiki-layout{display:block}.sidebar{display:none;position:fixed;left:0;top:0;width:250px;max-width:85vw;height:100dvh;box-shadow:15px 0 40px #0008}.nav-open .sidebar{display:block}.nav-open #nav-backdrop{display:block;position:fixed;inset:0;z-index:25;background:#0008;border:0}.topbar{padding:12px 16px;gap:10px;flex-wrap:wrap;min-height:65px}#menu-toggle{display:block}.breadcrumbs{font-size:10px}.search-box{width:100%;order:3}.search-results{width:100%;max-height:55vh}.reading-main{padding:26px 18px 42px}.page-header{margin-bottom:22px}.lead{font-size:17px}.link-grid{grid-template-columns:1fr}.concept-rail{padding:24px 18px}.content-block>h2{font-size:19px!important}.flow{gap:8px;font-size:11px}.table-wrap :is(td,th){padding:9px!important}.stat-grid strong{font-size:20px}.source-text{font-size:10px}.concept-links{grid-template-columns:1fr}}
+@media print{.sidebar,.topbar,.concept-rail,.page-footer,.source-line,.asset-controls{display:none!important}.wiki-layout,.reading-layout{display:block}.reading-main{padding:0}.wiki-page[hidden]{display:none!important}.wiki-page{break-inside:auto}.art-figure{break-inside:avoid}.source-text{max-height:none}}
+.nav-link.nav-sub{margin-left:16px;font-size:10px;min-height:30px;padding-left:8px}
+.nav-sub .nav-mark{font:9px ui-monospace,monospace;opacity:.6}
+.layer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.layer-card{border:1px solid var(--jupiter-border);border-radius:8px;overflow:hidden;background:var(--jupiter-surface)}
+.layer-card .art-figure{border:0;border-radius:0;margin:0}
+.layer-card .art-figure img{aspect-ratio:16/10;object-fit:cover;max-height:280px}
+.layer-card .art-figure figcaption{font-size:9px;padding:9px 12px}
+.layer-card-body{padding:18px}
+.layer-card-body .eyebrow{font-size:10px;letter-spacing:.12em;color:var(--jupiter-muted)}
+.layer-card-body h3{margin:9px 0 12px!important;font-size:18px!important}
+.layer-card-body h3 a{color:var(--jupiter-text)}
+.layer-card-body p{font-size:12px;line-height:1.8}
+.layer-open{font-size:11px}
+.region .art-figure{margin:5px 0 18px}
+.region .art-figure img{max-height:450px}
+.layer-back{font-size:11px}
+@media(max-width:1160px){.layer-grid{grid-template-columns:1fr}}
+@media print{.nav-sub{display:none}}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+html[data-jupiter-report] .wiki-page:focus-visible{outline:0}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#overview">Skip to content</a>
+<button id="nav-backdrop" type="button" aria-label="Close contents"></button>
+<div class="wiki-layout">
+<aside class="sidebar" id="wiki-navigation">
+  <a class="brand" href="#overview"><span class="sigil" aria-hidden="true">J</span><strong>Jupiter</strong><small>THE JUPITER WIKI</small></a>
+  <nav aria-label="Wiki sections">
+    <section class="nav-group"><h2>GET STARTED</h2>
+      <a class="nav-link" data-page="overview" href="#overview"><span class="nav-mark" aria-hidden="true">◈</span>Jupiter</a>
+      <a class="nav-link" data-page="install" href="#install"><span class="nav-mark" aria-hidden="true">↓</span>Install and set up</a>
+      <a class="nav-link" data-page="first-task" href="#first-task"><span class="nav-mark" aria-hidden="true">▶</span>Your first task</a>
+    </section>
+    <section class="nav-group"><h2>USE JUPITER</h2>
+      <a class="nav-link" data-page="chats" href="#chats"><span class="nav-mark" aria-hidden="true">›_</span>Chats and agents</a>
+      <a class="nav-link" data-page="workspace" href="#workspace"><span class="nav-mark" aria-hidden="true">▣</span>Workspace and cards</a>
+      <a class="nav-link" data-page="files" href="#files"><span class="nav-mark" aria-hidden="true">▤</span>Files and folders</a>
+      <a class="nav-link" data-page="boards" href="#boards"><span class="nav-mark" aria-hidden="true">☷</span>Boards and to do</a>
+      <a class="nav-link" data-page="voice" href="#voice"><span class="nav-mark" aria-hidden="true">♪</span>Voice</a>
+    </section>
+    <section class="nav-group"><h2>SKILLS AND TOOLS</h2>
+      <a class="nav-link" data-page="skills" href="#skills"><span class="nav-mark" aria-hidden="true">◇</span>Skills</a>
+      <a class="nav-link" data-page="capabilities" href="#capabilities"><span class="nav-mark" aria-hidden="true">⚙</span>Capabilities</a>
+      <a class="nav-link" data-page="knowledge" href="#knowledge"><span class="nav-mark" aria-hidden="true">≡</span>Knowledge and rules</a>
+    </section>
+    <section class="nav-group"><h2>MAKE IT YOURS</h2>
+      <a class="nav-link" data-page="settings" href="#settings"><span class="nav-mark" aria-hidden="true">◌</span>Settings</a>
+      <a class="nav-link" data-page="updates" href="#updates"><span class="nav-mark" aria-hidden="true">↻</span>Updates</a>
+      <a class="nav-link" data-page="keys" href="#keys"><span class="nav-mark" aria-hidden="true">⚿</span>Keys and privacy</a>
+      <a class="nav-link" data-page="troubleshooting" href="#troubleshooting"><span class="nav-mark" aria-hidden="true">?</span>Troubleshooting</a>
+    </section>
+  </nav>
+  <div class="sidebar-foot">JUPITER LITE<br>Updated 9 November 2026<br><a href="#troubleshooting">Something not working? ↗</a></div>
+</aside>
+<div class="content-shell">
+<div class="topbar">
+  <button class="toolbar-button" id="menu-toggle" type="button" aria-expanded="false" aria-controls="wiki-navigation">☰ Contents</button>
+  <div class="breadcrumbs">Jupiter wiki<span>/</span><b id="breadcrumb-group">GET STARTED</b><span>/</span><b id="breadcrumb-page">Jupiter</b></div>
+  <div class="search-box" role="search"><label class="sr-only" for="wiki-search">Search the wiki</label><input id="wiki-search" type="search" placeholder="Search the wiki… /" autocomplete="off" aria-controls="search-results"><div id="search-results" class="search-results" hidden></div></div>
+</div>
+<div class="reading-layout"><main id="main-content" class="reading-main">
+
+<article class="wiki-page" data-page="overview" data-title="Jupiter" data-group="GET STARTED" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / GET STARTED</div><h1>Jupiter</h1><p class="page-intro">A desktop workspace for working with AI agents: chat with them, keep what they make, and teach them how you like to work.</p><span class="badge">Start here</span></header>
+  <div class="hero-copy">
+    <p class="lead">Jupiter puts real Claude Code and Codex sessions next to a Workspace that keeps their results as readable cards, reports and files.</p>
+    <p>Everything lives in one folder on your computer as ordinary files. Skills teach the agents recurring tasks, the knowledge folder remembers your decisions, and Capabilities adds tools such as a browser, current library docs and pixel art kits.</p>
+  </div>
+  <div class="stat-grid">
+    <div><strong>Claude Code · Codex</strong><span>Agents, with your own accounts</span></div>
+    <div><strong>Plain files</strong><span>Your workspace folder</span></div>
+    <div><strong>Windows · Mac · Linux</strong><span>Desktop app</span></div>
+    <div><strong>Automatic</strong><span>App and skill updates</span></div>
+  </div>
+  <section class="content-block"><h2>Explore the wiki</h2>
+    <div class="link-grid">
+      <a href="#install"><strong>Install and set up</strong><span>Download, first launch and the five setup steps</span></a>
+      <a href="#chats"><strong>Use Jupiter</strong><span>Chats, Workspace cards, files, boards and voice</span></a>
+      <a href="#skills"><strong>Skills and tools</strong><span>What skills are, where they live and how to add more</span></a>
+      <a href="#settings"><strong>Make it yours</strong><span>Settings, customising with agents, updates and keys</span></a>
+    </div>
+  </section>
+  <section class="content-block"><h2>How it fits together</h2>
+    <div class="flow"><span>You ask in Chats</span><b>→</b><span>The agent works, using skills and tools</span><b>→</b><span>Results land in Workspace</span><b>→</b><span>You decide and reply</span></div>
+    <aside class="callout"><strong>Your accounts, your files</strong><p>Jupiter starts the real CLIs you sign in to, so their normal limits and billing apply. Nothing in your workspace is uploaded unless you ask an agent or a tool to do so.</p></aside>
+  </section>
+  <footer class="page-footer"><span></span><a href="#install"><small>NEXT</small>Install and set up →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="install" data-title="Install and set up" data-group="GET STARTED" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / GET STARTED</div><h1>Install and set up</h1><p class="page-intro">One installer, one folder and a short setup wizard. No cloning or terminal needed.</p><span class="badge">Guide</span></header>
+  <section class="content-block" id="download"><h2>Download</h2>
+    <p>Get the latest version from <a href="https://github.com/JayMackay/jupiter-lite/releases/latest">GitHub Releases</a>.</p>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Computer</th><th scope="col">File</th><th scope="col">Notes</th></tr></thead><tbody>
+      <tr><td>Windows</td><td><code>…-windows-x64-setup.exe</code></td><td>Installs for your user only; no administrator rights. If SmartScreen warns, choose More info → Run anyway.</td></tr>
+      <tr><td>Mac (Apple Silicon)</td><td><code>…-macos.dmg</code></td><td>Drag Jupiter to Applications. The first launch may ask for confirmation.</td></tr>
+      <tr><td>Linux</td><td><code>…-x86_64.AppImage</code></td><td>Make it executable and run it.</td></tr>
+    </tbody></table></div>
+  </section>
+  <section class="content-block" id="first-launch"><h2>First launch</h2>
+    <p>Jupiter asks where to keep your workspace. <strong>Documents\Jupiter</strong> is suggested; any folder works. If you pick a folder that already has files in it, a <code>Jupiter</code> folder is created inside it. The workspace starts with skills, knowledge, workflows and the sample cards.</p>
+  </section>
+  <section class="content-block" id="wizard"><h2>The setup wizard</h2>
+    <p>The wizard opens over a blurred Workspace. Leave it at any point and return with <strong>Back to setup</strong>, or reopen it later from <strong>Settings → Run setup again</strong>.</p>
+    <details class="region" open><summary><span class="region-number">01</span>You</summary><p>Your name, and what Jupiter should call you in greetings and replies.</p></details>
+    <details class="region"><summary><span class="region-number">02</span>Projects</summary><p>The folder that holds your projects. It can be anywhere, including an existing code folder. Change it later from the project picker.</p></details>
+    <details class="region"><summary><span class="region-number">03</span>Agents</summary><p>Git and Node.js come first, because the tools need them. Then Claude Code and Codex. <strong>Install</strong> opens a terminal running the official installer so you can see exactly what runs. <strong>Sign in</strong> opens the agent so you can log in with your Claude or ChatGPT account.</p></details>
+    <details class="region"><summary><span class="region-number">04</span>Tools</summary><p>The free starter set, installed after one confirmation: working methods, document and design skills, a browser for checking UI, current library docs and three pixel art tools. Tools already on your computer are taken over so Jupiter can keep them up to date. See <a href="#capabilities">Capabilities</a>.</p></details>
+    <details class="region"><summary><span class="region-number">05</span>Voice</summary><p>Optional. Paste an ElevenLabs API key and pick a voice, and Jupiter reads its replies aloud. See <a href="#voice">Voice</a>.</p></details>
+  </section>
+  <footer class="page-footer"><a href="#overview"><small>PREVIOUS</small>← Jupiter</a><a href="#first-task"><small>NEXT</small>Your first task →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="first-task" data-title="Your first task" data-group="GET STARTED" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / GET STARTED</div><h1>Your first task</h1><p class="page-intro">The everyday loop: ask, let the agent work, review the card, decide.</p><span class="badge">Guide</span></header>
+  <section class="content-block"><h2>Step by step</h2>
+    <ol>
+      <li>In Chats, press <strong>+</strong>, choose Claude Code or Codex, pick a working folder and give the chat a clear name.</li>
+      <li>Describe the result you want. Drop reference files or folders into the chat when they help.</li>
+      <li>Let the agent work. A glowing logo marks activity; an unread marker shows a result you have not looked at yet.</li>
+      <li>Open the Workspace card, compare its tabs and images, then give your decision back in the chat.</li>
+      <li>Keep revisions as tabs on the same card. Archive the card when you are done; its files are kept.</li>
+    </ol>
+  </section>
+  <section class="content-block"><h2>Things to try</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Ask</th><th scope="col">What happens</th></tr></thead><tbody>
+      <tr><td>“Read my project brief and turn it into a small plan. Ask me for anything missing.”</td><td>The <code>plan</code> skill produces a plan card with deliverables and checks.</td></tr>
+      <tr><td>“Compare these three concepts and put the findings in a Workspace card.”</td><td>A report card with one tab per concept.</td></tr>
+      <tr><td>“Turn my brainstorm board into a game wiki.”</td><td>The <code>game-wiki</code> skill builds a wiki like this one.</td></tr>
+      <tr><td>“Remember that I want reports short and in British English.”</td><td>The preference is saved to <code>context/preferences.md</code>.</td></tr>
+    </tbody></table></div>
+    <aside class="callout"><strong>Permissions</strong><p>Agents ask before they run commands or change files. Bypass is a per-chat choice, off by default; use it only when you trust the task.</p></aside>
+  </section>
+  <footer class="page-footer"><a href="#install"><small>PREVIOUS</small>← Install and set up</a><a href="#chats"><small>NEXT</small>Chats and agents →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="chats" data-title="Chats and agents" data-group="USE JUPITER" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / USE JUPITER</div><h1>Chats and agents</h1><p class="page-intro">Real terminal sessions for your agents, docked beside the Workspace.</p><span class="badge">Reference</span></header>
+  <section class="content-block"><h2>Agents</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Agent</th><th scope="col">Sign in with</th><th scope="col">Notes</th></tr></thead><tbody>
+      <tr><td>Claude Code</td><td>Claude Pro or Max, or an Anthropic API key</td><td>Gets the starter plugins, skills and MCP servers.</td></tr>
+      <tr><td>Codex</td><td>An eligible ChatGPT plan, or an OpenAI API key</td><td>The default for new chats; change it in Settings.</td></tr>
+      <tr><td>OpenCode, Kimi</td><td>Their own provider setup</td><td>Optional; appear in <strong>+</strong> once installed.</td></tr>
+      <tr><td>Shell</td><td>Nothing</td><td>A plain PowerShell or shell terminal.</td></tr>
+    </tbody></table></div>
+  </section>
+  <section class="content-block"><h2>Working with chats</h2>
+    <ul>
+      <li><strong>Dock:</strong> Chats sits on the right. Drag the divider to resize, X to hide, and the Chats icon in the left navigation to bring it back. Hiding keeps sessions running.</li>
+      <li><strong>Tabs:</strong> drag to reorder. Pinned tabs stay ahead of the rest.</li>
+      <li><strong>History:</strong> find, reopen and pin earlier conversations. Restoring a chat relies on the agent's own session files.</li>
+      <li><strong>Handoff:</strong> when a chat gets long, ask for a handoff. A summary is saved to <code>inbox/handoffs/</code> and a fresh chat starts from it.</li>
+      <li><strong>Files and images:</strong> dropping files inserts their paths; pasting a screenshot saves it in <code>inbox/</code> and inserts that path.</li>
+    </ul>
+  </section>
+  <section class="content-block"><h2>Useful controls</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Control</th><th scope="col">Behaviour</th></tr></thead><tbody>
+      <tr><td>Ctrl+C in an agent chat (Windows, Linux)</td><td>Copies selected text; it does not interrupt the agent</td></tr>
+      <tr><td>Ctrl+C in a shell chat</td><td>The normal interrupt</td></tr>
+      <tr><td>⌘C (macOS)</td><td>Copies selected text</td></tr>
+      <tr><td>Ctrl+V (⌘V on macOS)</td><td>Pastes text or a clipboard screenshot</td></tr>
+      <tr><td>Ctrl+S while editing Markdown</td><td>Saves the document</td></tr>
+    </tbody></table></div>
+  </section>
+  <footer class="page-footer"><a href="#first-task"><small>PREVIOUS</small>← Your first task</a><a href="#workspace"><small>NEXT</small>Workspace and cards →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="workspace" data-title="Workspace and cards" data-group="USE JUPITER" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / USE JUPITER</div><h1>Workspace and cards</h1><p class="page-intro">Where results are kept, compared and decided on.</p><span class="badge">Reference</span></header>
+  <section class="content-block"><h2>The dashboard</h2>
+    <p>The dashboard greets you by name and opens its panels from the tiles:</p>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Panel</th><th scope="col">What it shows</th></tr></thead><tbody>
+      <tr><td>Projects</td><td>Your cards, newest and pinned first</td></tr>
+      <tr><td>To do</td><td>A board of tasks you drag between columns</td></tr>
+      <tr><td>Brainstorm</td><td>A canvas for notes, connectors and sketches</td></tr>
+      <tr><td>News</td><td>Headlines by topic, which Jupiter can read aloud</td></tr>
+      <tr><td>Agents and chats</td><td>Running chats, grouped by agent</td></tr>
+      <tr><td>Capabilities</td><td>Installed skills, tools and connections</td></tr>
+      <tr><td>Token usage</td><td>What your sessions have used, by model</td></tr>
+      <tr><td>Archive</td><td>Cards you or the age rule moved out of the active list</td></tr>
+    </tbody></table></div>
+  </section>
+  <section class="content-block"><h2>Cards</h2>
+    <p>A card is one task or project. Its tabs are the pages inside it: reports, Markdown, images or a whole wiki. Cards are registered in <code>workspace/workspace.json</code> and their files live in a dated folder under <code>workspace/</code>.</p>
+    <ul>
+      <li>Keep related revisions as tabs on one card, not one card per image.</li>
+      <li>Images open full size and can be downloaded.</li>
+      <li>Markdown tabs have <strong>Preview</strong> and <strong>Edit</strong>; <strong>Edit page</strong> works on editable report cards.</li>
+      <li>Archiving changes the card's status only. Sample cards stay until you archive them.</li>
+    </ul>
+  </section>
+  <footer class="page-footer"><a href="#chats"><small>PREVIOUS</small>← Chats and agents</a><a href="#files"><small>NEXT</small>Files and folders →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="files" data-title="Files and folders" data-group="USE JUPITER" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / USE JUPITER</div><h1>Files and folders</h1><p class="page-intro">What is in your workspace folder and what belongs where.</p><span class="badge">Reference</span></header>
+  <section class="content-block" id="layout"><h2>Workspace folder</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Folder or file</th><th scope="col">What belongs here</th></tr></thead><tbody>
+      <tr><td><code>workspace/</code></td><td>Cards, reports, previews and deliverables</td></tr>
+      <tr><td><code>projects/</code></td><td>Default projects folder: briefs and working specs (you can point Jupiter elsewhere)</td></tr>
+      <tr><td><code>inbox/</code></td><td>Incoming references, pasted screenshots and handoffs</td></tr>
+      <tr><td><code>knowledge/</code></td><td>Lessons, notes, boards, news and the capability catalogue</td></tr>
+      <tr><td><code>processes/</code></td><td>Repeatable workflows and checklists</td></tr>
+      <tr><td><code>context/</code></td><td>About you: profile, preferences and goals</td></tr>
+      <tr><td><code>.agents/skills/</code>, <code>.claude/skills/</code></td><td>The workspace's skills; see <a href="#skills">Skills</a></td></tr>
+      <tr><td><code>AGENTS.md</code>, <code>CLAUDE.md</code></td><td>The rules every agent reads first in this folder</td></tr>
+      <tr><td><code>.env</code></td><td>Your API keys; stays on this computer</td></tr>
+      <tr><td><code>.jupiter/</code></td><td>App state and pinned tool checkouts; leave it alone</td></tr>
+    </tbody></table></div>
+  </section>
+  <section class="content-block"><h2>The Files view</h2>
+    <p>Files shows the real folders. Select a file to preview it; Markdown opens with Preview and Edit. Dragging a file onto another folder moves it. Delete sends it to the Recycle Bin (the Trash on macOS and Linux). Hover a folder to open it in Explorer or Finder.</p>
+  </section>
+  <footer class="page-footer"><a href="#workspace"><small>PREVIOUS</small>← Workspace and cards</a><a href="#boards"><small>NEXT</small>Boards and to do →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="boards" data-title="Boards and to do" data-group="USE JUPITER" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / USE JUPITER</div><h1>Boards and to do</h1><p class="page-intro">Think on a canvas, track work on a board, and let agents read both.</p><span class="badge">Reference</span></header>
+  <section class="content-block"><h2>Brainstorm boards</h2>
+    <p>A free canvas for notes, text, images, connectors and pen sketches. Each board is saved to <code>knowledge/boards/</code> with a readable Markdown summary beside it, so an agent can turn it into a plan or a wiki.</p>
+  </section>
+  <section class="content-block"><h2>To do</h2>
+    <p>A task board with columns you drag cards between. The first board is made from <code>knowledge/todo.md</code>; boards are saved in <code>knowledge/work/</code>. Ask Jupiter “what is on my list?” to hear it.</p>
+  </section>
+  <footer class="page-footer"><a href="#files"><small>PREVIOUS</small>← Files and folders</a><a href="#voice"><small>NEXT</small>Voice →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="voice" data-title="Voice" data-group="USE JUPITER" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / USE JUPITER</div><h1>Voice</h1><p class="page-intro">Talk to Jupiter, hear replies, and dictate into chats. All optional.</p><span class="badge">Reference</span></header>
+  <section class="content-block"><h2>What each part needs</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Feature</th><th scope="col">How to use it</th><th scope="col">Needs</th></tr></thead><tbody>
+      <tr><td>The J button</td><td>Start or stop a voice conversation, or drop a request</td><td>See live coordinator</td></tr>
+      <tr><td>Live coordinator</td><td>Open chats, find cards, change a card's status or hand larger tasks to an agent</td><td><code>OPENAI_API_KEY</code> and Codex signed in</td></tr>
+      <tr><td>“Hey Jupiter”</td><td>Wake word, on this computer only</td><td>Local Whisper (Settings → Voice)</td></tr>
+      <tr><td>Spoken replies</td><td>Greetings, news and answers read aloud</td><td>ElevenLabs key (setup step 5)</td></tr>
+      <tr><td>Dictation</td><td>Speak into a chat instead of typing</td><td>Local Whisper (free) or a cloud provider</td></tr>
+    </tbody></table></div>
+    <aside class="callout"><strong>Billing</strong><p>Agent subscriptions, the OpenAI voice API and ElevenLabs are billed separately by each provider. Local Whisper runs on your computer for free.</p></aside>
+  </section>
+  <section class="content-block" id="phone"><h2>From your phone</h2>
+    <p>With Tailscale on both devices, Chats → phone button shows a QR code. Scan it, confirm the six-digit code on both screens, and your phone can follow chats, read Workspace cards and send messages. The agents keep running on your computer.</p>
+  </section>
+  <footer class="page-footer"><a href="#boards"><small>PREVIOUS</small>← Boards and to do</a><a href="#skills"><small>NEXT</small>Skills →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="skills" data-title="Skills" data-group="SKILLS AND TOOLS" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / SKILLS AND TOOLS</div><h1>Skills</h1><p class="page-intro">Packaged know-how. A skill stays out of the way until a task needs it, then the agent loads it and follows its steps.</p><span class="badge">Reference</span></header>
+  <section class="content-block" id="where"><h2>Where skills live</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Location</th><th scope="col">Used by</th><th scope="col">What is there</th></tr></thead><tbody>
+      <tr><td><code>.agents/skills/</code></td><td>Codex, in this workspace</td><td>The workspace skills. This is the copy to edit.</td></tr>
+      <tr><td><code>.claude/skills/</code></td><td>Claude Code, in this workspace</td><td>Complete copies of the same skills for Claude Code.</td></tr>
+      <tr><td><code>~/.agents/skills/</code></td><td>Codex, everywhere</td><td>Skills installed from Capabilities, such as document and pixel art skills.</td></tr>
+      <tr><td><code>~/.claude/skills/</code> and Claude plugins</td><td>Claude Code, everywhere</td><td>Skills and plugins installed from Capabilities.</td></tr>
+    </tbody></table></div>
+    <p class="muted"><code>~</code> is your user folder, for example <code>C:\Users\you</code>. A skill is a folder with a <code>SKILL.md</code> and sometimes scripts or references.</p>
+  </section>
+  <section class="content-block" id="bundled"><h2>Skills in your workspace</h2>
+    <details class="region" open><summary><span class="region-number">01</span>Planning and organising</summary><ul>
+      <li><strong>plan</strong>: turns a broad request into a small plan with deliverables and checks.</li>
+      <li><strong>feature-handoff</strong>: a precise handoff for another agent or developer.</li>
+      <li><strong>workspace-authoring</strong>: how cards, report tabs and Markdown deliverables are made.</li>
+      <li><strong>game-wiki</strong>: builds a wiki like this one from brainstorm boards and notes.</li>
+    </ul></details>
+    <details class="region"><summary><span class="region-number">02</span>Images, video and generation</summary><ul>
+      <li><strong>image-reference-workflow</strong>: explore image concepts and make faithful edits.</li>
+      <li><strong>fal-ai-generation</strong>, <strong>higgsfield-workflow</strong>: paid image, video, audio and 3D generation with your own account.</li>
+      <li><strong>character-sheet-pipeline</strong>, <strong>motion-reference-workflow</strong>: references for 3D characters and motion.</li>
+      <li><strong>video-watch</strong>: inspect a video through sampled frames and a visual report.</li>
+    </ul></details>
+    <details class="region"><summary><span class="region-number">03</span>3D and game production</summary><ul>
+      <li><strong>3d-production-routing</strong>: picks the right workflow for a 3D or game task.</li>
+      <li><strong>img2threejs</strong>: rebuild an object or character as a procedural Three.js model.</li>
+      <li><strong>blender-game-animation</strong>, <strong>materials-to-game</strong>, <strong>game-animation-integration</strong>.</li>
+      <li><strong>game-vfx-workflow</strong>, <strong>game-ui-workflow</strong>, <strong>game-audio-workflow</strong>, <strong>game-level-design</strong>, <strong>gameplay-visual-review</strong>.</li>
+    </ul></details>
+    <details class="region"><summary><span class="region-number">04</span>Research and voice</summary><ul>
+      <li><strong>firecrawl</strong>: web research and scraping with your Firecrawl account.</li>
+      <li><strong>voice-dictation-setup</strong>: set up local Whisper dictation.</li>
+    </ul></details>
+  </section>
+  <section class="content-block" id="add"><h2>Adding or changing a skill</h2>
+    <ul>
+      <li>Ask an agent: “Make this repeatable as a skill.” It writes the folder under <code>.agents/skills/</code>.</li>
+      <li>Received a skill pack? Copy the complete skill folders into <code>.agents/skills/</code> and install only what their instructions require.</li>
+      <li>Your edits are yours: updates never overwrite a skill you changed.</li>
+    </ul>
+  </section>
+  <footer class="page-footer"><a href="#voice"><small>PREVIOUS</small>← Voice</a><a href="#capabilities"><small>NEXT</small>Capabilities →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="capabilities" data-title="Capabilities" data-group="SKILLS AND TOOLS" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / SKILLS AND TOOLS</div><h1>Capabilities</h1><p class="page-intro">Add, update and remove tools for your agents, each pinned to a reviewed version.</p><span class="badge">Reference</span></header>
+  <section class="content-block"><h2>The tabs</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Tab</th><th scope="col">Meaning</th></tr></thead><tbody>
+      <tr><td>Harness</td><td>The working method agents follow on every task: how they plan, build, test and review</td></tr>
+      <tr><td>Skills</td><td>Packaged know-how loaded when a task needs it</td></tr>
+      <tr><td>Memory</td><td>Context kept between sessions, such as earlier decisions or a map of your code</td></tr>
+      <tr><td>Tools</td><td>Let agents act outside the chat: a browser, library docs, Unity, Blender, generation, pixel art</td></tr>
+      <tr><td>Token Bill</td><td>Tools that show or reduce what each session costs</td></tr>
+      <tr><td>Connections</td><td>The MCP servers your agents can use, and whether each answered when last checked</td></tr>
+    </tbody></table></div>
+  </section>
+  <section class="content-block" id="starter"><h2>The starter set</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Tool</th><th scope="col">What it gives your agents</th></tr></thead><tbody>
+      <tr><td>Karpathy guidelines</td><td>Four short principles that keep changes simple, focused and checked</td></tr>
+      <tr><td>Superpowers</td><td>Brainstorm, plan, build test-first and review before calling it done</td></tr>
+      <tr><td>Document skills</td><td>Word, PDF, PowerPoint and Excel files done properly (Codex; Claude has them already)</td></tr>
+      <tr><td>UI UX Pro Max</td><td>Styles, palettes, font pairings and UX rules for interface work</td></tr>
+      <tr><td>Playwright</td><td>A real browser to click through your app and take screenshots</td></tr>
+      <tr><td>Context7</td><td>Current documentation for the libraries you use</td></tr>
+      <tr><td>PixelFX, Claude PXL, Pixelbolt</td><td>Pixel art effects, sprites, sheets and animations</td></tr>
+    </tbody></table></div>
+  </section>
+  <section class="content-block"><h2>How installs work</h2>
+    <ul>
+      <li><strong>Reviewed:</strong> before installing you see what a tool adds, including hooks that run automatically.</li>
+      <li><strong>Pinned:</strong> each tool is fixed to a commit or version. <strong>Check again</strong> compares it with the latest and offers an update.</li>
+      <li><strong>Reversible:</strong> removing a tool undoes exactly what it added.</li>
+      <li><strong>Can't check</strong> means the tool is on your computer but was not installed by this workspace. Run setup again to take it over.</li>
+      <li>Paid services such as Higgsfield, fal.ai and Firecrawl are optional and use your own accounts.</li>
+    </ul>
+  </section>
+  <footer class="page-footer"><a href="#skills"><small>PREVIOUS</small>← Skills</a><a href="#knowledge"><small>NEXT</small>Knowledge and rules →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="knowledge" data-title="Knowledge and rules" data-group="SKILLS AND TOOLS" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / SKILLS AND TOOLS</div><h1>Knowledge and rules</h1><p class="page-intro">How agents learn about you and remember what worked.</p><span class="badge">Reference</span></header>
+  <section class="content-block"><h2>What agents read</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">File</th><th scope="col">Purpose</th></tr></thead><tbody>
+      <tr><td><code>AGENTS.md</code>, <code>CLAUDE.md</code></td><td>Workspace rules every agent reads first</td></tr>
+      <tr><td><code>context/me.md</code></td><td>Your profile from setup; stays on this computer</td></tr>
+      <tr><td><code>context/preferences.md</code>, <code>context/goals.md</code></td><td>How you like to work and what you are aiming for</td></tr>
+      <tr><td><code>knowledge/instructions/tool-rules.md</code></td><td>When agents should use each installed tool; copied into your global agent rules</td></tr>
+      <tr><td><code>knowledge/</code> notes</td><td>Lessons and decisions worth reusing</td></tr>
+      <tr><td><code>processes/</code></td><td>Step-by-step workflows</td></tr>
+    </tbody></table></div>
+  </section>
+  <section class="content-block"><h2>Teaching Jupiter</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Say</th><th scope="col">Where it goes</th></tr></thead><tbody>
+      <tr><td>“Remember how I want reports written.”</td><td><code>context/preferences.md</code></td></tr>
+      <tr><td>“Save this method, it worked.”</td><td>A focused note in <code>knowledge/</code></td></tr>
+      <tr><td>“Make this repeatable.”</td><td>A workflow in <code>processes/</code>, and a skill if useful</td></tr>
+      <tr><td>“Add a tab to this card.”</td><td>The card's steps in <code>workspace/workspace.json</code></td></tr>
+    </tbody></table></div>
+  </section>
+  <footer class="page-footer"><a href="#capabilities"><small>PREVIOUS</small>← Capabilities</a><a href="#settings"><small>NEXT</small>Settings →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="settings" data-title="Settings" data-group="MAKE IT YOURS" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / MAKE IT YOURS</div><h1>Settings</h1><p class="page-intro">The Settings rail on the right of the Workspace.</p><span class="badge">Reference</span></header>
+  <section class="content-block"><h2>Sections</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Section</th><th scope="col">What you can change</th></tr></thead><tbody>
+      <tr><td>Appearance</td><td>Workspace and chat themes</td></tr>
+      <tr><td>Windows (Shortcut on macOS)</td><td>An optional key that brings hidden Jupiter windows back</td></tr>
+      <tr><td>Voice</td><td>Hey Jupiter, spoken replies, credits used and weather location</td></tr>
+      <tr><td>Chats</td><td>Default agent, terminal text size and look, permission bypass default</td></tr>
+      <tr><td>Dictation</td><td>Local Whisper language, hotkey and CPU or GPU</td></tr>
+      <tr><td>Jupiter</td><td>Live conversation voice and thinking effort</td></tr>
+      <tr><td>Project</td><td>Your workspace folder and <strong>Run setup again</strong></td></tr>
+    </tbody></table></div>
+  </section>
+  <footer class="page-footer"><a href="#knowledge"><small>PREVIOUS</small>← Knowledge and rules</a><a href="#updates"><small>NEXT</small>Updates →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="updates" data-title="Updates" data-group="MAKE IT YOURS" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / MAKE IT YOURS</div><h1>Updates</h1><p class="page-intro">New versions arrive by themselves, and your own edits are kept.</p><span class="badge">Reference</span></header>
+  <section class="content-block"><h2>How it works</h2>
+    <div class="flow"><span>Jupiter starts</span><b>→</b><span>Checks for a new version</span><b>→</b><span>Banner: install and restart</span><b>→</b><span>Skills and samples refreshed</span></div>
+    <ul>
+      <li>Updates are signed; Jupiter installs only a version that passes the signature check.</li>
+      <li>Skills, workflows, rules and the sample cards are refreshed with each update.</li>
+      <li>A file you edited or deleted is never overwritten. A file you never touched is updated.</li>
+      <li>Tools in Capabilities update separately, when you choose to.</li>
+    </ul>
+  </section>
+  <footer class="page-footer"><a href="#settings"><small>PREVIOUS</small>← Settings</a><a href="#keys"><small>NEXT</small>Keys and privacy →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="keys" data-title="Keys and privacy" data-group="MAKE IT YOURS" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / MAKE IT YOURS</div><h1>Keys and privacy</h1><p class="page-intro">What needs a key, where it is stored and what never leaves your computer.</p><span class="badge">Reference</span></header>
+  <section class="content-block"><h2>Optional keys</h2>
+    <p>Keys live in <code>.env</code> in your workspace folder. The Voice step writes the ElevenLabs key for you; add others only if you use them.</p>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Key</th><th scope="col">Used for</th></tr></thead><tbody>
+      <tr><td><code>ELEVENLABS_API_KEY</code></td><td>Spoken replies</td></tr>
+      <tr><td><code>OPENAI_API_KEY</code></td><td>The live voice coordinator</td></tr>
+      <tr><td><code>FAL_KEY</code></td><td>Image, video and 3D generation with fal.ai</td></tr>
+      <tr><td><code>OPENROUTER_API_KEY</code></td><td>Cloud dictation (local Whisper is the free default)</td></tr>
+    </tbody></table></div>
+  </section>
+  <section class="content-block"><h2>What stays local</h2>
+    <ul>
+      <li><code>.env</code>, agent logins, chat histories and <code>context/me.md</code> stay on this computer.</li>
+      <li>Your workspace is plain files. To use it on another computer, keep it in Git or a synced folder; then install Jupiter there and sign in again.</li>
+      <li>Never paste keys into chats, cards or tracked files.</li>
+    </ul>
+  </section>
+  <footer class="page-footer"><a href="#updates"><small>PREVIOUS</small>← Updates</a><a href="#troubleshooting"><small>NEXT</small>Troubleshooting →</a></footer>
+</article>
+
+<article class="wiki-page" data-page="troubleshooting" data-title="Troubleshooting" data-group="MAKE IT YOURS" tabindex="-1">
+  <header class="page-header"><div class="eyebrow">JUPITER WIKI / MAKE IT YOURS</div><h1>Troubleshooting</h1><p class="page-intro">Common problems and the quickest fix.</p><span class="badge">Help</span></header>
+  <section class="content-block"><h2>Problems and fixes</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Problem</th><th scope="col">Fix</th></tr></thead><tbody>
+      <tr><td>Windows says it protected your PC</td><td>The installer is not code-signed yet. Choose More info → Run anyway.</td></tr>
+      <tr><td>An agent is not found after installing it</td><td>The Agents step checks again every few seconds. If it still is not found, restart Jupiter so it picks up the new PATH.</td></tr>
+      <tr><td>Tools step is locked</td><td>Install Git, Node.js and Claude Code on the Agents step first.</td></tr>
+      <tr><td>A tool says “Can't check”</td><td>It was installed outside this workspace. Settings → Run setup again → Tools.</td></tr>
+      <tr><td>A tool install failed</td><td>Read the message in the Tools step; most failures are a missing agent or no network. Try again from Capabilities.</td></tr>
+      <tr><td>Jupiter does not speak</td><td>Check the ElevenLabs key in setup step 5 and that the key has Text to Speech access.</td></tr>
+      <tr><td>The update failed</td><td>Restart Jupiter to try again, or download the latest installer from GitHub Releases and run it over the top.</td></tr>
+      <tr><td>A chat will not resume</td><td>Resuming needs the agent's own history on this computer. Start a new chat, or use a handoff.</td></tr>
+    </tbody></table></div>
+    <aside class="callout"><strong>Ask Jupiter</strong><p>In any chat: “Read AGENTS.md, find out why this is not working, and propose a small fix.” Agents can read this workspace and its logs.</p></aside>
+  </section>
+  <footer class="page-footer"><a href="#keys"><small>PREVIOUS</small>← Keys and privacy</a><span></span></footer>
+</article>
+
+</main>
+<aside class="concept-rail" aria-label="Page concepts"><h2>Related</h2><p class="rail-intro">Pages that go with this one.</p><div class="concept-links" id="concept-links"></div><div class="rail-toc"><h2>On this page</h2><nav id="page-toc" aria-label="On this page"></nav></div><div class="rail-bottom"><a href="#troubleshooting">Troubleshooting ↗</a></div></aside>
+</div></div></div>
+<noscript><p class="noscript">Enable JavaScript for navigation, search and source documents. All page content remains in this file.</p></noscript>
+<script type="application/json" id="wiki-data">
+{"title":"Jupiter","concepts":{"overview":[["Install and set up","Start here","install"],["Your first task","Guide","first-task"]],"install":[["Starter tools","Capabilities","capabilities/starter"],["Voice","Optional","voice"]],"first-task":[["Chats and agents","Reference","chats"],["Teaching Jupiter","Knowledge","knowledge"]],"chats":[["Workspace and cards","Reference","workspace"],["Phone access","Voice","voice/phone"]],"workspace":[["Files and folders","Reference","files"],["workspace-authoring skill","Skill","skills/bundled"]],"files":[["Where skills live","Skills","skills/where"],["Keys and privacy","Reference","keys"]],"boards":[["game-wiki skill","Skill","skills/bundled"],["Voice","Reference","voice"]],"voice":[["Keys","Reference","keys"],["Settings","Reference","settings"]],"skills":[["Capabilities","Reference","capabilities"],["Updates keep your edits","Reference","updates"]],"capabilities":[["Skills","Reference","skills"],["Troubleshooting","Help","troubleshooting"]],"knowledge":[["Skills","Reference","skills"],["Files and folders","Reference","files"]],"settings":[["Run setup again","Guide","install/wizard"],["Voice","Reference","voice"]],"updates":[["Keys and privacy","Reference","keys"]],"keys":[["Voice","Reference","voice"],["Troubleshooting","Help","troubleshooting"]],"troubleshooting":[["Install and set up","Guide","install"]]},"sources":[]}
+</script>
+<script>
+(() => {
+  'use strict';
+  const data = JSON.parse(document.getElementById('wiki-data').textContent);
+  const pages = [...document.querySelectorAll('.wiki-page')];
+  const home = pages[0].dataset.page;
+  const search = document.getElementById('wiki-search');
+  const resultBox = document.getElementById('search-results');
+  const rail = document.getElementById('concept-links');
+  const toc = document.getElementById('page-toc');
+  const menu = document.getElementById('menu-toggle');
+  const sources = Array.isArray(data.sources) ? data.sources : [];
+  const library = document.getElementById('source-library');
+  if (library) {
+    for (const source of sources) {
+      const details = document.createElement('details'); details.className = 'source-document'; details.id = 'doc-' + source.id;
+      const summary = document.createElement('summary'); const name = document.createElement('span'); name.textContent = source.title;
+      const kind = document.createElement('small'); kind.textContent = source.kind || ''; summary.append(name, kind);
+      const meta = document.createElement('div'); meta.className = 'source-meta';
+      if (source.path) { const where = document.createElement('code'); where.textContent = source.path; meta.append(where); }
+      const when = document.createElement('span'); when.textContent = source.date ? 'Snapshot ' + source.date : 'Snapshot'; meta.append(when);
+      const button = document.createElement('button'); button.type = 'button'; button.textContent = 'Download source'; button.dataset.downloadSource = source.id; meta.append(button);
+      const text = document.createElement('pre'); text.className = 'source-text'; text.textContent = source.text || '';
+      details.append(summary, meta, text); library.append(details);
+    }
+    if (!sources.length) { const empty = document.createElement('p'); empty.className = 'muted'; empty.textContent = 'No source snapshots yet.'; library.append(empty); }
+  }
+  const normalize = text => text.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const searchIndex = pages.filter(p => p.dataset.page !== 'sources').map(p => ({ id: p.dataset.page, title: p.dataset.title, group: p.dataset.group, text: normalize(p.textContent), excerpt: p.querySelector('.page-intro')?.textContent || '' }));
+  for (const s of sources) searchIndex.push({ id: 'sources/' + s.id, title: s.title, group: 'SOURCE', text: normalize(s.title + ' ' + (s.text || '')), excerpt: s.kind || '' });
+  let results = [];
+  function closeMenu() { document.body.classList.remove('nav-open'); menu.setAttribute('aria-expanded', 'false'); }
+  function showRoute() {
+    let [id, anchor] = decodeURIComponent(location.hash.slice(1)).split('/');
+    if (!pages.some(p => p.dataset.page === id)) id = home;
+    const current = pages.find(p => p.dataset.page === id);
+    for (const p of pages) p.hidden = p !== current;
+    for (const link of document.querySelectorAll('.nav-link')) {
+      if (link.dataset.page === id) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
+    }
+    document.getElementById('breadcrumb-group').textContent = current.dataset.group;
+    document.getElementById('breadcrumb-page').textContent = current.dataset.title;
+    document.title = current.dataset.title === data.title ? data.title + ' Wiki' : current.dataset.title + ' · ' + data.title;
+    rail.replaceChildren();
+    for (const [title, status, route] of (data.concepts || {})[id] || []) {
+      const link = document.createElement('a'); link.className = 'concept-link'; link.href = '#' + route;
+      const heading = document.createElement('span'); heading.textContent = title;
+      const sub = document.createElement('small'); sub.textContent = status;
+      link.append(heading, sub); rail.append(link);
+    }
+    toc.replaceChildren();
+    for (const [i, section] of [...current.querySelectorAll('.content-block')].entries()) {
+      const heading = section.querySelector('h2'); if (!heading) continue;
+      if (!section.id) section.id = id + '-section-' + i;
+      const link = document.createElement('a'); link.href = '#' + id + '/' + section.id; link.textContent = heading.textContent; toc.append(link);
+    }
+    closeMenu(); resultBox.hidden = true;
+    const target = anchor ? document.getElementById(id === 'sources' ? 'doc-' + anchor : anchor) || document.getElementById(anchor) : null;
+    if (target && current.contains(target)) {
+      if (target.tagName === 'DETAILS') target.open = true;
+      requestAnimationFrame(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }));
+    } else window.scrollTo({ top: 0, behavior: 'instant' });
+    current.focus({ preventScroll: true });
+  }
+  function searchPages() {
+    const query = normalize(search.value.trim());
+    resultBox.replaceChildren();
+    if (!query) { resultBox.hidden = true; results = []; return; }
+    const terms = query.split(/\s+/);
+    results = searchIndex.filter(p => terms.every(t => p.text.includes(t))).sort((a, b) => Number(b.title.toLowerCase().includes(query)) - Number(a.title.toLowerCase().includes(query))).slice(0, 12);
+    const status = document.createElement('div'); status.className = 'search-status'; status.setAttribute('role', 'status');
+    status.textContent = results.length ? results.length + ' matching pages and sources' : 'No matches. Try a feature, folder or skill name.'; resultBox.append(status);
+    for (const result of results) {
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'search-result';
+      const title = document.createElement('span'); title.textContent = result.title;
+      const subtitle = document.createElement('small'); subtitle.textContent = result.group + ' · ' + result.excerpt;
+      button.append(title, subtitle); button.addEventListener('click', () => { search.value = ''; navigate(result.id); }); resultBox.append(button);
+    }
+    resultBox.hidden = false;
+  }
+  function navigate(route) { if (location.hash === '#' + route) showRoute(); else location.hash = route; }
+  search.addEventListener('input', searchPages);
+  search.addEventListener('focus', () => { if (search.value) searchPages(); });
+  search.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { resultBox.hidden = true; search.blur(); }
+    if (event.key === 'ArrowDown' && results.length) { event.preventDefault(); resultBox.querySelector('button').focus(); }
+    if (event.key === 'Enter' && results.length) { event.preventDefault(); const route = results[0].id; search.value = ''; navigate(route); }
+  });
+  resultBox.addEventListener('keydown', event => {
+    const buttons = [...resultBox.querySelectorAll('button')]; const i = buttons.indexOf(document.activeElement);
+    if (event.key === 'Escape') { resultBox.hidden = true; search.focus(); }
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); buttons[(i + (event.key === 'ArrowDown' ? 1 : -1) + buttons.length) % buttons.length]?.focus(); }
+  });
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href^="#"]');
+    if (link && link.hash.length > 1) { event.preventDefault(); navigate(decodeURIComponent(link.hash.slice(1))); }
+    if (!event.target.closest('.search-box')) resultBox.hidden = true;
+  });
+  menu.addEventListener('click', () => { const open = document.body.classList.toggle('nav-open'); menu.setAttribute('aria-expanded', String(open)); if (open) document.querySelector('.nav-link[aria-current=page]')?.focus(); });
+  document.getElementById('nav-backdrop').addEventListener('click', closeMenu);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); if (event.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) { event.preventDefault(); search.focus(); } });
+  const assetSearch = document.getElementById('asset-search'), assetCategory = document.getElementById('asset-category');
+  function filterAssets() {
+    if (!assetSearch || !assetCategory) return;
+    const query = normalize(assetSearch.value); const category = assetCategory.value; let visible = 0;
+    const rows = [...document.querySelectorAll('#asset-table tbody tr')];
+    for (const row of rows) { row.hidden = !(normalize(row.textContent).includes(query) && (!category || row.dataset.category === category)); if (!row.hidden) visible++; }
+    document.getElementById('asset-count').textContent = visible + ' of ' + rows.length + ' assets';
+    document.getElementById('asset-empty').hidden = visible !== 0;
+  }
+  assetSearch?.addEventListener('input', filterAssets);
+  assetCategory?.addEventListener('change', filterAssets);
+  document.addEventListener('click', event => {
+    const button = event.target.closest('[data-download-source]'); if (!button) return;
+    const source = sources.find(s => s.id === button.dataset.downloadSource); if (!source) return;
+    const url = URL.createObjectURL(new Blob([source.text || ''], { type: 'text/plain;charset=utf-8' }));
+    const a = document.createElement('a'); a.href = url; a.download = (source.path || source.id + '.md').split(/[/\\]/).pop(); a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+  window.addEventListener('hashchange', showRoute);
+  document.documentElement.classList.remove('js-loading');
+  filterAssets(); showRoute();
+})();
+</script>
+<script src="../_shared/report.js"></script>
+</body>
+</html>
